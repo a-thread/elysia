@@ -21,14 +21,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Debug Environment Variables
-        env:
-          REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}
-          REACT_APP_SUPABASE_ANON_KEY: ${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}
-        run: |
-          echo "Supabase URL: $REACT_APP_SUPABASE_URL"
-          echo "Supabase Anon Key: $REACT_APP_SUPABASE_ANON_KEY"
-
       - name: Build Project
         env:
           REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}

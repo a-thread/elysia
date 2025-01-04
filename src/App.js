@@ -9,7 +9,7 @@ import AddRecipe from './pages/AddRecipe';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/elysia">
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route

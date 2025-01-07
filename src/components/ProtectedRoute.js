@@ -1,29 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { supabase } from '../shared/services/supabase';
+import { useAuth } from '../shared/services/AuthContext';
 
 function ProtectedRoute({ children }) {
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState(null);
+  const { user } = useAuth();
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error('Error fetching session:', error);
-      } else {
-        setSession(data.session);
-      }
-      setLoading(false);
-    };
-    getSession();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (user) {
+    return window.location.pathname === '/auth' ? <Navigate to="/" /> : children;
+  } else {
+    return <Navigate to="/auth" />;
   }
-
-  return session ? children : <Navigate to="/auth" />;
 }
 
 export default ProtectedRoute;

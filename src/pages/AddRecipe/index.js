@@ -4,9 +4,9 @@ import IngredientsSectionForm from './components/IngredientsSectionForm';
 import StepsSectionForm from './components/StepsSectionForm';
 import EmptyState from '../../shared/components/EmptyState';
 import recipeService from '../../shared/services/recipeService';
-import { supabase } from '../../shared/services/supabase';
 import BackButton from '../../shared/components/BackButton';
 import Button from '../../shared/components/Button';
+import { useAuth } from '../../shared/services/AuthContext';
 
 function AddRecipe() {
 
@@ -17,6 +17,7 @@ function AddRecipe() {
     cook_time: '',
   });
 
+  const { user } = useAuth();
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -31,17 +32,6 @@ function AddRecipe() {
     e.preventDefault();
     setLoading(true);
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
-      alert('You need to be logged in to add a recipe.');
-      setLoading(false);
-      return;
-    }
-
-    const userId = session.user.id;
 
     try {
       // Create recipe
@@ -50,7 +40,7 @@ function AddRecipe() {
         description: formData.description,
         prep_time: parseInt(formData.prep_time, 10),
         cook_time: parseInt(formData.cook_time, 10),
-        userId,
+        userId: user.id,
       });
 
       // Add ingredients and steps

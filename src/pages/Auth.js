@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { supabase } from '../services/supabase';
+import { supabase } from '../shared/services/supabase';
+import Button from '../shared/components/Button';
 
 function Auth() {
   const [email, setEmail] = useState('');
@@ -34,8 +35,8 @@ function Auth() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={handleSignIn} disabled={loading}>Sign In</button>
-      <button onClick={handleSignUp} disabled={loading}>Sign Up</button>
+      <Button onClick={handleSignIn} isLoading={loading}>Sign In</Button>
+      <Button onClick={handleSignUp} isLoading={loading}>Sign Up</Button>
     </div>
   );
 }

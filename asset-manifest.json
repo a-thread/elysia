@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/elysia/static/css/main.cfda45d9.css",
-    "main.js": "/elysia/static/js/main.b78f44e7.js",
+    "main.js": "/elysia/static/js/main.a404f7d3.js",
     "static/js/198.7df330e1.chunk.js": "/elysia/static/js/198.7df330e1.chunk.js",
     "index.html": "/elysia/index.html",
     "main.cfda45d9.css.map": "/elysia/static/css/main.cfda45d9.css.map",
-    "main.b78f44e7.js.map": "/elysia/static/js/main.b78f44e7.js.map",
+    "main.a404f7d3.js.map": "/elysia/static/js/main.a404f7d3.js.map",
     "198.7df330e1.chunk.js.map": "/elysia/static/js/198.7df330e1.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.cfda45d9.css",
-    "static/js/main.b78f44e7.js"
+    "static/js/main.a404f7d3.js"
   ]
 }

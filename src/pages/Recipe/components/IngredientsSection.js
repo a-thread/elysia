@@ -10,7 +10,7 @@ function IngredientsSection({ ingredients }) {
             key={index}
             className="text-gray-700 dark:text-gray-300"
           >
-            {ingredient.quantity} {ingredient.unit} {ingredient.name}
+            {ingredient.quantity} {ingredient.name}
           </li>
         ))}
       </ul>

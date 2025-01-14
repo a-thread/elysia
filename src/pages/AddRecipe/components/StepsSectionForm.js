@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -6,72 +6,76 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import SortableStep from '../../../shared/components/SortableStep';
-import AddStepForm from '../../../shared/components/AddStepForm';
-import { useModalManager } from '../../../shared/components/modalManager';
 import Button from '../../../shared/components/Button';
 
-function StepsSectionForm({ steps, stepAdded, stepsReordered, stepUpdated, stepDeleted }) {
-  const { openModal, closeModal } = useModalManager();
+function StepsSectionForm({ steps, setSteps }) {
+  const [formState, setFormState] = useState(steps);
 
-  const handleAddStepClick = () =>
-    openModal(<AddStepForm onAddStep={handleStepAdded} />);
+  // Debounce function to emit new values every 400ms
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      setSteps(formState);
+    }, 400);
 
-  const handleEditStepClick = (step) => {
-    openModal(<AddStepForm step={step} onAddStep={handleStepEdited} />)
+    return () => clearTimeout(debounceTimer); // Cleanup timer on component unmount or formState change
+  }, [formState, setSteps]);
+
+  const onEditChange = (updatedStep) => {
+    setFormState((prevState) =>
+      prevState.map((step) =>
+        step.id === updatedStep.id ? { ...step, instruction: updatedStep.instruction } : step
+      )
+    );
+  }
+
+  const onAddClick = () => {
+    setFormState((prevState) => [
+      ...prevState,
+      { id: Date.now().toString(), instruction: '' },
+    ]);
   };
 
-  const handleStepAdded = (instruction) => {
-    stepAdded(instruction);
-    closeModal();
+  const onDeleteClick = (stepId) => {
+    setFormState((prevState) => prevState.filter((step) => step.id !== stepId));
   };
 
-  const handleStepEdited = (updatedStep) => {
-    stepUpdated(updatedStep);
-    closeModal();
-  };
-
-  const handleStepDeleted = (stepId) => {
-    stepDeleted(stepId);
-  };
-
-  const handleDragEnd = async (event) => {
+  const handleDragEnd = (event) => {
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
 
-    const oldIndex = steps.findIndex((step) => step.id === active.id);
-    const newIndex = steps.findIndex((step) => step.id === over.id);
+    const oldIndex = formState.findIndex((step) => step.id === active.id);
+    const newIndex = formState.findIndex((step) => step.id === over.id);
 
-    const reorderedSteps = arrayMove(steps, oldIndex, newIndex);
-    stepsReordered(reorderedSteps);
+    setFormState(arrayMove(formState, oldIndex, newIndex));
   };
 
   return (
-    <div>
+    <div className="mb-4">
       <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">
         Steps
       </h2>
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={steps.map((step) => step.id)}
+          items={formState.map((step) => step.id)}
           strategy={verticalListSortingStrategy}
         >
-          {steps.length > 0 && (
-            <ol className="list-decimal pl-6 mb-6 text-gray-700 dark:text-gray-300">
-              {steps.map((step) => (
+          {formState.length > 0 && (
+            <ol className="list-decimal mb-6 text-gray-700 dark:text-gray-300">
+              {formState.map((step) => (
                 <SortableStep
                   key={step.id}
                   id={step.id}
                   step={step}
-                  onEditStep={handleEditStepClick}
-                  onDeleteStep={handleStepDeleted}
+                  onEditStep={onEditChange}
+                  onDeleteClick={onDeleteClick}
                 />
               ))}
             </ol>
           )}
         </SortableContext>
       </DndContext>
-      <Button onClick={handleAddStepClick}>Add Step</Button>
+      <Button type="button" onClick={onAddClick}>Add Step</Button>
     </div>
   );
 }

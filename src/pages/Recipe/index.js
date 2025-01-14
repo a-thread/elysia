@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import RecipeDetails from './components/RecipeDetails';
 import IngredientsSection from './components/IngredientsSection';
 import StepsSection from './components/StepsSection';
@@ -8,7 +8,7 @@ import Loading from '../../shared/components/Loading';
 import EmptyState from '../../shared/components/EmptyState';
 import BackButton from '../../shared/components/BackButton';
 import DeleteConfirmationModal from '../../shared/components/DeleteConfirmationModal';
-import { useModalManager } from '../../shared/components/modalManager';
+import { useModalManager } from '../../shared/services/modalManager';
 import Button from '../../shared/components/Button';
 
 function Recipe() {
@@ -16,6 +16,7 @@ function Recipe() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const { openModal, closeModal } = useModalManager();
+  const navigate = useNavigate();
 
   // Fetch recipe details
   useEffect(() => {
@@ -40,6 +41,7 @@ function Recipe() {
       await recipeService.deleteRecipe(id);
       alert('Recipe deleted successfully.');
       closeModal();
+      navigate('/');
     } catch (error) {
       console.error('Error deleting recipe:', error.message);
       alert('Failed to delete recipe.');

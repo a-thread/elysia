@@ -9,11 +9,13 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/NavBar';
 import Favorites from './pages/Favorites';
 import EditRecipe from './pages/EditRecipe';
+import { ModalManager } from './shared/services/modalManager';
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <Router basename="/elysia">
+        <ModalManager>
           <Navbar />
           <div className="container mx-auto px-4 py-6">
             <Routes>
@@ -68,6 +70,7 @@ function App() {
               />
             </Routes>
           </div>
+        </ModalManager>
       </Router>
     </div>
   );

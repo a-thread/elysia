@@ -1,9 +1,9 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { PencilIcon } from "@heroicons/react/20/solid";
 import { TrashIcon, HandRaisedIcon } from "@heroicons/react/24/outline";
+import IconButton from "./IconButton";
 
-function SortableStep({ id, step, onEditStep, onDeleteStep }) {
+function SortableStep({ id, step, onEditStep, onDeleteClick }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
@@ -11,51 +11,37 @@ function SortableStep({ id, step, onEditStep, onDeleteStep }) {
     transition: transition || "all 0.2s ease",
   };
 
+  const onInputChange = (event) => {
+    onEditStep({ ...step, instruction: event.target.value });
+  };
+
   return (
     <li
       ref={setNodeRef}
       style={style}
-      className="relative text-gray-700 dark:text-gray-200 mb-2 p-2 border rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+      className="text-gray-700 dark:text-gray-300 flex items-center justify-between mb-2"
     >
-      <span>{step.instruction}</span>
-      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex space-x-2">
-        {/* Drag Handle */}
-        <button
-          {...attributes}
-          {...listeners}
-          type="button"
-          className="inline-flex items-center p-2 w-8 h-8 justify-center text-sm rounded-full cursor-move hover:bg-gray-300 dark:hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
-          title="Drag Step"
-        >
-          <HandRaisedIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-        </button>
+      <textarea
+        className="border rounded px-2 py-1 w-full mr-3 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300"
+        placeholder=" "
+        value={step.instruction || ""}
+        onChange={onInputChange}
+      ></textarea>
 
-        {/* Edit Button */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onEditStep(step);
-          }}
-          className="inline-flex items-center p-2 w-8 h-8 justify-center text-sm rounded-full hover:bg-gray-300 dark:hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
-          title="Edit Step"
-        >
-          <PencilIcon className="w-5 h-5 text-yellow-400 dark:text-yellow-500" />
-        </button>
+      {/* Drag Handle */}
+      <IconButton
+        icon={<HandRaisedIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />}
+        title="Drag Step"
+        attributes={attributes}
+        listeners={listeners}
+      />
 
-        {/* Delete Button */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDeleteStep(step.id);
-          }}
-          className="inline-flex items-center p-2 w-8 h-8 justify-center text-sm rounded-full hover:bg-gray-300 dark:hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
-          title="Delete Step"
-        >
-          <TrashIcon className="w-5 h-5 text-red-500 dark:text-red-600" />
-        </button>
-      </div>
+      {/* Delete Button */}
+      <IconButton
+        icon={<TrashIcon className="w-6 h-6 text-red-500 dark:text-red-600" />}
+        onClick={() => onDeleteClick(step.id)}
+        title="Delete Step"
+      />
     </li>
   );
 }

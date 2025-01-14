@@ -3,7 +3,7 @@ import RecipeCard from '../Home/components/RecipeCard';
 import Loading from '../../shared/components/Loading';
 import EmptyState from '../../shared/components/EmptyState';
 import { useFetchFavoriteRecipes } from './hooks/useFetchFavoriteRecipe';
-import { useDarkMode } from '../../shared/services/DarkModeContext';
+import { useDarkMode } from '../../shared/contexts/DarkModeContext';
 
 function Favorites() {
   const { isDarkMode } = useDarkMode();

@@ -69,26 +69,6 @@ function EditRecipe() {
     setIngredients((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleStepAdded = (instruction) => {
-    const step = {
-      id: 0,
-      instruction,
-      recipe_id: id,
-      step_number: steps.length + 1
-    }
-    setSteps((prev) => [...prev, step]);
-  };
-
-  const handleStepEdited = (updatedStep) => {
-    setSteps((prev) =>
-      prev.map((step) => (step.id === updatedStep.id ? updatedStep : step))
-    );
-  };
-
-  const handleStepDeleted = (stepId) => {
-    setSteps((prev) => prev.filter((step) => step.id !== stepId));
-  };
-
   const handleSave = async (e) => {
     e.preventDefault();
     setSaveLoading(true);
@@ -132,10 +112,7 @@ function EditRecipe() {
             </IngredientsSectionForm>
             <StepsSectionForm
               steps={steps}
-              stepAdded={handleStepAdded}
-              stepsReordered={setSteps}
-              stepUpdated={handleStepEdited}
-              stepDeleted={handleStepDeleted}
+              setSteps={setSteps}
             >
               {!(steps?.length > 0) && (
                 <EmptyState message="No steps added yet. Add some to get started!" />

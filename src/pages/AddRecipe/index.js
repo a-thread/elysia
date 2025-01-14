@@ -6,7 +6,8 @@ import EmptyState from '../../shared/components/EmptyState';
 import recipeService from '../../shared/services/recipeService';
 import BackButton from '../../shared/components/BackButton';
 import Button from '../../shared/components/Button';
-import { useAuth } from '../../shared/services/AuthContext';
+import { useAuth } from '../../shared/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function AddRecipe() {
 
@@ -21,6 +22,8 @@ function AddRecipe() {
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
 
   // Update form data
   const handleFormChange = (field, value) => {
@@ -48,45 +51,13 @@ function AddRecipe() {
       await recipeService.addSteps(recipe.id, steps);
 
       alert('Recipe added successfully!');
-      setFormData({ title: '', description: '', prep_time: '', cook_time: '' });
-      setIngredients([]);
-      setSteps([]);
+      navigate(`/recipe/${recipe.id}`);
     } catch (error) {
       console.error('Error adding recipe:', error.message);
       alert('Failed to add recipe. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleIngredientAdded = (ingredient) => {
-    setIngredients((prev) => [...prev, ingredient]);
-  };
-
-  const handleIngredientEdited = (updatedIngredient, index) => {
-    setIngredients((prev) => {
-      const newIngredients = [...prev];
-      newIngredients[index] = updatedIngredient;
-      return newIngredients;
-    });
-  };
-
-  const handleIngredientDeleted = (index) => {
-    setIngredients((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleStepAdded = (instruction) => {
-    setSteps((prev) => [...prev, instruction]);
-  };
-
-  const handleStepEdited = (updatedStep) => {
-    setSteps((prev) =>
-      prev.map((step) => (step.id === updatedStep.id ? updatedStep : step))
-    );
-  };
-
-  const handleStepDeleted = (stepId) => {
-    setSteps((prev) => prev.filter((step) => step.id !== stepId));
   };
 
   return (
@@ -101,10 +72,7 @@ function AddRecipe() {
 
         <IngredientsSectionForm
           ingredients={ingredients}
-          setIngredients={handleIngredientAdded}
-          onEditIngredient={handleIngredientEdited}
-          onDeleteIngredient={handleIngredientDeleted}
-
+          setIngredients={setIngredients}
         >
           {!(ingredients?.length > 0) && (
             <EmptyState message="No ingredients added yet. Add some to get started!" />
@@ -113,10 +81,7 @@ function AddRecipe() {
 
         <StepsSectionForm
           steps={steps}
-          stepAdded={handleStepAdded}
-          stepsReordered={setSteps}
-          stepUpdated={handleStepEdited}
-          stepDeleted={handleStepDeleted}>
+          setSteps={setSteps}>
           {!(steps?.length > 0) && (
             <EmptyState message="No steps added yet. Add some to get started!" />
           )}

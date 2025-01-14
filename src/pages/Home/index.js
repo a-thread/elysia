@@ -3,7 +3,7 @@ import { useFetchRecipes } from './hooks/useFetchRecipes';
 import RecipeCard from './components/RecipeCard';
 import Loading from '../../shared/components/Loading';
 import EmptyState from '../../shared/components/EmptyState';
-import { useDarkMode } from '../../shared/services/DarkModeContext';
+import { useDarkMode } from '../../shared/contexts/DarkModeContext';
 
 function Home() {
   const { isDarkMode } = useDarkMode();
@@ -31,12 +31,8 @@ function Home() {
     <div
       ref={containerRef}
       onScroll={handleScroll}
-      style={{
-        height: '90vh',
-        overflowY: 'auto',
-        ...scrollbarStyles,
-      }}
-      className="scrollable-container max-w-4xl mx-auto p-6 flex flex-col justify-center items-center"
+      style={scrollbarStyles}
+      className="scrollable-container max-w-4xl mx-auto flex flex-col justify-center items-center"
     >
       {recipes.length === 0 && !loading ? (
         <EmptyState message="No recipes found. Add some recipes to get started!" />

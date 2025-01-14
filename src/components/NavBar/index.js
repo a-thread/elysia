@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { SunIcon, MoonIcon, Bars4Icon } from "@heroicons/react/24/outline";
-import { useDarkMode } from "../shared/services/DarkModeContext";
-import Button from "../shared/components/Button";
-import { useAuth } from "../shared/services/AuthContext";
+import { useDarkMode } from "../../shared/contexts/DarkModeContext";
+import { useAuth } from "../../shared/contexts/AuthContext";
+import Button from "../../shared/components/Button";
+import { useModalManager } from "../../shared/services/modalManager";
+import RecipeInputModal from "./components/AddRecipeModal";
+import IconButton from "../../shared/components/IconButton";
 
 function Navbar() {
     const { isDarkMode, toggleDarkMode } = useDarkMode();
     const { user } = useAuth();
+    const { openModal, closeModal } = useModalManager();
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -23,6 +27,10 @@ function Navbar() {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
             setMenuOpen(false);
         }
+    };
+
+    const handleAddRecipeClick = () => {
+        openModal(<RecipeInputModal closeModal={closeModal} />)
     };
 
     useEffect(() => {
@@ -59,30 +67,24 @@ function Navbar() {
                 {isAuthenticated && (
                     <>
                         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse gap-2">
-                            <Link to="/add-new">
-                                <Button className="hidden md:block text-">Add New Recipe</Button>
-                            </Link>
-                            <button
+                            <Button className="hidden md:block" onClick={handleAddRecipeClick}>Add New Recipe</Button>
+                            <IconButton
                                 onClick={toggleDarkMode}
-                                className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600"
-                                aria-label="Toggle Dark Mode"
-                            >
-                                {isDarkMode ? (
+                                title="Toggle Dark Mode"
+                                icon={isDarkMode ? (
                                     <SunIcon className="w-6 h-6 text-yellow-400" />
                                 ) : (
                                     <MoonIcon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
                                 )}
-                            </button>
-                            <button
+                            />
+                            <IconButton
                                 onClick={toggleMenu}
-                                type="button"
-                                className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                className="text-gray-500 rounded-lg md:hidden focus:ring-gray-200 dark:text-gray-400"
                                 aria-controls="navbar-cta"
                                 aria-expanded={menuOpen}
-                            >
-                                <span className="sr-only">Open main menu</span>
-                                <Bars4Icon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
-                            </button>
+                                title="Open main menu"
+                                icon={<Bars4Icon className="w-6 h-6 text-gray-800 dark:text-gray-200" />}
+                            />
                         </div>
                         <div
                             className={`items-center justify-between ${menuOpen ? "block" : "hidden"
@@ -91,9 +93,7 @@ function Navbar() {
                         >
                             <div className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                                 {menuOpen && (
-                                    <Link to="/add-new">
-                                        <Button className="w-full">Add New Recipe</Button>
-                                    </Link>
+                                    <Button className="w-full" onClick={handleAddRecipeClick}>Add New Recipe</Button>
                                 )}
 
                                 <ul className="flex flex-col font-medium md:p-0 mt-4 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0">

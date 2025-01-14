@@ -8,7 +8,6 @@ const fetchRecipeDetails = async (recipeId) => {
         *,
         recipe_to_ingredients_map (
           quantity,
-          unit,
           ingredients (id, name)
         ),
         steps (
@@ -35,7 +34,6 @@ const fetchRecipeDetails = async (recipeId) => {
       ingredients: data.recipe_to_ingredients_map.map((item) => ({
         id: item.ingredients.id,
         quantity: item.quantity,
-        unit: item.unit,
         name: item.ingredients.name,
       })),
       steps: data.steps.sort((a, b) => a.step_number - b.step_number),
@@ -94,7 +92,6 @@ const addIngredients = async (recipeId, ingredients) => {
       recipe_id: recipeId,
       ingredient_id: ingredientId,
       quantity: ingredient.quantity,
-      unit: ingredient.unit,
     });
   }
 
@@ -105,10 +102,10 @@ const addIngredients = async (recipeId, ingredients) => {
 };
 
 const addSteps = async (recipeId, steps) => {
-  const stepData = steps.map((instruction, index) => ({
+  const stepData = steps.map((step, index) => ({
     recipe_id: recipeId,
     step_number: index + 1,
-    instruction,
+    instruction: step.instruction,
   }));
 
   if (stepData.length > 0) {
@@ -122,7 +119,6 @@ const editIngredient = async (recipeId, ingredient) => {
     .from('recipe_to_ingredients_map')
     .update({
       quantity: ingredient.quantity,
-      unit: ingredient.unit,
     })
     .eq('recipe_id', recipeId)
     .eq('ingredient_id', ingredient.id);
@@ -189,7 +185,7 @@ export const updateRecipe = async (recipeId, updatedRecipe) => {
     }
 
     if (newSteps.length > 0) {
-      await addSteps(recipeId, newSteps.map((step) => step.instruction));
+      await addSteps(recipeId, newSteps);
     }
   } catch (error) {
     console.error('Error updating recipe:', error.message);

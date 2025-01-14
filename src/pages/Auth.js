@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../shared/services/supabase';
 import Button from '../shared/components/Button';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../shared/services/AuthContext';
+import { useAuth } from '../shared/contexts/AuthContext';
 
 function Auth() {
   const [email, setEmail] = useState('');

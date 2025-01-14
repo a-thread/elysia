@@ -4,19 +4,21 @@ const fetchRecipeDetails = async (recipeId) => {
   try {
     const { data, error } = await supabase
       .from('recipes')
-      .select(`
-        *,
-        recipe_to_ingredients_map (
-          quantity,
-          ingredients (id, name)
-        ),
-        steps (
-          id,
-          recipe_id,
-          step_number,
-          instruction
-        )
-      `)
+      .select(
+        `
+          *,
+          ingredients (
+            id,
+            name
+          ),
+          steps (
+            id,
+            recipe_id,
+            step_number,
+            instruction
+          )
+        `
+      )
       .eq('id', recipeId)
       .single();
 
@@ -25,13 +27,14 @@ const fetchRecipeDetails = async (recipeId) => {
       throw new Error('Failed to fetch recipe details.');
     }
 
+    // Format the response
     return {
       id: data.id,
       title: data.title,
       description: data.description,
       prep_time: data.prep_time,
       cook_time: data.cook_time,
-      ingredients: data.recipe_to_ingredients_map.map((item) => item.ingredients.name),
+      ingredients: data.ingredients.map((ingredient) => ingredient.name),
       steps: data.steps.sort((a, b) => a.step_number - b.step_number),
     };
   } catch (error) {
@@ -40,6 +43,7 @@ const fetchRecipeDetails = async (recipeId) => {
     return null;
   }
 };
+
 
 const createRecipe = async ({ title, description, prep_time, cook_time, userId }) => {
   const { data, error } = await supabase
@@ -62,40 +66,19 @@ const createRecipe = async ({ title, description, prep_time, cook_time, userId }
 };
 
 const addIngredients = async (recipeId, ingredients) => {
-  const ingredientData = [];
-  for (const ingredient of ingredients) {
-    const { data: existingIngredient, error: fetchError } = await supabase
-      .from('ingredients')
-      .select('id')
-      .eq('name', ingredient.toLowerCase())
-      .single();
+  const updatedIngredients = ingredients.map((ingredient) => ({
+    recipe_id: recipeId,
+    name: ingredient.trim(),
+  }));
 
-    let ingredientId;
-    if (!existingIngredient && fetchError) {
-      const { data: newIngredient, error: insertError } = await supabase
-        .from('ingredients')
-        .insert([{ name: ingredient.toLowerCase() }])
-        .select()
-        .single();
+  const { error: insertError } = await supabase
+    .from('ingredients')
+    .insert(updatedIngredients)
+    .select();
 
-      if (insertError) throw insertError;
-      ingredientId = newIngredient.id;
-    } else {
-      ingredientId = existingIngredient.id;
-    }
-
-    ingredientData.push({
-      recipe_id: recipeId,
-      ingredient_id: ingredientId,
-      quantity: ingredient.quantity,
-    });
-  }
-
-  if (ingredientData.length > 0) {
-    const { error } = await supabase.from('recipe_to_ingredients_map').insert(ingredientData);
-    if (error) throw error;
-  }
+  if (insertError) throw insertError;
 };
+
 
 const addSteps = async (recipeId, steps) => {
   const stepData = steps.map((step, index) => ({
@@ -112,12 +95,12 @@ const addSteps = async (recipeId, steps) => {
 
 const editIngredient = async (recipeId, ingredient) => {
   return await supabase
-    .from('recipe_to_ingredients_map')
+    .from('ingredients')
     .update({
       quantity: ingredient.quantity,
     })
     .eq('recipe_id', recipeId)
-    .eq('ingredient_id', ingredient.id);
+    .eq('id', ingredient.id);
 };
 
 export const reorderSteps = async (reorderedSteps) => {

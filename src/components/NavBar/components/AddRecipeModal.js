@@ -19,7 +19,6 @@ function RecipeInputModal({ closeModal }) {
             role="dialog"
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
-            className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg"
         >
             <h2
                 id="modal-title"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RecipeDetailsForm from './components/RecipeDetailsForm';
 import IngredientsSectionForm from './components/IngredientsSectionForm';
 import StepsSectionForm from './components/StepsSectionForm';
@@ -7,9 +7,10 @@ import recipeService from '../../shared/services/recipeService';
 import BackButton from '../../shared/components/BackButton';
 import Button from '../../shared/components/Button';
 import { useAuth } from '../../shared/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function AddRecipe() {
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -17,27 +18,36 @@ function AddRecipe() {
     prep_time: '',
     cook_time: '',
   });
-
-  const { user } = useAuth();
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
+  useEffect(() => {
+    const existingRecipe = location.state.recipe;
+    if (existingRecipe) {
+      setFormData({
+        title: existingRecipe.title || '',
+        description: existingRecipe.description || '',
+        prep_time: existingRecipe.prep_time || '',
+        cook_time: existingRecipe.cook_time || '',
+      });
+      setIngredients(existingRecipe.ingredients || []);
+      setSteps(existingRecipe.steps || []);
+    }
+  }, [location.state.recipe]);
 
-  // Update form data
-  const handleFormChange = (field, value) => {
+  const onFormChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Handle recipe submission
-  const handleAddRecipe = async (e) => {
+  const onAddClick = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-
     try {
-      // Create recipe
       const recipe = await recipeService.createRecipe({
         title: formData.title,
         description: formData.description,
@@ -46,7 +56,6 @@ function AddRecipe() {
         userId: user.id,
       });
 
-      // Add ingredients and steps
       await recipeService.addIngredients(recipe.id, ingredients);
       await recipeService.addSteps(recipe.id, steps);
 
@@ -64,11 +73,11 @@ function AddRecipe() {
     <div className="max-w-2xl mx-auto">
       <div className="flex justify-between items-center">
         <BackButton />
-        <Button onClick={handleAddRecipe} isLoading={loading}>Add</Button>
+        <Button onClick={onAddClick} isLoading={loading}>Add</Button>
       </div>
       <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Add a New Recipe</h1>
-        <RecipeDetailsForm formData={formData} onFormChange={handleFormChange} />
+        <RecipeDetailsForm formData={formData} onFormChange={onFormChange} />
 
         <IngredientsSectionForm
           ingredients={ingredients}

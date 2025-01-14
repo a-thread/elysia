@@ -31,11 +31,7 @@ const fetchRecipeDetails = async (recipeId) => {
       description: data.description,
       prep_time: data.prep_time,
       cook_time: data.cook_time,
-      ingredients: data.recipe_to_ingredients_map.map((item) => ({
-        id: item.ingredients.id,
-        quantity: item.quantity,
-        name: item.ingredients.name,
-      })),
+      ingredients: data.recipe_to_ingredients_map.map((item) => item.ingredients.name),
       steps: data.steps.sort((a, b) => a.step_number - b.step_number),
     };
   } catch (error) {
@@ -71,14 +67,14 @@ const addIngredients = async (recipeId, ingredients) => {
     const { data: existingIngredient, error: fetchError } = await supabase
       .from('ingredients')
       .select('id')
-      .eq('name', ingredient.name.toLowerCase())
+      .eq('name', ingredient.toLowerCase())
       .single();
 
     let ingredientId;
     if (!existingIngredient && fetchError) {
       const { data: newIngredient, error: insertError } = await supabase
         .from('ingredients')
-        .insert([{ name: ingredient.name.toLowerCase() }])
+        .insert([{ name: ingredient.toLowerCase() }])
         .select()
         .single();
 

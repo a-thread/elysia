@@ -11,6 +11,10 @@ import Button from '../../../shared/components/Button';
 function StepsSectionForm({ steps, setSteps }) {
   const [formState, setFormState] = useState(steps);
 
+  useEffect(() => {
+    setFormState(steps);
+  }, [steps]);
+
   // Debounce function to emit new values every 400ms
   useEffect(() => {
     const debounceTimer = setTimeout(() => {

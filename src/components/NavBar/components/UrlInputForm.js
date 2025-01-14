@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import Button from '../../../shared/components/Button';
 import { scrapeRecipeForDB } from '../service/scrapeRecipeForDB';
+import { useNavigate } from 'react-router-dom';
 
 const UrlInputForm = ({ onCancel }) => {
     const [url, setUrl] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState('');
+    const navigate = useNavigate();
 
     const fetchRecipe = async (recipeUrl) => {
         try {
+            setIsLoading(true);
             const data = await scrapeRecipeForDB(recipeUrl);
-    
-            console.log(data); // Handle the data (e.g., pass it to the parent or navigate)
+            navigate('/add-new', { state: { recipe: data } });
+            onCancel();
             setError(''); // Clear any previous error
         } catch (error) {
-            console.error('Failed to fetch recipe:', error);
             setError('Failed to fetch the recipe. Please check the URL and try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!url.trim()) {
@@ -49,7 +54,7 @@ const UrlInputForm = ({ onCancel }) => {
                 <Button type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit">Fetch Recipe</Button>
+                <Button type="submit" isLoading={isLoading}>Fetch Recipe</Button>
             </div>
         </form>
     );

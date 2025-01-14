@@ -5,14 +5,6 @@ const proxyUrl = 'https://proxy.corsfix.com/?';
 export async function scrapeRecipeForDB(url) {
   const recipe = {};
 
-  function parseTime(ptTime) {
-    return ptTime
-      .replace('PT', '')
-      .replace('H', ' hours ')
-      .replace('M', ' minutes ')
-      .replace('S', ' seconds')
-      .trim();
-  }
   function parseIngredient(ingredientText) {
     const fractionMap = {
       '½': 0.5,
@@ -25,15 +17,24 @@ export async function scrapeRecipeForDB(url) {
       '⅗': 0.6,
       '⅘': 0.8,
     };
-  
+
     // Remove special characters like "▢" and normalize fractions
     const normalizedText = ingredientText
       .replace(/[^a-zA-Z0-9¼½¾⅓⅔⅕⅖⅗⅘.\s]/g, '') // Removes special characters
       .replace(/[¼½¾⅓⅔⅕⅖⅗⅘]/g, (match) => fractionMap[match] || match); // Convert fractions to decimals
-  
-      return normalizedText;
+
+    return normalizedText;
   }
-  
+
+  function parseTimeByClass(labelElement) {
+    if (!labelElement.length) return 0;
+
+    const timeText = labelElement.text().trim();
+    const timeValue = parseInt(timeText.match(/\d+/));
+    const isHour = /hour/i.test(timeText);
+
+    return isHour ? (timeValue || 0) * 60 : (timeValue || 0); // Convert hours to minutes
+  }
 
   try {
     const encodedUrl = encodeURIComponent(url);
@@ -73,33 +74,29 @@ export async function scrapeRecipeForDB(url) {
       });
     }
 
-    recipe.prep_time = parseTime($("time[itemprop='prepTime']").attr('datetime') || 'PT0M');
-    recipe.cook_time = parseTime($("time[itemprop='cookTime']").attr('datetime') || 'PT0M');
-
-    const categories = [];
-    $('div.categories a, a.category').each((i, el) => {
-      const category = $(el).text().trim();
-      if (category) {
-        categories.push(category);
-      }
+    // Find the label element containing the time value
+    const prepTime = $(`*[class*="prep_time"]`).filter(function () {
+      return /\d+/.test($(this).text()); // Ensure text contains a number
     });
 
+    const cookTime = $(`*[class*="cook_time"]`).filter(function () {
+      return /\d+/.test($(this).text()); // Ensure text contains a number
+    });
+
+    recipe.prep_time = parseTimeByClass(prepTime);
+    recipe.cook_time = parseTimeByClass(cookTime);
+
     const recipeData = {
-      recipes: {
-        title: recipe.title,
-        description: recipe.description,
-        prep_time: recipe.prep_time,
-        cook_time: recipe.cook_time,
-      },
-      ingredients, // Already parsed with parseIngredient
+      title: recipe.title,
+      description: recipe.description,
+      prep_time: recipe.prep_time,
+      cook_time: recipe.cook_time,
+      ingredients,
       steps,
-      categories,
     };
 
-    console.log('Scraped Recipe Data:', recipeData);
     return recipeData;
   } catch (error) {
-    console.error('Error scraping recipe:', error.message);
     return null;
   }
 }

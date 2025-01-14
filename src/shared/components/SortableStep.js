@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { TrashIcon, HandRaisedIcon } from "@heroicons/react/24/outline";
 import IconButton from "./IconButton";
+import AutoResizeTextarea from "./AutoResizeTextbox";
 
 function SortableStep({ id, step, onEditStep, onDeleteClick }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -21,12 +22,7 @@ function SortableStep({ id, step, onEditStep, onDeleteClick }) {
       style={style}
       className="text-gray-700 dark:text-gray-300 flex items-center justify-between mb-2"
     >
-      <textarea
-        className="border rounded px-2 py-1 w-full mr-3 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300"
-        placeholder=" "
-        value={step.instruction || ""}
-        onChange={onInputChange}
-      ></textarea>
+      <AutoResizeTextarea onChange={onInputChange} value={step.instruction} placeholder=" " />
 
       {/* Drag Handle */}
       <IconButton

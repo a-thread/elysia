@@ -3,8 +3,12 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import Button from '../../../shared/components/Button';
 import IconButton from '../../../shared/components/IconButton';
 
-function IngredientsSectionForm({ ingredients = [{ name: '' }], setIngredients }) {
-  const [formState, setFormState] = useState(ingredients);
+function IngredientsSectionForm({ ingredients, setIngredients }) {
+  const [formState, setFormState] = useState([]);
+
+  useEffect(() => {
+    setFormState(ingredients);
+  }, [ingredients]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -16,12 +20,12 @@ function IngredientsSectionForm({ ingredients = [{ name: '' }], setIngredients }
 
   const onInputChange = (index, event) => {
     const newFormState = [...formState];
-    newFormState[index].name = event.target.value;
+    newFormState[index] = event.target.value;
     setFormState(newFormState);
   };
 
   const onAddClick = () => {
-    setFormState([...formState, { name: '' }]);
+    setFormState([...formState, '']);
   };
 
   const onDeleteClick = (index) => {
@@ -42,7 +46,7 @@ function IngredientsSectionForm({ ingredients = [{ name: '' }], setIngredients }
             >
               <input
                 type="text"
-                value={ingredient.name || ''}
+                value={ingredient || ''}
                 onChange={(e) => onInputChange(index, e)}
                 className="border rounded px-2 py-1 w-full mr-4 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300"
               />

@@ -67,7 +67,16 @@ function Recipe() {
           </Link>
         </div>
       </div>
-      <div className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+      {recipe?.img_url?.length && (
+          <div className="relative">
+            <img
+              src={recipe.img_url}
+              alt={recipe.title}
+              className="w-full h-64 object-cover rounded-t-lg"
+            />
+          </div>
+      )}
+      <div className={`p-6 bg-white dark:bg-gray-900 rounded-b-lg shadow-md ${!recipe?.img_url && 'rounded-t-lg'}`}>
         {loading ? (
           <Loading />
         ) : !recipe ? (

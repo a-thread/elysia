@@ -32,6 +32,7 @@ const fetchRecipeDetails = async (recipeId) => {
       id: data.id,
       title: data.title,
       description: data.description,
+      img_url: data.img_url,
       prep_time: data.prep_time,
       cook_time: data.cook_time,
       ingredients: data.ingredients.map((ingredient) => ingredient.name),
@@ -45,13 +46,14 @@ const fetchRecipeDetails = async (recipeId) => {
 };
 
 
-const createRecipe = async ({ title, description, prep_time, cook_time, userId }) => {
+const createRecipe = async ({ title, description, img_url, prep_time, cook_time, userId }) => {
   const { data, error } = await supabase
     .from('recipes')
     .insert([
       {
         title,
         description,
+        img_url,
         prep_time: parseInt(prep_time, 10),
         cook_time: parseInt(cook_time, 10),
         user_id: userId,
@@ -93,6 +95,66 @@ const addSteps = async (recipeId, steps) => {
   }
 };
 
+const sanitizeFileName = (fileName) => {
+  const extension = fileName.split('.').pop();
+  
+  const baseName = fileName
+    .replace(/\.[^/.]+$/, '') // Remove extension
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^a-z0-9_\-.]/g, '') // Remove unsafe characters
+    .replace(/\s+/g, '_'); // Replace spaces with underscores
+
+  const uniqueId = `${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+
+  return `${baseName}_${uniqueId}.${extension}`;
+};
+
+const addPhoto = async (file) => {
+  try {
+    const safeName = sanitizeFileName(file.name);
+
+    // Upload the file to Supabase storage
+    const { error } = await supabase.storage
+      .from('elysia_recipe_photo')
+      .upload(safeName, file, {
+        cacheControl: '3600',
+        upsert: true,
+      });
+
+    if (error) {
+      throw new Error(`Error uploading file: ${error.message}`);
+    }
+
+    // Get the public URL for the uploaded file
+    const publicUrl = getPhotoUrl(safeName);
+
+    return publicUrl;
+  } catch (error) {
+    console.error('Error in addPhoto:', error.message);
+    throw error;
+  }
+};
+
+const getPhotoUrl = (filePath) => {
+  // Use Supabase's getPublicUrl API to fetch the URL
+  const { data, error } = supabase.storage
+    .from('elysia_recipe_photo')
+    .getPublicUrl(filePath);
+
+  if (error) {
+    console.error('Error getting public URL:', error.message);
+    throw new Error('Failed to get public URL');
+  }
+
+  return data.publicUrl; // Return the URL from the `data` object
+};
+
+const deletePhoto = async (imgUrl) => {
+  const filePath = imgUrl.split('/').slice(-1)[0];
+  return await supabase.storage.from('elysia_recipe_photo').remove([filePath]);
+};
+
+
 const editIngredient = async (recipeId, ingredient) => {
   return await supabase
     .from('ingredients')
@@ -101,25 +163,6 @@ const editIngredient = async (recipeId, ingredient) => {
     })
     .eq('recipe_id', recipeId)
     .eq('id', ingredient.id);
-};
-
-export const reorderSteps = async (reorderedSteps) => {
-  try {
-    const { error } = await supabase.from('steps').upsert(reorderedSteps);
-
-    if (error) {
-      throw new Error(`Failed to update step order: ${error.message}`);
-    }
-
-    // Return the updated list of steps
-    return reorderedSteps.map((step, index) => ({
-      ...step,
-      step_number: index + 1, // Sync updated step numbers in the returned array
-    }));
-  } catch (error) {
-    console.error('Error reordering steps:', error.message);
-    throw error;
-  }
 };
 
 export const updateRecipe = async (recipeId, updatedRecipe) => {
@@ -193,7 +236,8 @@ const recipeService = {
   createRecipe,
   addIngredients,
   addSteps,
-  reorderSteps,
+  addPhoto,
+  deletePhoto,
   updateRecipe,
   deleteRecipe,
 };

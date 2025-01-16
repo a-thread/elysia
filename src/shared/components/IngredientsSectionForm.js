@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TrashIcon } from "@heroicons/react/24/outline";
-import Button from '../../../shared/components/Button';
-import IconButton from '../../../shared/components/IconButton';
+import Button from './Button';
+import IconButton from './IconButton';
 
 function IngredientsSectionForm({ ingredients, setIngredients }) {
   const [formState, setFormState] = useState([]);

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { load } from 'cheerio';
+
 const proxyUrl = 'https://proxy.corsfix.com/?';
 
 export async function scrapeRecipeForDB(url) {
@@ -42,11 +43,14 @@ export async function scrapeRecipeForDB(url) {
     const html = response.data;
     const $ = load(html);
 
-    // Scraping logic remains the same
-    recipe.image =
+    // Extract image URL from common meta tags and fallback to other possible sources
+    recipe.img_url =
       $("meta[property='og:image']").attr('content') ||
       $("meta[name='og:image']").attr('content') ||
-      $("meta[itemprop='image']").attr('content');
+      $("meta[itemprop='image']").attr('content') ||
+      $('img[class*="recipe-image"]').first().attr('src') || // Fallback: direct image selectors
+      $('img[class*="main-image"]').first().attr('src') ||
+      $('img').first().attr('src'); // Ultimate fallback: first image on the page
 
     const description =
       $("meta[name='description']").attr('content') ||
@@ -89,14 +93,15 @@ export async function scrapeRecipeForDB(url) {
     const recipeData = {
       title: recipe.title,
       description: recipe.description,
+      img_url: recipe.img_url,
       prep_time: recipe.prep_time,
       cook_time: recipe.cook_time,
       ingredients,
       steps,
     };
-
     return recipeData;
   } catch (error) {
+    console.error(`Failed to scrape recipe from ${url}:`, error.message);
     return null;
   }
 }

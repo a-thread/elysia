@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import RecipeDetailsForm from './components/RecipeDetailsForm';
-import IngredientsSectionForm from './components/IngredientsSectionForm';
-import StepsSectionForm from './components/StepsSectionForm';
+import RecipeDetailsForm from '../../shared/components/RecipeDetailsForm';
+import IngredientsSectionForm from '../../shared/components/IngredientsSectionForm';
+import StepsSectionForm from '../../shared/components/StepsSectionForm';
 import EmptyState from '../../shared/components/EmptyState';
 import recipeService from '../../shared/services/recipeService';
 import BackButton from '../../shared/components/BackButton';
 import Button from '../../shared/components/Button';
 import { useAuth } from '../../shared/contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import PhotoUpload from '../../shared/components/PhotoUpload';
 
 function AddRecipe() {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ function AddRecipe() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    img_url: '',
     prep_time: '',
     cook_time: '',
   });
@@ -31,6 +33,7 @@ function AddRecipe() {
       setFormData({
         title: existingRecipe.title || '',
         description: existingRecipe.description || '',
+        img_url: existingRecipe.img_url || '',
         prep_time: existingRecipe.prep_time || '',
         cook_time: existingRecipe.cook_time || '',
       });
@@ -51,6 +54,7 @@ function AddRecipe() {
       const recipe = await recipeService.createRecipe({
         title: formData.title,
         description: formData.description,
+        img_url: formData.img_url,
         prep_time: parseInt(formData.prep_time, 10),
         cook_time: parseInt(formData.cook_time, 10),
         userId: user.id,
@@ -75,8 +79,8 @@ function AddRecipe() {
         <BackButton />
         <Button onClick={onAddClick} isLoading={loading}>Add</Button>
       </div>
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Add a New Recipe</h1>
+        <PhotoUpload imgUrl={formData.img_url} onImgUrlChange={(url) => onFormChange('img_url', url)} />
+      <div className={`bg-white dark:bg-gray-900 p-6 rounded-b-lg shadow-md ${!formData.img_url.length && 'rounded-t-lg'}`}>
         <RecipeDetailsForm formData={formData} onFormChange={onFormChange} />
 
         <IngredientsSectionForm

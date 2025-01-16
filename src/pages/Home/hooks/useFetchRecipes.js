@@ -10,7 +10,6 @@ export function useFetchRecipes() {
   const [hasMore, setHasMore] = useState(true);
 
   const loadMoreRecipes = async () => {
-    console.log('fetchRecipes');
     if (loading || !hasMore) return;
     setLoading(true);
     try {

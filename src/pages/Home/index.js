@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { useFetchRecipes } from './hooks/useFetchRecipes';
 import RecipeCard from './components/RecipeCard';
 import Loading from '../../shared/components/Loading';
@@ -9,28 +9,38 @@ function Home() {
   const { isDarkMode } = useDarkMode();
   const { recipes, loading, hasMore, loadMoreRecipes } = useFetchRecipes();
   const containerRef = useRef(null);
-  loadMoreRecipes();
+  loadMoreRecipes(); // Load initial recipes
 
-  const handleScroll = () => {
+  // Throttle the scroll event
+  const handleScroll = useCallback(() => {
     const container = containerRef.current;
-
     if (
+      container &&
       container.scrollTop + container.clientHeight >= container.scrollHeight - 200 && // Near the bottom
-      hasMore
+      hasMore &&
+      !loading // Prevent duplicate calls while loading
     ) {
       loadMoreRecipes();
     }
-  };
+  }, [hasMore, loading, loadMoreRecipes]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll); // Cleanup
+  }, [handleScroll]);
 
   const scrollbarStyles = {
     '--scrollbar-track-color': isDarkMode ? '#2c2c2c' : '#f0f0f0',
     '--scrollbar-thumb-color': isDarkMode ? '#666' : '#ccc',
     '--scrollbar-thumb-hover-color': isDarkMode ? '#888' : '#999',
   };
+
   return (
     <div
       ref={containerRef}
-      onScroll={handleScroll}
       style={scrollbarStyles}
       className="scrollable-container max-w-4xl mx-auto flex flex-col justify-center items-center"
     >

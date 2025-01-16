@@ -3,17 +3,19 @@ import { useParams } from 'react-router-dom';
 import recipeService from '../../shared/services/recipeService';
 import BackButton from '../../shared/components/BackButton';
 import Loading from '../../shared/components/Loading';
-import RecipeDetailsForm from '../AddRecipe/components/RecipeDetailsForm';
-import IngredientsSectionForm from '../AddRecipe/components/IngredientsSectionForm';
+import RecipeDetailsForm from '../../shared/components/RecipeDetailsForm';
+import IngredientsSectionForm from '../../shared/components/IngredientsSectionForm';
 import EmptyState from '../../shared/components/EmptyState';
-import StepsSectionForm from '../AddRecipe/components/StepsSectionForm';
+import StepsSectionForm from '../../shared/components/StepsSectionForm';
 import Button from '../../shared/components/Button';
+import PhotoUpload from '../../shared/components/PhotoUpload';
 
 function EditRecipe() {
   const { id } = useParams();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    img_url: '',
     prep_time: '',
     cook_time: '',
   });
@@ -31,6 +33,7 @@ function EditRecipe() {
         setFormData({
           title: recipeData.title,
           description: recipeData.description,
+          img_url: recipeData.img_url,
           prep_time: recipeData.prep_time,
           cook_time: recipeData.cook_time,
         });
@@ -46,18 +49,18 @@ function EditRecipe() {
     loadRecipe();
   }, [id]);
 
-  const handleFormChange = (field, value) => {
+  const onFormChange = (field, value) => {
     setFormData((prevData) => ({
       ...prevData,
       [field]: value
     }));
   };
 
-  const handleIngredientAdded = (updatedIngredients) => {
+  const onIngredientAdded = (updatedIngredients) => {
     setIngredients(updatedIngredients);
   };
 
-  const handleIngredientEdited = (updatedIngredient, index) => {
+  const onIngredientEdited = (updatedIngredient, index) => {
     setIngredients((prev) => {
       const newIngredients = [...prev];
       newIngredients[index] = updatedIngredient;
@@ -65,11 +68,11 @@ function EditRecipe() {
     });
   };
 
-  const handleIngredientDeleted = (index) => {
+  const onIngredientDeleted = (index) => {
     setIngredients((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSave = async (e) => {
+  const onSave = async (e) => {
     e.preventDefault();
     setSaveLoading(true);
     try {
@@ -91,20 +94,20 @@ function EditRecipe() {
     <div className="max-w-4xl mx-auto">
       <div className="w-full flex justify-between items-center mb-4">
         <BackButton url={`/recipe/${id}`} />
-        <Button isLoading={saveLoading} onClick={handleSave}>Save</Button>
+        <Button isLoading={saveLoading} onClick={onSave}>Save</Button>
       </div>
-      <div className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Edit Recipe</h1>
+      <PhotoUpload imgUrl={formData.img_url} onImgUrlChange={(url) => onFormChange('img_url', url)} />
+      <div className={`bg-white dark:bg-gray-900 p-6 rounded-b-lg shadow-md ${!formData.img_url?.length && 'rounded-t-lg'}`}>
         {loading ? (
           <Loading />
         ) : (
           <>
-            <RecipeDetailsForm formData={formData} onFormChange={handleFormChange} />
+            <RecipeDetailsForm formData={formData} onFormChange={onFormChange} />
             <IngredientsSectionForm
               ingredients={ingredients}
-              setIngredients={handleIngredientAdded}
-              onEditIngredient={handleIngredientEdited}
-              onDeleteIngredient={handleIngredientDeleted}
+              setIngredients={onIngredientAdded}
+              onEditIngredient={onIngredientEdited}
+              onDeleteIngredient={onIngredientDeleted}
             >
               {!(ingredients?.length > 0) && (
                 <EmptyState message="No ingredients added yet. Add some to get started!" />

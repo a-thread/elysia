@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrashIcon } from "@heroicons/react/24/outline";
-import Button from './Button';
-import IconButton from './IconButton';
+import { Button, TrashButton } from './Buttons';
 
 function IngredientsSectionForm({ ingredients, setIngredients }) {
   const [formState, setFormState] = useState([]);
@@ -52,11 +50,7 @@ function IngredientsSectionForm({ ingredients, setIngredients }) {
               />
 
               {/* Delete Button */}
-              <IconButton
-                icon={<TrashIcon className="w-6 h-6 text-red-500 dark:text-red-600" />}
-                onClick={() => onDeleteClick(index)}
-                title="Delete Step"
-              />
+              <TrashButton onDelete={() => onDeleteClick(index)} />
             </li>
           ))}
         </ul>

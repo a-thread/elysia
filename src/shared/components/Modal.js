@@ -1,4 +1,5 @@
 import React from 'react';
+import { XMarkIcon } from '@heroicons/react/20/solid';
 
 function Modal({ children, onClose }) {
     return (
@@ -8,7 +9,7 @@ function Modal({ children, onClose }) {
                     onClick={onClose}
                     className="absolute top-2 right-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                 >
-                    &times;
+                    <XMarkIcon className="w-6 h-6" title="Close Modal" />
                 </button>
                 {children}
             </div>

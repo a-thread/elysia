@@ -4,10 +4,9 @@ import IngredientsSectionForm from '../../shared/components/IngredientsSectionFo
 import StepsSectionForm from '../../shared/components/StepsSectionForm';
 import EmptyState from '../../shared/components/EmptyState';
 import recipeService from '../../shared/services/recipeService';
-import BackButton from '../../shared/components/BackButton';
-import Button from '../../shared/components/Button';
+import { Button } from '../../shared/components/Buttons';
 import { useAuth } from '../../shared/contexts/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import PhotoUpload from '../../shared/components/PhotoUpload';
 
 function AddRecipe() {
@@ -28,7 +27,7 @@ function AddRecipe() {
   const location = useLocation();
 
   useEffect(() => {
-    const existingRecipe = location.state.recipe;
+    const existingRecipe = location.state?.recipe;
     if (existingRecipe) {
       setFormData({
         title: existingRecipe.title || '',
@@ -40,7 +39,7 @@ function AddRecipe() {
       setIngredients(existingRecipe.ingredients || []);
       setSteps(existingRecipe.steps || []);
     }
-  }, [location.state.recipe]);
+  }, [location.state?.recipe]);
 
   const onFormChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -75,11 +74,13 @@ function AddRecipe() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="flex justify-between items-center">
-        <BackButton />
+      <div className="w-full flex justify-end items-center mb-4 gap-4">
+        <Link to={`/`}>
+          <Button btnType="dismissable">Cancel</Button>
+        </Link>
         <Button onClick={onAddClick} isLoading={loading}>Add</Button>
       </div>
-        <PhotoUpload imgUrl={formData.img_url} onImgUrlChange={(url) => onFormChange('img_url', url)} />
+      <PhotoUpload imgUrl={formData.img_url} onImgUrlChange={(url) => onFormChange('img_url', url)} />
       <div className={`bg-white dark:bg-gray-900 p-6 rounded-b-lg shadow-md ${!formData.img_url.length && 'rounded-t-lg'}`}>
         <RecipeDetailsForm formData={formData} onFormChange={onFormChange} />
 

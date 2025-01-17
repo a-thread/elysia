@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { TrashIcon, HandRaisedIcon } from "@heroicons/react/24/outline";
-import IconButton from "./IconButton";
+import { HandRaisedIcon } from "@heroicons/react/24/outline";
+import { TrashButton, IconButton } from "../../Buttons";
 import AutoResizeTextarea from "./AutoResizeTextbox";
 
 function SortableStep({ id, step, onEditStep, onDeleteClick }) {
@@ -33,11 +33,7 @@ function SortableStep({ id, step, onEditStep, onDeleteClick }) {
       />
 
       {/* Delete Button */}
-      <IconButton
-        icon={<TrashIcon className="w-6 h-6 text-red-500 dark:text-red-600" />}
-        onClick={() => onDeleteClick(step.id)}
-        title="Delete Step"
-      />
+      <TrashButton onDelete={() => onDeleteClick(step.id)} />
     </li>
   );
 }

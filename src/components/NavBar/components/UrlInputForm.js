@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '../../../shared/components/Button';
+import { Button } from "../../../shared/components/Buttons";
 import { scrapeRecipeForDB } from '../service/scrapeRecipeForDB';
 import { useNavigate } from 'react-router-dom';
 

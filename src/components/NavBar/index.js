@@ -3,10 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import { SunIcon, MoonIcon, Bars4Icon } from "@heroicons/react/24/outline";
 import { useDarkMode } from "../../shared/contexts/DarkModeContext";
 import { useAuth } from "../../shared/contexts/AuthContext";
-import Button from "../../shared/components/Button";
+import { Button, IconButton, } from "../../shared/components/Buttons";
 import { useModalManager } from "../../shared/services/modalManager";
 import RecipeInputModal from "./components/AddRecipeModal";
-import IconButton from "../../shared/components/IconButton";
 
 function Navbar() {
     const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -29,8 +28,13 @@ function Navbar() {
         }
     };
 
+    const onCloseModal = () => {
+        closeModal();
+        setMenuOpen(false);
+    };
+
     const handleAddRecipeClick = () => {
-        openModal(<RecipeInputModal closeModal={closeModal} />)
+        openModal(<RecipeInputModal closeModal={onCloseModal} />)
     };
 
     useEffect(() => {
@@ -46,13 +50,13 @@ function Navbar() {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, []);
+    });
 
     return (
         <nav className="bg-white border-gray-200 dark:bg-gray-900" ref={menuRef}>
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                <a
-                    href="/"
+                <Link
+                    to="/"
                     className="flex items-center space-x-3 rtl:space-x-reverse"
                 >
                     <img
@@ -63,7 +67,7 @@ function Navbar() {
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                         Elysia
                     </span>
-                </a>
+                </Link>
                 {isAuthenticated && (
                     <>
                         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse gap-2">

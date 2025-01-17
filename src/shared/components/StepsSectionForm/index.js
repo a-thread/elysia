@@ -5,8 +5,8 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import SortableStep from './SortableStep';
-import Button from './Button';
+import SortableStep from './components/SortableStep';
+import { Button } from '../Buttons';
 
 function StepsSectionForm({ steps, setSteps }) {
   const [formState, setFormState] = useState(steps);

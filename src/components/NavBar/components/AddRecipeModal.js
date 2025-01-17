@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../../shared/components/Button';
+import { Button } from '../../../shared/components/Buttons';
 import UrlInputForm from './UrlInputForm';
 
 function RecipeInputModal({ closeModal }) {

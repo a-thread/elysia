@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-const fetchRecipeDetails = async (recipeId) => {
+const fetchRecipeDetails = async (recipeId, userId) => {
   try {
     const { data, error } = await supabase
       .from('recipes')
@@ -16,10 +16,14 @@ const fetchRecipeDetails = async (recipeId) => {
             recipe_id,
             step_number,
             instruction
+          ),
+          favorites!left(
+            id
           )
         `
       )
       .eq('id', recipeId)
+      .eq('favorites.user_id', userId)
       .single();
 
     if (error) {
@@ -27,7 +31,6 @@ const fetchRecipeDetails = async (recipeId) => {
       throw new Error('Failed to fetch recipe details.');
     }
 
-    // Format the response
     return {
       id: data.id,
       title: data.title,
@@ -37,6 +40,7 @@ const fetchRecipeDetails = async (recipeId) => {
       cook_time: data.cook_time,
       ingredients: data.ingredients.map((ingredient) => ingredient.name),
       steps: data.steps.sort((a, b) => a.step_number - b.step_number),
+      is_favorited: data.favorites.length > 0, // Checks if favorite record exists
     };
   } catch (error) {
     console.error('Error in fetchRecipeDetails:', error.message);
@@ -231,6 +235,31 @@ export const deleteRecipe = async (recipeId) => {
   }
 }
 
+export const toggleFavorite = async (recipeId, isFavorited, userId) => {
+  try {
+    if (isFavorited) {
+      const { error } = await supabase
+        .from('favorites')
+        .delete()
+        .eq('recipe_id', recipeId);
+
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('favorites')
+        .insert([{
+          recipe_id: recipeId,
+          user_id: userId,
+        }]);
+
+      if (error) throw error;
+    }
+  } catch (error) {
+    console.error('Error toggling favorite:', error.message);
+    throw error;
+  }
+}
+
 const recipeService = {
   fetchRecipeDetails,
   createRecipe,
@@ -240,6 +269,7 @@ const recipeService = {
   deletePhoto,
   updateRecipe,
   deleteRecipe,
+  toggleFavorite,
 };
 
 export default recipeService;

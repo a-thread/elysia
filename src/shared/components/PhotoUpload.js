@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { TrashIcon } from "@heroicons/react/20/solid";
-import Button from './Button';
+import { Button } from './Buttons';
 import recipeService from '../services/recipeService';
 
 const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
@@ -79,12 +79,6 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
     }
   };
 
-  const handleUrlSubmit = () => {
-    if (imgUrl) {
-      onImgUrlChange(imgUrl);
-    }
-  };
-
   return (
     <div
       className={`relative w-full h-64 rounded-t-lg overflow-hidden ${!imgUrl?.length && 'rounded-b-lg'}`}
@@ -118,7 +112,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
         <div
           className={`border-2 ${
             dragging ? 'border-blue-500 bg-blue-50' : 'border-dashed border-gray-300'
-          } rounded-t-lg p-6 flex flex-col items-center justify-center ${!imgUrl && 'rounded-b-lg'}`}
+          } rounded-t-lg p-6 flex flex-col items-center justify-center ${imgUrl ? 'h-64' : 'rounded-b-lg'}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -144,9 +138,6 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
               onChange={(e) => onImgUrlChange(e.target.value)}
               className="border border-gray-300 rounded-lg p-2 w-full"
             />
-            <Button onClick={handleUrlSubmit} className="mt-2 w-full">
-              Add Image URL
-            </Button>
           </div>
         </div>
       )}

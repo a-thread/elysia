@@ -6,24 +6,26 @@ import StepsSection from './components/StepsSection';
 import recipeService from '../../shared/services/recipeService';
 import Loading from '../../shared/components/Loading';
 import EmptyState from '../../shared/components/EmptyState';
-import BackButton from '../../shared/components/BackButton';
+import { BackButton, Button, FavoriteButton, TrashButton } from '../../shared/components/Buttons';
 import DeleteConfirmationModal from '../../shared/components/DeleteConfirmationModal';
 import { useModalManager } from '../../shared/services/modalManager';
-import Button from '../../shared/components/Button';
+import { useAuth } from '../../shared/contexts/AuthContext';
 
 function Recipe() {
   const { id } = useParams();
-  const [recipe, setRecipe] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
   const { openModal, closeModal } = useModalManager();
   const navigate = useNavigate();
+
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch recipe details
   useEffect(() => {
     const loadRecipe = async () => {
       setLoading(true);
       try {
-        const recipeData = await recipeService.fetchRecipeDetails(id);
+        const recipeData = await recipeService.fetchRecipeDetails(id, user?.id);
         setRecipe(recipeData);
       } catch (error) {
         console.error('Error fetching recipe details:', error.message);
@@ -34,7 +36,7 @@ function Recipe() {
     };
 
     loadRecipe();
-  }, [id]);
+  }, [id, user?.id]);
 
   const deleteRecipe = async () => {
     try {
@@ -48,6 +50,19 @@ function Recipe() {
     }
   }
 
+  const toggleFavorite = async () => {
+    try {
+      await recipeService.toggleFavorite(id, recipe.is_favorited, user?.id);
+      setRecipe((prevRecipe) => ({
+        ...prevRecipe,
+        is_favorited: !prevRecipe.is_favorited,
+      }));
+    } catch (error) {
+      console.error('Error toggling favorite:', error.message);
+      alert('Failed to toggle favorite.');
+    }
+  }
+
   const handleDeleteClick = () => openModal(
     <DeleteConfirmationModal onCancelDelete={closeModal} onDelete={deleteRecipe} />
   );
@@ -56,10 +71,12 @@ function Recipe() {
     <div className="max-w-4xl mx-auto">
       <div className="w-full flex justify-between items-center mb-4">
         <BackButton />
-        <div className="flex justify-end gap-4">
-          <Button btnType="delete" onClick={handleDeleteClick}>
-            Delete
-          </Button>
+        <div className="flex justify-end gap-2">
+          <FavoriteButton
+            onToggle={toggleFavorite}
+            isFavorited={recipe?.is_favorited}
+          />
+          <TrashButton onDelete={handleDeleteClick} />
           <Link to={`/recipe/${id}/edit`}>
             <Button>
               Edit
@@ -68,13 +85,13 @@ function Recipe() {
         </div>
       </div>
       {recipe?.img_url?.length && (
-          <div className="relative">
-            <img
-              src={recipe.img_url}
-              alt={recipe.title}
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-          </div>
+        <div className="relative">
+          <img
+            src={recipe.img_url}
+            alt={recipe.title}
+            className="w-full h-64 object-cover rounded-t-lg"
+          />
+        </div>
       )}
       <div className={`p-6 bg-white dark:bg-gray-900 rounded-b-lg shadow-md ${!recipe?.img_url && 'rounded-t-lg'}`}>
         {loading ? (

@@ -8,9 +8,11 @@ import { Button } from '../../shared/components/Buttons';
 import { useAuth } from '../../shared/contexts/AuthContext';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import PhotoUpload from '../../shared/components/PhotoUpload';
+import { useToast } from '../../shared/services/toastManager';
 
 function AddRecipe() {
   const { user } = useAuth();
+  const { displayToast } = useToast();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -62,11 +64,11 @@ function AddRecipe() {
       await recipeService.addIngredients(recipe.id, ingredients);
       await recipeService.addSteps(recipe.id, steps);
 
-      alert('Recipe added successfully!');
+      displayToast('Recipe added successfully!');
       navigate(`/recipe/${recipe.id}`);
     } catch (error) {
       console.error('Error adding recipe:', error.message);
-      alert('Failed to add recipe. Please try again.');
+      displayToast('Failed to add recipe. Please try again.', 'error');
     } finally {
       setLoading(false);
     }

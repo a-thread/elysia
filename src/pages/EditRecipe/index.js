@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import recipeService from '../../shared/services/recipeService';
 import Loading from '../../shared/components/Loading';
 import RecipeDetailsForm from '../../shared/components/RecipeDetailsForm';
@@ -9,10 +9,14 @@ import StepsSectionForm from '../../shared/components/StepsSectionForm';
 import { Button } from '../../shared/components/Buttons';
 import PhotoUpload from '../../shared/components/PhotoUpload';
 import { useAuth } from '../../shared/contexts/AuthContext';
+import { useToast } from '../../shared/services/toastManager';
 
 function EditRecipe() {
   const { id } = useParams();
   const { user } = useAuth();
+  const { displayToast } = useToast();
+    const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -41,14 +45,14 @@ function EditRecipe() {
         setIngredients(recipeData.ingredients);
         setSteps(recipeData.steps);
       } catch (error) {
-        alert('Failed to fetch recipe details.');
+        displayToast('Failed to fetch recipe details.', 'error');
       } finally {
         setLoading(false);
       }
     };
 
     loadRecipe();
-  }, [id, user?.id]);
+  }, [id, user?.id, displayToast]);
 
   const onFormChange = (field, value) => {
     setFormData((prevData) => ({
@@ -82,10 +86,11 @@ function EditRecipe() {
         ingredients,
         steps
       });
-      alert('Recipe updated successfully.');
+      displayToast('Recipe updated successfully!');
+      navigate(`/recipe/${id}`);
     } catch (error) {
       console.error('Error updating recipe:', error.message);
-      alert('Failed to update recipe.');
+      displayToast('Failed to update recipe. Please try again.', 'error');
     } finally {
       setSaveLoading(false);
     }

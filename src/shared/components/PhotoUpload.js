@@ -2,12 +2,15 @@ import React, { useRef, useState } from 'react';
 import { TrashIcon } from "@heroicons/react/20/solid";
 import { Button } from './Buttons';
 import recipeService from '../services/recipeService';
+import { useToast } from '../services/toastManager';
 
 const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
   const [hover, setHover] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const fileInputRef = useRef(null); // Reference to the hidden file input
+  const fileInputRef = useRef(null);
+  const { displayToast } = useToast();
+
 
   const handleFileUpload = async (file) => {
     try {
@@ -18,7 +21,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
       onImgUrlChange(publicUrl);
     } catch (error) {
       console.error('Error uploading file:', error.message);
-      alert('Failed to upload file. Please try again.');
+      displayToast('Failed to upload file. Please try again.', 'error');
     } finally {
       setUploading(false);
     }
@@ -31,15 +34,14 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
     }
 
     try {
-      // Delete the file from Supabase storage
       const { error } = await recipeService.deletePhoto(imgUrl);
       if (error) {
-        console.error('Error deleting file from storage:', error.message);
-        alert('Failed to delete file from storage. Please try again.');
+        displayToast('Failed to delete file. Please try again.', 'error');
         return;
+      } else {
+        onImgUrlChange('');
       }
 
-      onImgUrlChange('');
     } catch (error) {
       console.error('Error removing file:', error.message);
     }
@@ -81,7 +83,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
 
   return (
     <div
-      className={`relative w-full h-64 rounded-t-lg overflow-hidden ${!imgUrl?.length && 'rounded-b-lg'}`}
+      className={`relative w-full max-h-64 rounded-t-lg overflow-hidden ${!imgUrl?.length && 'rounded-b-lg'}`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -110,9 +112,8 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
         </>
       ) : (
         <div
-          className={`border-2 ${
-            dragging ? 'border-blue-500 bg-blue-50' : 'border-dashed border-gray-300'
-          } rounded-t-lg p-6 flex flex-col items-center justify-center ${imgUrl ? 'h-64' : 'rounded-b-lg'}`}
+          className={`border-2 ${dragging ? 'border-blue-500 bg-blue-50' : 'border-dashed border-gray-300'
+            } rounded-t-lg p-6 flex flex-col items-center justify-center ${imgUrl ? 'max-h-64' : 'rounded-b-lg mb-4'}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}

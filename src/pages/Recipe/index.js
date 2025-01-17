@@ -10,10 +10,12 @@ import { BackButton, Button, FavoriteButton, TrashButton } from '../../shared/co
 import DeleteConfirmationModal from '../../shared/components/DeleteConfirmationModal';
 import { useModalManager } from '../../shared/services/modalManager';
 import { useAuth } from '../../shared/contexts/AuthContext';
+import { useToast } from '../../shared/services/toastManager';
 
 function Recipe() {
   const { id } = useParams();
   const { user } = useAuth();
+  const { displayToast } = useToast();
   const { openModal, closeModal } = useModalManager();
   const navigate = useNavigate();
 
@@ -29,24 +31,24 @@ function Recipe() {
         setRecipe(recipeData);
       } catch (error) {
         console.error('Error fetching recipe details:', error.message);
-        alert('Failed to fetch recipe details.');
+        displayToast('Failed to fetch recipe details.', 'error');
       } finally {
         setLoading(false);
       }
     };
 
     loadRecipe();
-  }, [id, user?.id]);
+  }, [id, user?.id, displayToast]);
 
   const deleteRecipe = async () => {
     try {
       await recipeService.deleteRecipe(id);
-      alert('Recipe deleted successfully.');
+      displayToast('Recipe deleted successfully!');
       closeModal();
       navigate('/');
     } catch (error) {
       console.error('Error deleting recipe:', error.message);
-      alert('Failed to delete recipe.');
+      displayToast('Failed to delete recipe. Please try again.', 'error');
     }
   }
 
@@ -57,9 +59,10 @@ function Recipe() {
         ...prevRecipe,
         is_favorited: !prevRecipe.is_favorited,
       }));
+      displayToast('Favorite toggled successfully!');
     } catch (error) {
       console.error('Error toggling favorite:', error.message);
-      alert('Failed to toggle favorite.');
+      displayToast('Failed to toggle favorite. Please try again.', 'error');
     }
   }
 

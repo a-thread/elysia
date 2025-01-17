@@ -44,7 +44,6 @@ const fetchRecipeDetails = async (recipeId, userId) => {
     };
   } catch (error) {
     console.error('Error in fetchRecipeDetails:', error.message);
-    alert('An error occurred while fetching the recipe.');
     return null;
   }
 };

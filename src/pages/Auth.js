@@ -3,14 +3,18 @@ import { supabase } from '../shared/services/supabase';
 import { Button } from '../shared/components/Buttons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../shared/contexts/AuthContext';
+import { useToast } from '../shared/services/toastManager';
 
 function Auth() {
   const [email, setEmail] = useState('');
   const { user } = useAuth();
+  const { displayToast } = useToast();
+  const navigate = useNavigate();
+
+
   const [password, setPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) navigate('/');
@@ -21,7 +25,7 @@ function Auth() {
     setIsSigningIn(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setIsSigningIn(false);
-    if (error) alert(error.message);
+    if (error) displayToast(error.message, "error");;
     navigate('/');
   };
 
@@ -30,7 +34,7 @@ function Auth() {
     setIsSigningUp(true);
     const { error } = await supabase.auth.signUp({ email, password });
     setIsSigningUp(false);
-    if (error) alert(error.message);
+    if (error) displayToast(error.message, "error");
     navigate('/');
   };
 

@@ -16,9 +16,9 @@ const Button = ({
         "flex gap-2 justify-center items-center font-medium rounded-lg px-4 py-2 text-center transition focus:outline-none";
 
     const buttonTypes = {
-        primary: "text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600",
+        primary: "text-white bg-leafGreen-700 hover:bg-leafGreen-800 dark:bg-leafGreen-600",
         secondary:
-            "text-blue-500 border border-blue-500 hover:text-white hover:bg-blue-500",
+            "text-blue-500 border border-blue-500 hover:text-white hover:bg-leafGreen-500",
         delete:
             "text-red-500 border border-red-500 hover:text-white hover:bg-red-500",
         dismissable:

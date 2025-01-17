@@ -60,7 +60,7 @@ function Navbar() {
                     className="flex items-center space-x-3 rtl:space-x-reverse"
                 >
                     <img
-                        src="https://flowbite.com/docs/images/logo.svg"
+                        src="https://bbosgvxsamxhzjgzxiuz.supabase.co/storage/v1/object/public/elysia_recipe_photo/eastern-emerald-elysia-elysia-chlorotica-identification-removebg-preview_1737079181235_2445.png"
                         className="h-8"
                         alt="Flowbite Logo"
                     />
@@ -104,7 +104,7 @@ function Navbar() {
                                     <li>
                                         <Link to="/">
                                             <div
-                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/" ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"}`}
+                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-white dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
                                             >
                                                 Home
                                             </div>
@@ -113,25 +113,16 @@ function Navbar() {
                                     <li>
                                         <Link to="/about">
                                             <div
-                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/about" ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"}`}
+                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/about" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-white dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
                                             >
                                                 About
                                             </div>
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="/profile">
-                                            <div
-                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/profile" ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"}`}
-                                            >
-                                                Profile
-                                            </div>
-                                        </Link>
-                                    </li>
-                                    <li>
                                         <Link to="/favorites">
                                             <div
-                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/favorites" ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"}`}
+                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/favorites" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-white dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
                                             >
                                                 Favorites
                                             </div>

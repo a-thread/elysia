@@ -112,7 +112,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
         </>
       ) : (
         <div
-          className={`border-2 ${dragging ? 'border-blue-500 bg-blue-50' : 'border-dashed border-gray-300'
+          className={`border-2 ${dragging ? 'border-blue-500 bg-leafGreen-50' : 'border-dashed border-gray-300'
             } rounded-t-lg p-6 flex flex-col items-center justify-center ${imgUrl ? 'max-h-64' : 'rounded-b-lg mb-4'}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}

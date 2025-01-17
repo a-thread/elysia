@@ -11,7 +11,7 @@ function Toast({ id, message, type = "info", onClose }) {
 
     const typeClasses = {
         info: "bg-blue-500",
-        success: "bg-green-500",
+        success: "bg-leafGreen-500",
         warning: "bg-yellow-500",
         error: "bg-red-500",
     };

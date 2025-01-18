@@ -62,7 +62,7 @@ function Navbar() {
                     <img
                         src="https://bbosgvxsamxhzjgzxiuz.supabase.co/storage/v1/object/public/elysia_recipe_photo/eastern-emerald-elysia-elysia-chlorotica-identification-removebg-preview_1737079181235_2445.png"
                         className="h-8"
-                        alt="Flowbite Logo"
+                        alt="Elysia Logo"
                     />
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                         Elysia

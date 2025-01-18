@@ -4,7 +4,8 @@ const DarkModeContext = createContext();
 
 export const DarkModeProvider = ({ children }) => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
-        return window.matchMedia("(prefers-color-scheme: dark)").matches;
+        return true
+        // return window.matchMedia("(prefers-color-scheme: dark)").matches;
     });
 
     const toggleDarkMode = () => {

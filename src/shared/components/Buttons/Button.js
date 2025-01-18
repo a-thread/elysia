@@ -18,7 +18,7 @@ const Button = ({
     const buttonTypes = {
         primary: "text-white bg-leafGreen-700 hover:bg-leafGreen-800 dark:bg-leafGreen-600",
         secondary:
-            "text-leafGreen-600 border border-leafGreen-600 hover:text-white hover:bg-leafGreen-600",
+            "text-leafGreen-600 dark:text-leafGreen-100 border border-leafGreen-600 dark:border-leafGreen-100 hover:bg-leafGreen-100 dark:hover:text-leafGreen-600",
         delete:
             "text-red-500 border border-red-500 hover:text-white hover:bg-red-500",
         dismissable:

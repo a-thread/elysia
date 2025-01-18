@@ -3,13 +3,16 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import AddRecipe from './pages/AddRecipe';
 import Recipe from './pages/Recipe';
-import Auth from './pages/Auth';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/NavBar';
 import Favorites from './pages/Favorites';
 import EditRecipe from './pages/EditRecipe';
 import { ModalManager } from './shared/services/modalManager';
 import About from './pages/About';
+import ResetPassword from './pages/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword';
+import SignIn from './pages/SignIn';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -19,7 +22,10 @@ function App() {
           <Navbar />
           <div className="container mx-auto px-4">
             <Routes>
-              <Route path="/auth" element={<Auth />} />
+              <Route path="/sign-in" element={<SignIn />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route
                 path="/"
                 element={

@@ -6,9 +6,9 @@ function ProtectedRoute({ children }) {
   const { user } = useAuth();
 
   if (user) {
-    return window.location.pathname === '/auth' ? <Navigate to="/" /> : children;
+    return window.location.pathname === '/sign-in' ? <Navigate to="/" /> : children;
   } else {
-    return <Navigate to="/auth" />;
+    return <Navigate to="/sign-in" />;
   }
 }
 

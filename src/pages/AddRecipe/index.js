@@ -75,7 +75,7 @@ function AddRecipe() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto mt-4">
       <div className="w-full flex justify-end items-center mb-4 gap-4">
         <Link to={`/`}>
           <Button btnType="dismissable">Cancel</Button>

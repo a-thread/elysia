@@ -97,7 +97,7 @@ function EditRecipe() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto mt-4">
       <div className="w-full flex justify-end items-center mb-4 gap-4">
         <Link to={`/recipe/${id}`}>
           <Button btnType="dismissable">Cancel</Button>

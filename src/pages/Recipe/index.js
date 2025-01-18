@@ -71,7 +71,7 @@ function Recipe() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto mt-4">
       <div className="w-full flex justify-between items-center mb-4">
         <BackButton />
         <div className="flex justify-end gap-2">

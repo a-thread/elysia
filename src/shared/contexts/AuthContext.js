@@ -1,36 +1,34 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../services/supabase';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../services/supabase";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const checkUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setUser(session?.user || null);
-        };
+  useEffect(() => {
+    const checkUser = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+    };
 
-        checkUser();
+    checkUser();
 
-        // Listen to auth changes
-        const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user || null);
-        });
+    // Listen to auth changes
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
 
-        return () => data.subscription?.unsubscribe();
-    }, []);
+    return () => data.subscription?.unsubscribe();
+  }, []);
 
-    useEffect(() => {
+  useEffect(() => {}, [user]);
 
-    }, [user]);
-
-    return (
-        <AuthContext.Provider value={{ user }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);

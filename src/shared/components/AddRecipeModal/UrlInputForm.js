@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button } from "../../../shared/components/Buttons";
-import { scrapeRecipeForDB } from '../service/scrapeRecipeForDB';
+import { Button } from "../Buttons";
+import { scrapeRecipeForDB } from './scrapeRecipeForDB';
 import { useNavigate } from 'react-router-dom';
 
 const UrlInputForm = ({ onCancel }) => {

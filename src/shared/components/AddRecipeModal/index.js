@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../../../shared/components/Buttons';
+import { Button } from '../Buttons';
 import UrlInputForm from './UrlInputForm';
 
-function RecipeInputModal({ closeModal }) {
+function AddRecipeModal({ closeModal }) {
     const [isImporting, setIsImporting] = useState('');
 
     const navigate = useNavigate();
@@ -46,4 +46,4 @@ function RecipeInputModal({ closeModal }) {
     );
 }
 
-export default RecipeInputModal;
+export default AddRecipeModal;

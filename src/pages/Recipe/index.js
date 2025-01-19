@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import RecipeDetails from './components/RecipeDetails';
-import IngredientsSection from './components/IngredientsSection';
-import StepsSection from './components/StepsSection';
-import recipeService from '../../shared/services/recipeService';
-import Loading from '../../shared/components/Loading';
-import EmptyState from '../../shared/components/EmptyState';
-import { BackButton, Button, FavoriteButton, TrashButton } from '../../shared/components/Buttons';
-import DeleteConfirmationModal from '../../shared/components/DeleteConfirmationModal';
-import { useModalManager } from '../../shared/services/modalManager';
-import { useAuth } from '../../shared/contexts/AuthContext';
-import { useToast } from '../../shared/services/toastManager';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import RecipeDetails from "./components/RecipeDetails";
+import IngredientsSection from "./components/IngredientsSection";
+import StepsSection from "./components/StepsSection";
+import recipeService from "../../shared/services/recipeService";
+import Loading from "../../shared/components/Loading";
+import EmptyState from "../../shared/components/EmptyState";
+import {
+  Button,
+  FavoriteButton,
+  TrashButton,
+} from "../../shared/components/Buttons";
+import DeleteConfirmationModal from "../../shared/components/DeleteConfirmationModal";
+import { useModalManager } from "../../shared/services/modalManager";
+import { useAuth } from "../../shared/contexts/AuthContext";
+import { useToast } from "../../shared/services/toastManager";
+import { ChevronLeftIcon } from "@heroicons/react/20/solid";
+import RecipeTimeSection from "./components/RecipeTimeSection";
 
 function Recipe() {
   const { id } = useParams();
@@ -30,8 +36,8 @@ function Recipe() {
         const recipeData = await recipeService.fetchRecipeDetails(id, user?.id);
         setRecipe(recipeData);
       } catch (error) {
-        console.error('Error fetching recipe details:', error.message);
-        displayToast('Failed to fetch recipe details.', 'error');
+        console.error("Error fetching recipe details:", error.message);
+        displayToast("Failed to fetch recipe details.", "error");
       } finally {
         setLoading(false);
       }
@@ -43,14 +49,14 @@ function Recipe() {
   const deleteRecipe = async () => {
     try {
       await recipeService.deleteRecipe(id);
-      displayToast('Recipe deleted successfully!');
+      displayToast("Recipe deleted successfully!");
       closeModal();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Error deleting recipe:', error.message);
-      displayToast('Failed to delete recipe. Please try again.', 'error');
+      console.error("Error deleting recipe:", error.message);
+      displayToast("Failed to delete recipe. Please try again.", "error");
     }
-  }
+  };
 
   const toggleFavorite = async () => {
     try {
@@ -59,21 +65,38 @@ function Recipe() {
         ...prevRecipe,
         is_favorited: !prevRecipe.is_favorited,
       }));
-      displayToast('Favorite toggled successfully!');
+      displayToast("Favorite toggled successfully!");
     } catch (error) {
-      console.error('Error toggling favorite:', error.message);
-      displayToast('Failed to toggle favorite. Please try again.', 'error');
+      console.error("Error toggling favorite:", error.message);
+      displayToast("Failed to toggle favorite. Please try again.", "error");
     }
+  };
+
+  const handleDeleteClick = () =>
+    openModal(
+      <DeleteConfirmationModal
+        onCancelDelete={closeModal}
+        onDelete={deleteRecipe}
+      />
+    );
+
+  if (loading) {
+    return <Loading className="mt-40"></Loading>;
   }
 
-  const handleDeleteClick = () => openModal(
-    <DeleteConfirmationModal onCancelDelete={closeModal} onDelete={deleteRecipe} />
-  );
+  if (!recipe) {
+    return <EmptyState message="Recipe not found." />;
+  }
 
   return (
     <div className="max-w-4xl mx-auto mt-4">
       <div className="w-full flex justify-between items-center mb-4">
-        <BackButton />
+        <Link to="/">
+          <div className="flex justify-center items-center font-medium text-center text-leafGreen-600 dark:text-leafGreen-100">
+            <ChevronLeftIcon aria-hidden="true" className="size-6" />
+            <p>Recipes</p>
+          </div>
+        </Link>
         <div className="flex justify-end gap-2">
           <FavoriteButton
             onToggle={toggleFavorite}
@@ -81,37 +104,46 @@ function Recipe() {
           />
           <TrashButton onDelete={handleDeleteClick} />
           <Link to={`/recipe/${id}/edit`}>
-            <Button>
-              Edit
-            </Button>
+            <Button>Edit</Button>
           </Link>
         </div>
       </div>
-      {recipe?.img_url?.length && (
-        <div className="relative">
-          <img
-            src={recipe.img_url}
-            alt={recipe.title}
-            className="w-full h-64 object-cover rounded-t-lg"
-          />
-        </div>
-      )}
-      <div className={`p-6 bg-white dark:bg-gray-900 rounded-b-lg shadow-md ${!recipe?.img_url && 'rounded-t-lg'}`}>
-        {loading ? (
-          <Loading />
-        ) : !recipe ? (
-          <EmptyState message="Recipe not found." />
-        ) : (
-          <>
+
+      <div className="flex flex-col-reverse md:flex-row gap-6">
+        <div className="w-full md:w-3/4">
+          {!!recipe?.img_url?.length && (
+            <div className="relative">
+              <img
+                src={recipe.img_url}
+                alt={recipe.title}
+                className="w-full h-64 object-cover rounded-t-lg"
+              />
+            </div>
+          )}
+          <div
+            className={`bg-white dark:bg-gray-900 rounded-b-lg p-6 ${
+              !recipe?.img_url && "rounded-t-lg"
+            }`}
+          >
             <RecipeDetails recipe={recipe} />
-            <IngredientsSection
-              ingredients={recipe.ingredients}
-            />
-            <StepsSection
-              steps={recipe.steps}
-            />
-          </>
-        )}
+            <IngredientsSection ingredients={recipe.ingredients} />
+            <StepsSection steps={recipe.steps} />
+
+            {recipe.original_recipe_url && (
+              <div className="mx-2">
+                <small>
+                  source: 
+                  <a className="pl-1 italic"  href={recipe.original_recipe_url}>
+                    {recipe.original_recipe_url}
+                  </a>
+                </small>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="w-full md:w-1/4">
+            <RecipeTimeSection recipe={recipe}></RecipeTimeSection>
+        </div>
       </div>
     </div>
   );

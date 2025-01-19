@@ -19,6 +19,7 @@ function AddRecipeModal({ closeModal }) {
             role="dialog"
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
+            className='p-4'
         >
             <h2
                 id="modal-title"

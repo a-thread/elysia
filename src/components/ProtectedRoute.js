@@ -6,7 +6,7 @@ function ProtectedRoute({ children }) {
   const { user } = useAuth();
 
   if (user) {
-    return window.location.pathname === '/sign-in' ? <Navigate to="/" /> : children;
+    return window.location.pathname === '/elysia/sign-in' ? <Navigate to="/" /> : children;
   } else {
     return <Navigate to="/sign-in" />;
   }

@@ -57,10 +57,10 @@ function Navbar() {
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <Link
                     to="/"
-                    className="flex items-center space-x-3 rtl:space-x-reverse"
+                    className="flex items-center space-x-2 rtl:space-x-reverse"
                 >
                     <img
-                        src="https://bbosgvxsamxhzjgzxiuz.supabase.co/storage/v1/object/public/elysia_recipe_photo/eastern-emerald-elysia-elysia-chlorotica-identification-removebg-preview_1737079181235_2445.png"
+                        src="https://bbosgvxsamxhzjgzxiuz.supabase.co/storage/v1/object/public/elysia_recipe_photo/echlorotica_nature-removebg-preview_1737171542691_7626.png"
                         className="h-8"
                         alt="Elysia Logo"
                     />

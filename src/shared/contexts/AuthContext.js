@@ -24,8 +24,6 @@ export const AuthProvider = ({ children }) => {
     return () => data.subscription?.unsubscribe();
   }, []);
 
-  useEffect(() => {}, [user]);
-
   return (
     <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
   );

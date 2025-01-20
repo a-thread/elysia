@@ -7,7 +7,7 @@ import {
 } from '@dnd-kit/sortable';
 import { v4 as uuidv4 } from "uuid";
 import SortableItem from './SortableItem';
-import { Button } from '../../../shared/components/Buttons';
+import { Button } from '../../../../shared/components/Buttons';
 
 function EditableSectionForm({ originalFormState, setOriginalFormState, sectionName }) {
   const [formState, setFormState] = useState(originalFormState);

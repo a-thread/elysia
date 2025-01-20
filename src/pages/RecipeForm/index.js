@@ -6,9 +6,9 @@ import recipeService from "../../shared/services/recipeService";
 import { Button } from "../../shared/components/Buttons";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import { useToast } from "../../shared/services/toastManager";
-import PhotoUpload from "./PhotoUpload";
-import EditableSectionForm from "./EditableSectionForm";
-import recipeFormUtils from "./recipeFormUtils";
+import PhotoUpload from "./components/PhotoUpload";
+import EditableSectionForm from "./components/EditableSectionForm";
+import recipeFormUtils from "./utils/recipeFormUtils";
 
 function RecipeForm() {
   const { user } = useAuth();

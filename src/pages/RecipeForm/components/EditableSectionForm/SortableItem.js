@@ -3,7 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { TrashIcon as TrashSolid } from "@heroicons/react/20/solid";
 import { HandRaisedIcon, TrashIcon as TrashOutline } from "@heroicons/react/24/outline";
 import AutoResizeTextarea from "./AutoResizeTextbox";
-import { IconButton } from "../../../shared/components/Buttons";
+import { IconButton } from "../../../../shared/components/Buttons";
 import { useState } from "react";
 
 function SortableItem({ id, formValue, onEditFormValue, onDeleteClick }) {

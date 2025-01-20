@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "../../../shared/services/toastManager";
-import { useModalManager } from "../../../shared/services/modalManager";
-import recipeService from "../../../shared/services/recipeService";
-import DeleteConfirmationModal from "../../../shared/components/DeleteConfirmationModal";
-import { IconButton } from "../../../shared/components/Buttons";
+import { useToast } from "../../../../shared/services/toastManager";
+import { useModalManager } from "../../../../shared/services/modalManager";
+import recipeService from "../../../../shared/services/recipeService";
+import DeleteConfirmationModal from "../../../../shared/components/DeleteConfirmationModal";
+import { IconButton } from "../../../../shared/components/Buttons";
+import ShareRecipeButton from "./ShareRecipeButton";
 
 const EllipsisMenu = ({ recipe }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -85,9 +86,7 @@ const EllipsisMenu = ({ recipe }) => {
               </button>
             </li>
             <li>
-              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                Share
-              </button>
+              <ShareRecipeButton recipeId={recipe.id} />
             </li>
           </ul>
         </div>

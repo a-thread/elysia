@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import RecipeDetails from "./components/RecipeDetails";
 import IngredientsSection from "./components/IngredientsSection";
 import StepsSection from "./components/StepsSection";
@@ -7,23 +7,18 @@ import recipeService from "../../shared/services/recipeService";
 import Loading from "../../shared/components/Loading";
 import EmptyState from "../../shared/components/EmptyState";
 import {
-  Button,
   FavoriteButton,
-  TrashButton,
 } from "../../shared/components/Buttons";
-import DeleteConfirmationModal from "../../shared/components/DeleteConfirmationModal";
-import { useModalManager } from "../../shared/services/modalManager";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import { useToast } from "../../shared/services/toastManager";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import RecipeTimeSection from "./components/RecipeTimeSection";
+import EllipsisMenu from "./components/EllipsisMenu";
 
 function Recipe() {
   const { id } = useParams();
   const { user } = useAuth();
   const { displayToast } = useToast();
-  const { openModal, closeModal } = useModalManager();
-  const navigate = useNavigate();
 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -46,18 +41,6 @@ function Recipe() {
     loadRecipe();
   }, [id, user?.id, displayToast]);
 
-  const deleteRecipe = async () => {
-    try {
-      await recipeService.deleteRecipe(id);
-      displayToast("Recipe deleted successfully!");
-      closeModal();
-      navigate("/");
-    } catch (error) {
-      console.error("Error deleting recipe:", error.message);
-      displayToast("Failed to delete recipe. Please try again.", "error");
-    }
-  };
-
   const toggleFavorite = async () => {
     try {
       await recipeService.toggleFavorite(id, recipe.is_favorited, user?.id);
@@ -71,14 +54,6 @@ function Recipe() {
       displayToast("Failed to toggle favorite. Please try again.", "error");
     }
   };
-
-  const handleDeleteClick = () =>
-    openModal(
-      <DeleteConfirmationModal
-        onCancelDelete={closeModal}
-        onDelete={deleteRecipe}
-      />
-    );
 
   if (loading) {
     return <Loading className="mt-40"></Loading>;
@@ -102,10 +77,7 @@ function Recipe() {
             onToggle={toggleFavorite}
             isFavorited={recipe?.is_favorited}
           />
-          <TrashButton onDelete={handleDeleteClick} />
-          <Link to={`/recipe/${id}/edit`}>
-            <Button>Edit</Button>
-          </Link>
+          <EllipsisMenu recipe={recipe} />
         </div>
       </div>
 

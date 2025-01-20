@@ -5,12 +5,15 @@ const IngredientList = ({ ingredients, checkedItems, onCheck }) => {
   return (
     <div className="flex flex-col space-y-4">
       {ingredients.map((ingredient, index) => (
-        <label key={index} className="flex items-start gap-3 cursor-pointer">
+        <label
+          key={index}
+          className="flex items-start gap-3 cursor-pointer"
+          onClick={() => onCheck(index)}
+        >
           <div
             className={`custom-checkbox ${
               checkedItems[index] ? "checked" : ""
             }`}
-            onClick={() => onCheck(index)}
           >
             {checkedItems[index] && (
               <CheckIcon className="w-5 h-5 text-white" />

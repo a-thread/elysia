@@ -10,7 +10,7 @@ function StepsSection({ steps }) {
       {steps?.length > 0 && (
         <ol className="list-decimal pl-6 mb-6 text-leafGreen-800 dark:text-gray-300">
           {steps.map((step, index) => (
-            <ListItem value={step.value} index={index} />
+            <ListItem key={index} value={step.value} index={index} />
           ))}
         </ol>
       )}

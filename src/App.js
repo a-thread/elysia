@@ -1,18 +1,17 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import AddRecipe from "./pages/AddRecipe";
 import Recipe from "./pages/Recipe";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/NavBar";
 import Favorites from "./pages/Favorites";
-import EditRecipe from "./pages/EditRecipe";
 import { ModalManager } from "./shared/services/modalManager";
 import About from "./pages/About";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import SignIn from "./pages/SignIn";
 import Register from "./pages/Register";
+import RecipeForm from "./pages/RecipeForm";
 
 function App() {
   return (
@@ -61,7 +60,7 @@ function App() {
                 path="/add-new"
                 element={
                   <ProtectedRoute>
-                    <AddRecipe />
+                    <RecipeForm />
                   </ProtectedRoute>
                 }
               />
@@ -77,7 +76,7 @@ function App() {
                 path="/recipe/:id/edit"
                 element={
                   <ProtectedRoute>
-                    <EditRecipe />
+                    <RecipeForm />
                   </ProtectedRoute>
                 }
               />

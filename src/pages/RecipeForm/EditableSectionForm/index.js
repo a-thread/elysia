@@ -6,8 +6,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { v4 as uuidv4 } from "uuid";
-import { Button } from '../Buttons';
-import SortableItem from './components/SortableItem';
+import SortableItem from './SortableItem';
+import { Button } from '../../../shared/components/Buttons';
 
 function EditableSectionForm({ originalFormState, setOriginalFormState, sectionName }) {
   const [formState, setFormState] = useState(originalFormState);

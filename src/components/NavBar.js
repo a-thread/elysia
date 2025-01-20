@@ -64,7 +64,7 @@ function Navbar() {
                         className="h-8"
                         alt="Elysia Logo"
                     />
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-leafGreen-100">
                         Elysia
                     </span>
                 </Link>
@@ -104,7 +104,7 @@ function Navbar() {
                                     <li>
                                         <Link to="/">
                                             <div
-                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-white dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
+                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
                                             >
                                                 Home
                                             </div>
@@ -113,7 +113,7 @@ function Navbar() {
                                     <li>
                                         <Link to="/about">
                                             <div
-                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/about" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-white dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
+                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/about" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
                                             >
                                                 About
                                             </div>
@@ -122,7 +122,7 @@ function Navbar() {
                                     <li>
                                         <Link to="/favorites">
                                             <div
-                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/favorites" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-white dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
+                                                className={`block py-2 px-3 md:p-0 rounded ${location.pathname === "/favorites" ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500" : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"}`}
                                             >
                                                 Favorites
                                             </div>

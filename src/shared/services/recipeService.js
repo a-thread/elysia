@@ -7,7 +7,7 @@ const fetchRecipeDetails = async (recipeId, userId) => {
       .select(
         `
           *,
-          ingredients(id, value),
+          ingredients(id, sort_number, value),
           steps(id, sort_number, value),
           favorites!left(id)
         `
@@ -20,6 +20,7 @@ const fetchRecipeDetails = async (recipeId, userId) => {
 
     return {
       ...data,
+      total_time: data.prep_time + data.cook_time || 0,
       ingredients: data.ingredients
         .sort((a, b) => a.sort_number - b.sort_number)
         .map((ingredient) => ({
@@ -52,6 +53,7 @@ const upsertRecipe = async (recipeId, updatedRecipe, userId = null) => {
           {
             title: updatedRecipe.title,
             description: updatedRecipe.description,
+            servings: updatedRecipe.servings,
             prep_time: updatedRecipe.prep_time,
             cook_time: updatedRecipe.cook_time,
             img_url: updatedRecipe.img_url,

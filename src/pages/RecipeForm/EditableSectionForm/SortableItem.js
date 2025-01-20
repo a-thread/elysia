@@ -1,10 +1,13 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { HandRaisedIcon } from "@heroicons/react/24/outline";
-import { TrashButton, IconButton } from "../../Buttons";
+import { TrashIcon as TrashSolid } from "@heroicons/react/20/solid";
+import { HandRaisedIcon, TrashIcon as TrashOutline } from "@heroicons/react/24/outline";
 import AutoResizeTextarea from "./AutoResizeTextbox";
+import { IconButton } from "../../../shared/components/Buttons";
+import { useState } from "react";
 
 function SortableItem({ id, formValue, onEditFormValue, onDeleteClick }) {
+  const [hovered, setHovered] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
   const style = {
@@ -39,7 +42,19 @@ function SortableItem({ id, formValue, onEditFormValue, onDeleteClick }) {
       />
 
       {/* Delete Button */}
-      <TrashButton onDelete={() => onDeleteClick(formValue.id)} />
+      <IconButton
+        onClick={() => onDeleteClick(formValue.id)}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        title="Delete"
+        icon={
+          hovered ? (
+            <TrashSolid className="w-6 h-6 text-red-500" />
+          ) : (
+            <TrashOutline className="w-6 h-6 text-gray-500" />
+          )
+        }
+      />
     </li>
   );
 }

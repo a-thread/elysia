@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { TrashIcon } from "@heroicons/react/20/solid";
-import { Button } from './Buttons';
-import recipeService from '../services/recipeService';
-import { useToast } from '../services/toastManager';
+import { Button } from '../../shared/components/Buttons';
+import recipeService from '../../shared/services/recipeService';
+import { useToast } from '../../shared/services/toastManager';
 
 const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
   const [hover, setHover] = useState(false);

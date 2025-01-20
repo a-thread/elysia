@@ -30,7 +30,7 @@ function RecipeTimeSection({ recipe }) {
       <div className="mb-3">
         <TimeLabelValue
           label="total time"
-          value={formatMinutes(recipe.totalTime)}
+          value={formatMinutes(recipe.total_time)}
         />
       </div>
       <Button btnType="secondary" onClick={onCookClick}>

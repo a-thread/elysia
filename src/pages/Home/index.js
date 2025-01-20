@@ -37,7 +37,7 @@ function Home() {
     <div
       className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300"
     >
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-leafGreen-100 mb-6">
         Explore Recipes
       </h1>
 

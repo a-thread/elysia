@@ -9,8 +9,7 @@ function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  const { displayToast } = useToast();
+  const toast = useToast();
   const navigate = useNavigate();
 
   const handlePasswordUpdate = async (e) => {
@@ -32,11 +31,10 @@ function ResetPassword() {
     setIsResetting(false);
 
     if (error) {
-      displayToast(error.message, "error");
+      toast.error(error.message);
     } else {
-      displayToast(
+      toast.success(
         "Password updated successfully! You can now sign in.",
-        "success"
       );
       navigate("/sign-in");
     }

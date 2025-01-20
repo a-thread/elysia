@@ -6,9 +6,7 @@ import StepsSection from "./components/StepsSection";
 import recipeService from "../../shared/services/recipeService";
 import Loading from "../../shared/components/Loading";
 import EmptyState from "../../shared/components/EmptyState";
-import {
-  FavoriteButton,
-} from "../../shared/components/Buttons";
+import { FavoriteButton } from "../../shared/components/Buttons";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import { useToast } from "../../shared/services/toastManager";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
@@ -18,7 +16,7 @@ import EllipsisMenu from "./components/EllipsisMenu";
 function Recipe() {
   const { id } = useParams();
   const { user } = useAuth();
-  const { displayToast } = useToast();
+  const toast = useToast();
 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,16 +28,13 @@ function Recipe() {
       try {
         const recipeData = await recipeService.fetchRecipeDetails(id, user?.id);
         setRecipe(recipeData);
-      } catch (error) {
-        console.error("Error fetching recipe details:", error.message);
-        displayToast("Failed to fetch recipe details.", "error");
       } finally {
         setLoading(false);
       }
     };
 
     loadRecipe();
-  }, [id, user?.id, displayToast]);
+  }, [id, user?.id]);
 
   const toggleFavorite = async () => {
     try {
@@ -48,10 +43,10 @@ function Recipe() {
         ...prevRecipe,
         is_favorited: !prevRecipe.is_favorited,
       }));
-      displayToast("Favorite toggled successfully!");
+      toast.succcess("Favorite toggled successfully!");
     } catch (error) {
       console.error("Error toggling favorite:", error.message);
-      displayToast("Failed to toggle favorite. Please try again.", "error");
+      toast.error("Failed to toggle favorite. Please try again.");
     }
   };
 
@@ -73,11 +68,15 @@ function Recipe() {
           </div>
         </Link>
         <div className="flex justify-end gap-2">
-          <FavoriteButton
-            onToggle={toggleFavorite}
-            isFavorited={recipe?.is_favorited}
-          />
-          <EllipsisMenu recipe={recipe} />
+          {(!!user?.id) && (
+            <>
+              <FavoriteButton
+                onToggle={toggleFavorite}
+                isFavorited={recipe?.is_favorited}
+              />
+              <EllipsisMenu recipe={recipe} />
+            </>
+          )}
         </div>
       </div>
 
@@ -104,8 +103,8 @@ function Recipe() {
             {recipe.original_recipe_url && (
               <div className="mx-2">
                 <small>
-                  source: 
-                  <a className="pl-1 italic"  href={recipe.original_recipe_url}>
+                  source:
+                  <a className="pl-1 italic" href={recipe.original_recipe_url}>
                     {recipe.original_recipe_url}
                   </a>
                 </small>
@@ -114,7 +113,7 @@ function Recipe() {
           </div>
         </div>
         <div className="w-full md:w-1/4">
-            <RecipeTimeSection recipe={recipe}></RecipeTimeSection>
+          <RecipeTimeSection recipe={recipe}></RecipeTimeSection>
         </div>
       </div>
     </div>

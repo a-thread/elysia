@@ -6,9 +6,9 @@ import { useModalManager } from "../../../../shared/services/modalManager";
 import recipeService from "../../../../shared/services/recipeService";
 import DeleteConfirmationModal from "../../../../shared/components/DeleteConfirmationModal";
 import { IconButton } from "../../../../shared/components/Buttons";
-import ShareModal from "../ShareModal";
+import ShareRecipeButton from "./ShareRecipeButton";
 
-const EllipsisMenu = ({ recipe }) => {
+const ProfileButton = ({ recipe }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -28,9 +28,6 @@ const EllipsisMenu = ({ recipe }) => {
       />
     );
 
-  const handleShareClick = () =>
-    openModal(<ShareModal recipeId={recipe.id} onClose={closeModal} />);
-
   const deleteRecipe = async () => {
     try {
       await recipeService.deleteRecipe(recipe.id);
@@ -38,6 +35,7 @@ const EllipsisMenu = ({ recipe }) => {
       closeModal();
       navigate("/");
     } catch (error) {
+      console.error("Error deleting recipe:", error.message);
       toast.error("Failed to delete recipe. Please try again.");
     }
   };
@@ -88,12 +86,7 @@ const EllipsisMenu = ({ recipe }) => {
               </button>
             </li>
             <li>
-              <button
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={handleShareClick}
-              >
-                Share
-              </button>
+              <ShareRecipeButton recipe={recipe} />
             </li>
           </ul>
         </div>
@@ -102,4 +95,4 @@ const EllipsisMenu = ({ recipe }) => {
   );
 };
 
-export default EllipsisMenu;
+export default ProfileButton;

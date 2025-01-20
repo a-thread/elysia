@@ -9,7 +9,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef(null);
-  const { displayToast } = useToast();
+  const toast = useToast();
 
 
   const handleFileUpload = async (file) => {
@@ -21,7 +21,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
       onImgUrlChange(publicUrl);
     } catch (error) {
       console.error('Error uploading file:', error.message);
-      displayToast('Failed to upload file. Please try again.', 'error');
+      toast.error('Failed to upload file. Please try again.');
     } finally {
       setUploading(false);
     }
@@ -36,7 +36,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
     try {
       const { error } = await recipeService.deletePhoto(imgUrl);
       if (error) {
-        displayToast('Failed to delete file. Please try again.', 'error');
+        toast.error('Failed to delete file. Please try again.');
         return;
       } else {
         onImgUrlChange('');

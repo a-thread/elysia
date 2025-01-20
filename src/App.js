@@ -32,22 +32,8 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <Home />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/about"
-                element={
-                  <ProtectedRoute>
-                    <About />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
               <Route
                 path="/favorites"
                 element={
@@ -64,14 +50,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/recipe/:id"
-                element={
-                  <ProtectedRoute>
-                    <Recipe />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/recipe/:id" element={<Recipe />} />
               <Route
                 path="/recipe/:id/edit"
                 element={

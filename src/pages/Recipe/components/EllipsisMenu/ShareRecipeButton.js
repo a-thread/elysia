@@ -3,36 +3,42 @@ import { useToast } from "../../../../shared/services/toastManager";
 import Loading from "../../../../shared/components/Loading";
 import { supabase } from "../../../../shared/services/supabase";
 
-const ShareRecipeButton = ({ recipeId }) => {
+const ShareRecipeButton = ({ recipe }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { displayToast } = useToast();
+  const toast = useToast();
 
   const handleShareRecipe = async () => {
     setIsLoading(true);
+    if (recipe.is_public) {
+      await copyLink();
+      toast.success("Link copied to clipboard!");
+    } else {
+      try {
+        // Step 1: Update the recipe to make it public
+        const { error } = await supabase
+          .from("recipes")
+          .update({ is_public: true })
+          .eq("id", recipe.id);
 
-    try {
-      // Step 1: Update the recipe to make it public
-      const { error } = await supabase
-        .from("recipes")
-        .update({ is_public: true })
-        .eq("id", recipeId);
+        if (error) throw new Error("Failed to make recipe public");
 
-      if (error) throw new Error("Failed to make recipe public");
-
-      // Step 2: Generate the public URL
-      const publicUrl = `${window.location.origin}/recipes/${recipeId}`;
-
-      // Step 3: Copy the URL to the clipboard
-      await navigator.clipboard.writeText(publicUrl);
-
-      // Step 4: Show a success toast notification
-      displayToast("Recipe is now public! Link copied to clipboard.");
-    } catch (error) {
-      console.error(error);
-      displayToast("Failed to share recipe. Please try again.", "error");
-    } finally {
-      setIsLoading(false);
+        await copyLink();
+        toast.success("Recipe is now public! Link copied to clipboard.");
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to share recipe. Please try again.");
+      } finally {
+      }
     }
+    setIsLoading(false);
+  };
+
+  const copyLink = async () => {
+    // Step 2: Generate the public URL
+    const publicUrl = `${window.location.origin}/elysia/recipe/${recipe.id}`;
+
+    // Step 3: Copy the URL to the clipboard
+    await navigator.clipboard.writeText(publicUrl);
   };
 
   return (

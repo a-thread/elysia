@@ -7,12 +7,12 @@ import { Link } from "react-router-dom";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
-  const { displayToast } = useToast();
+  const toast = useToast();
 
   const handlePasswordReset = async (e) => {
-    e.preventDefault(); // ✅ Prevent form submission reload
+    e.preventDefault();
     if (!email) {
-      displayToast("Please enter your email.", "error");
+      toast.error("Please enter your email.");
       return;
     }
 
@@ -23,9 +23,9 @@ function ForgotPassword() {
     setIsResetting(false);
 
     if (error) {
-      displayToast(error.message, "error");
+      toast.error(error.message);
     } else {
-      displayToast("Password reset link sent to your email!", "success");
+      toast.success("Password reset link sent to your email!");
     }
   };
 

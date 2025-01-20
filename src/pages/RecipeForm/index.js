@@ -12,7 +12,7 @@ import recipeFormUtils from "./utils/recipeFormUtils";
 
 function RecipeForm() {
   const { user } = useAuth();
-  const { displayToast } = useToast();
+  const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
@@ -69,13 +69,13 @@ function RecipeForm() {
           formData
         );
         if (!updatedFields) {
-          displayToast("No changes detected.");
+          toast.success("No changes detected.");
           setLoading(false);
           return;
         }
 
         await recipeService.updateRecipe(id, updatedFields);
-        displayToast("Recipe updated successfully!");
+        toast.success("Recipe updated successfully!");
         navigate(`/recipe/${id}`);
       } else {
         const newRecipe = await recipeService.updateRecipe(
@@ -87,7 +87,7 @@ function RecipeForm() {
           },
           user.id
         );
-        displayToast("Recipe added successfully!");
+        toast.success("Recipe added successfully!");
         navigate(`/recipe/${newRecipe.recipeId}`);
       }
     } catch (error) {
@@ -95,7 +95,7 @@ function RecipeForm() {
         `Error ${isEditing ? "updating" : "adding"} recipe:`,
         error.message
       );
-      displayToast(
+      toast.error(
         `Failed to ${isEditing ? "update" : "add"} recipe. Please try again.`,
         "error"
       );

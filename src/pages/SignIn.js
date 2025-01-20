@@ -8,7 +8,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const { displayToast } = useToast();
+  const toast = useToast();
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
@@ -19,7 +19,7 @@ function SignIn() {
       password,
     });
     if (error) {
-      displayToast(error.message, "error");
+      toast.error(error.message);
     } else {
       navigate("/");
     }

@@ -2,19 +2,29 @@ import { supabase } from "./supabase";
 
 const fetchRecipeDetails = async (recipeId, userId) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("recipes")
       .select(
         `
           *,
           ingredients(id, sort_number, value),
           steps(id, sort_number, value),
-          favorites!left(id)
+          favorites!left(id),
+          recipe_shares(permission)
         `
       )
-      .eq("id", recipeId)
-      .eq("favorites.user_id", userId)
-      .single();
+      .eq("id", recipeId);
+
+      if (userId) {
+        query = query.or(
+          `is_public.eq.true,user_id.eq.${userId}`
+        );
+        query = query.eq("favorites.user_id", userId);
+      } else {
+        query = query.eq("is_public", true);
+      }
+
+    const { data, error } = await query.maybeSingle(); // Use `maybeSingle()` to avoid errors if no data is returned
 
     if (error) throw new Error("Failed to fetch recipe details.");
 
@@ -33,7 +43,10 @@ const fetchRecipeDetails = async (recipeId, userId) => {
           ...step,
           isActive: true,
         })),
-      is_favorited: data.favorites.length > 0,
+      is_favorited: data?.favorites?.length > 0,
+      can_edit:
+        data.user_id === userId ||
+        (data.recipe_shares && data.recipe_shares.permission === "edit"),
     };
   } catch (error) {
     console.error("Error fetching recipe details:", error.message);

@@ -8,7 +8,7 @@ function ProtectedRoute({ children }) {
   if (user) {
     return window.location.pathname === '/elysia/sign-in' ? <Navigate to="/" /> : children;
   } else {
-    return <Navigate to="/sign-in" />;
+    return window.location.pathname === '/elysia/sign-in' ? children : <Navigate to="/sign-in" />;
   }
 }
 

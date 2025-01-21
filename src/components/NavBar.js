@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { SunIcon, MoonIcon, Bars4Icon } from "@heroicons/react/24/outline";
-import { useDarkMode } from "../../shared/contexts/DarkModeContext";
-import { useAuth } from "../../shared/contexts/AuthContext";
-import { Button, IconButton } from "../../shared/components/Buttons";
-import { useModalManager } from "../../shared/services/modalManager";
-import AddRecipeModal from "../../shared/components/AddRecipeModal";
+import { useDarkMode } from "../shared/contexts/DarkModeContext";
+import { useAuth } from "../shared/contexts/AuthContext";
+import { Button, IconButton } from "../shared/components/Buttons";
+import { useModalManager } from "../shared/services/modalManager";
+import AddRecipeModal from "../shared/components/AddRecipeModal";
 
 function Navbar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();

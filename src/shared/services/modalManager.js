@@ -5,16 +5,16 @@ const ModalManagerContext = createContext();
 
 export const ModalManager = ({ children }) => {
   const [modalContent, setModalContent] = useState(null);
-  const [modalSize, setModalSize] = useState("small"); // Default to "small"
+  const [modalSize, setModalSize] = useState("small");
 
   const openModal = (content, size = "small") => {
     setModalContent(() => content);
-    setModalSize(size); // Store the size
+    setModalSize(size);
   };
 
   const closeModal = () => {
     setModalContent(null);
-    setModalSize("small"); // Reset to default size
+    setModalSize("small");
   };
 
   return (

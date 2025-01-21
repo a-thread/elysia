@@ -16,10 +16,10 @@ const GetCookingModal = ({ recipe }) => {
   };
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full h-full p-4 pt-[1.5rem]">
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="h-[450px] flex flex-col md:flex-row gap-6">
+      <div className="h-full flex flex-col md:flex-row gap-6">
         <MobileView
           activeTab={activeTab}
           recipe={recipe}

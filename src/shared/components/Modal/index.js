@@ -1,20 +1,39 @@
-import React from "react";
+import React, { useRef } from "react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import "./style.css";
+import PropTypes from "prop-types";
 
-function Modal({ children, onClose, size = "small" }) {
-  // Define modal width based on the "size" prop
+const ModalSize = {
+  Small: "small",
+  Large: "large",
+};
+
+const Modal = ({ size = ModalSize.Medium, onClose, children }) => {
+  const modalRef = useRef(null);
+
   const modalSize =
     size === "large"
-      ? "large-modal max-w-5xl"
-      : "max-w-md";
+      ? "max-w-5xl sm:max-w-[1200px] sm:w-[calc(100%-64px)] sm:max-h-[calc(100%-64px)]"
+      : "max-w-md sm:w-auto sm:h-auto";
+
+  const modalClasses = `relative bg-white text-black/90 shadow-lg sm:shadow-xl transition-shadow duration-300 ease-in-out rounded-none sm:rounded-lg flex flex-col overflow-hidden h-screen w-screen ${modalSize} p-6`;
+
+  const handleOutsideClick = (e) => {
+    const inputs = modalRef.current.querySelectorAll("input, textarea, select");
+
+    if (!(inputs.length > 0)) {
+      onClose();
+    }
+  };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 dark:bg-opacity-70 z-50">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  dark:bg-opacity-70 z-50"
+      onClick={handleOutsideClick}
+    >
       <div
-        className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full ${modalSize} relative
-          sm:w-auto sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-5xl 
-          xs:w-screen xs:h-screen xs:rounded-none`}
+        ref={modalRef}
+        className={modalClasses}
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
@@ -26,6 +45,13 @@ function Modal({ children, onClose, size = "small" }) {
       </div>
     </div>
   );
-}
+};
+
+Modal.propTypes = {
+  size: PropTypes.oneOf(Object.keys(ModalSize)),
+  onClose: PropTypes.func.isRequired,
+  onOutsideClick: PropTypes.func.isRequired,
+  children: PropTypes.node,
+};
 
 export default Modal;

@@ -1,25 +1,25 @@
 import { useState, useRef, useEffect } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "../../../../shared/services/toastManager";
-import { useModalManager } from "../../../../shared/services/modalManager";
-import RecipeService from "../../../../shared/services/RecipeService";
-import DeleteConfirmationModal from "../../../../shared/components/DeleteConfirmationModal";
-import { IconButton } from "../../../../shared/components/Buttons";
-import { ShareService } from "./ShareRecipeService";
-import ShareModal from "../../../../shared/components/ShareModal";
+import { ShareCollectionService } from "./ShareCollectionService";
+import { useToast } from "../../../shared/services/toastManager";
+import { useModalManager } from "../../../shared/services/modalManager";
+import DeleteConfirmationModal from "../../../shared/components/DeleteConfirmationModal";
+import CollectionService from "../../../shared/services/CollectionService";
+import { IconButton } from "../../../shared/components/Buttons";
+import ShareModal from "../../../shared/components/ShareModal";
 
-const EllipsisMenu = ({ recipe }) => {
+const EllipsisMenu = ({ collection }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
-  const [isPublic, setIsPublic] = useState(recipe.isPublic);
+  const [isPublic, setIsPublic] = useState(collection.isPublic);
   const [sharedUsers, setSharedUsers] = useState([]);
 
   const handleEditClick = () => {
-    navigate(`/recipes/${recipe.id}/edit`, { state: { recipe } });
+    navigate(`/collections/${collection.id}/edit`, { state: { collection } });
     setIsOpen(false);
   };
 
@@ -27,24 +27,24 @@ const EllipsisMenu = ({ recipe }) => {
     openModal(
       <DeleteConfirmationModal
         onCancelDelete={closeModal}
-        onDelete={deleteRecipe}
+        onDelete={deleteCollection}
       />
     );
 
   useEffect(() => {
     const fetchData = async () =>
-      setSharedUsers(await ShareService.fetchSharedUsers(recipe.id));
+      setSharedUsers(await ShareCollectionService.fetchSharedUsers(collection.id));
     fetchData();
-  }, [recipe.id]);
+  }, [collection.id]);
 
   const handleTogglePublicShare = async () => {
     try {
-      const newStatus = await ShareService.togglePublicShare(
-        recipe.id,
-        recipe.is_public
+      const newStatus = await ShareCollectionService.togglePublicShare(
+        collection.id,
+        collection.is_public
       );
       setIsPublic(newStatus);
-      toast.success(`Recipe is now ${newStatus ? "public" : "private"}!`);
+      toast.success(`Collection is now ${newStatus ? "public" : "private"}!`);
     } catch (error) {
       toast.error(error.message);
     }
@@ -54,12 +54,12 @@ const EllipsisMenu = ({ recipe }) => {
     if (!email) return toast.error("Please enter a valid email.");
 
     try {
-      const user = await ShareService.findUserByEmail(email);
-      await ShareService.shareRecipeWithUser(recipe.id, user.id, permission);
+      const user = await ShareCollectionService.findUserByEmail(email);
+      await ShareCollectionService.shareCollectionWithUser(collection.id, user.id, permission);
       toast.success(
-        `Recipe shared with ${user.display_name} as ${permission}.`
+        `Collection shared with ${user.display_name} as ${permission}.`
       );
-      setSharedUsers(await ShareService.fetchSharedUsers(recipe.id));
+      setSharedUsers(await ShareCollectionService.fetchSharedUsers(collection.id));
     } catch (error) {
       toast.error(error.message);
     }
@@ -67,16 +67,16 @@ const EllipsisMenu = ({ recipe }) => {
 
   const handleRevokeAccess = async (shareId) => {
     try {
-      await ShareService.revokeUserAccess(shareId);
+      await ShareCollectionService.revokeUserAccess(shareId);
       toast.success("Access revoked.");
-      setSharedUsers(await ShareService.fetchSharedUsers(recipe.id));
+      setSharedUsers(await ShareCollectionService.fetchSharedUsers(collection.id));
     } catch (error) {
       toast.error(error.message);
     }
   };
 
   const handleCopyLink = () => {
-    const publicUrl = `${window.location.origin}/recipes/${recipe.id}`;
+    const publicUrl = `${window.location.origin}/collections/${collection.id}`;
     navigator.clipboard.writeText(publicUrl);
     toast.success("Public link copied!");
   };
@@ -84,8 +84,8 @@ const EllipsisMenu = ({ recipe }) => {
   const handleShareClick = () => {
     openModal(
       <ShareModal
-        typeOfShare="Recipe"
-        recipeId={recipe.id}
+        typeOfShare="Collection"
+        collectionId={collection.id}
         sharedUsers={sharedUsers}
         isPublic={isPublic}
         onTogglePublicShare={handleTogglePublicShare}
@@ -97,14 +97,14 @@ const EllipsisMenu = ({ recipe }) => {
     );
   };
 
-  const deleteRecipe = async () => {
+  const deleteCollection = async () => {
     try {
-      await RecipeService.deleteRecipe(recipe.id);
-      toast.success("Recipe deleted successfully!");
+      await CollectionService.deleteCollection(collection.id);
+      toast.success("Collection deleted successfully!");
       closeModal();
       navigate("/");
     } catch (error) {
-      toast.error("Failed to delete recipe. Please try again.");
+      toast.error("Failed to delete collection. Please try again.");
     }
   };
 

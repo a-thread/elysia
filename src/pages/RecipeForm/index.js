@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation, useParams, Link } from "react-router-dom";
 import RecipeDetailsForm from "../../shared/components/RecipeDetailsForm";
 import EmptyState from "../../shared/components/EmptyState";
-import recipeService from "../../shared/services/recipeService";
+import RecipeService from "../../shared/services/RecipeService";
 import { Button } from "../../shared/components/Buttons";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import { useToast } from "../../shared/services/toastManager";
 import PhotoUpload from "./components/PhotoUpload";
 import EditableSectionForm from "./components/EditableSectionForm";
-import recipeFormUtils from "./utils/recipeFormUtils";
+import getChangedFields from "../../shared/utils/getChangedFields";
+import NameDescriptionForm from "../../shared/components/TitleDescriptionForm";
 
 function RecipeForm() {
   const { user } = useAuth();
@@ -35,24 +36,22 @@ function RecipeForm() {
   const [originalData, setOriginalData] = useState(null);
 
   useEffect(() => {
-    if (isEditing) {
-      const existingRecipe = location.state?.recipe;
-      if (existingRecipe) {
-        setFormData({
-          title: existingRecipe.title || "",
-          description: existingRecipe.description || "",
-          img_url: existingRecipe.img_url || "",
-          prep_time: existingRecipe.prep_time || 0,
-          cook_time: existingRecipe.cook_time || 0,
-          servings: existingRecipe.servings || 1,
-          original_recipe_url: existingRecipe.original_recipe_url || "",
-          ingredients: existingRecipe.ingredients || [],
-          steps: existingRecipe.steps || [],
-        });
-        setOriginalData(existingRecipe);
-      }
+    const existingRecipe = location.state?.recipe;
+    if (existingRecipe) {
+      setFormData({
+        title: existingRecipe.title || "",
+        description: existingRecipe.description || "",
+        img_url: existingRecipe.img_url || "",
+        prep_time: existingRecipe.prep_time || 0,
+        cook_time: existingRecipe.cook_time || 0,
+        servings: existingRecipe.servings || 1,
+        original_recipe_url: existingRecipe.original_recipe_url || "",
+        ingredients: existingRecipe.ingredients || [],
+        steps: existingRecipe.steps || [],
+      });
+      setOriginalData(existingRecipe);
     }
-  }, [isEditing, location.state?.recipe]);
+  }, [location.state?.recipe]);
 
   const onFormChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -64,21 +63,18 @@ function RecipeForm() {
 
     try {
       if (isEditing) {
-        const updatedFields = recipeFormUtils.getChangedFields(
-          originalData,
-          formData
-        );
+        const updatedFields = getChangedFields(originalData, formData);
         if (!updatedFields) {
           toast.success("No changes detected.");
           setLoading(false);
           return;
         }
 
-        await recipeService.updateRecipe(id, updatedFields);
+        await RecipeService.upsertRecipe(id, updatedFields);
         toast.success("Recipe updated successfully!");
-        navigate(`/recipe/${id}`);
+        navigate(`/recipes/${id}`);
       } else {
-        const newRecipe = await recipeService.updateRecipe(
+        const newRecipe = await RecipeService.upsertRecipe(
           0,
           {
             ...formData,
@@ -88,7 +84,7 @@ function RecipeForm() {
           user.id
         );
         toast.success("Recipe added successfully!");
-        navigate(`/recipe/${newRecipe.recipeId}`);
+        navigate(`/recipes/${newRecipe.recipeId}`);
       }
     } catch (error) {
       console.error(
@@ -107,7 +103,7 @@ function RecipeForm() {
   return (
     <div className="max-w-2xl mx-auto mt-4">
       <div className="w-full flex justify-end items-center mb-4 gap-4">
-        <Link to={isEditing ? `/recipe/${id}` : `/`}>
+        <Link to={isEditing ? `/recipes/${id}` : `/`}>
           <Button btnType="dismissable">Cancel</Button>
         </Link>
         <Button onClick={handleSave} isLoading={loading}>
@@ -123,6 +119,7 @@ function RecipeForm() {
           !formData.img_url.length && "rounded-t-lg"
         }`}
       >
+        <NameDescriptionForm formData={formData} onFormChange={onFormChange} />
         <RecipeDetailsForm formData={formData} onFormChange={onFormChange} />
 
         <EditableSectionForm

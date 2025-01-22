@@ -1,5 +1,31 @@
 import { supabase } from "./supabase";
 
+const fetchRecipeList = async (currentSkip, currentPageSize, searchTerm) => {
+  try {
+    let query = supabase
+      .from("recipe_search")
+      .select("*", { count: "exact" })
+      .range(currentSkip, currentSkip + currentPageSize - 1);
+
+    if (searchTerm) {
+      query = query.or(
+        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%`
+      );
+    }
+
+    const { data, count, error } = await query;
+
+    if (error) throw new Error("Failed to fetch recipes.");
+
+    return { data, count };
+  } catch (error) {
+    console.error("Error fetching recipe list:", error.message);
+    return null;
+  }
+};
+
+
+
 const fetchRecipeDetails = async (recipeId, userId) => {
   try {
     let query = supabase
@@ -9,20 +35,16 @@ const fetchRecipeDetails = async (recipeId, userId) => {
           *,
           ingredients(id, sort_number, value),
           steps(id, sort_number, value),
-          favorites!left(id),
           recipe_shares(permission)
         `
       )
       .eq("id", recipeId);
 
-      if (userId) {
-        query = query.or(
-          `is_public.eq.true,user_id.eq.${userId}`
-        );
-        query = query.eq("favorites.user_id", userId);
-      } else {
-        query = query.eq("is_public", true);
-      }
+    if (userId) {
+      query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
+    } else {
+      query = query.eq("is_public", true);
+    }
 
     const { data, error } = await query.maybeSingle(); // Use `maybeSingle()` to avoid errors if no data is returned
 
@@ -43,7 +65,6 @@ const fetchRecipeDetails = async (recipeId, userId) => {
           ...step,
           isActive: true,
         })),
-      is_favorited: data?.favorites?.length > 0,
       can_edit:
         data.user_id === userId ||
         (data.recipe_shares && data.recipe_shares.permission === "edit"),
@@ -181,70 +202,11 @@ const deleteRecipe = async (recipeId) => {
   }
 };
 
-// Toggle favorite status
-const toggleFavorite = async (recipeId, isFavorited, userId) => {
-  try {
-    if (isFavorited) {
-      await supabase.from("favorites").delete().eq("recipe_id", recipeId);
-    } else {
-      await supabase
-        .from("favorites")
-        .insert([{ recipe_id: recipeId, user_id: userId }]);
-    }
-  } catch (error) {
-    console.error("Error toggling favorite:", error.message);
-    throw error;
-  }
-};
-
-// File upload helpers
-const sanitizeFileName = (fileName) => {
-  const extension = fileName.split(".").pop();
-  const baseName = fileName
-    .replace(/\.[^/.]+$/, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9_\-.]/g, "")
-    .replace(/\s+/g, "_");
-  return `${baseName}_${Date.now()}_${Math.floor(
-    Math.random() * 10000
-  )}.${extension}`;
-};
-
-const addPhoto = async (file) => {
-  try {
-    const safeName = sanitizeFileName(file.name);
-    const { error } = await supabase.storage
-      .from("elysia_recipe_photo")
-      .upload(safeName, file, { cacheControl: "3600", upsert: true });
-    if (error) throw new Error(`Error uploading file: ${error.message}`);
-    return getPhotoUrl(safeName);
-  } catch (error) {
-    console.error("Error in addPhoto:", error.message);
-    throw error;
-  }
-};
-
-const getPhotoUrl = (filePath) => {
-  const { data, error } = supabase.storage
-    .from("elysia_recipe_photo")
-    .getPublicUrl(filePath);
-  if (error) throw new Error("Failed to get public URL");
-  return data.publicUrl;
-};
-
-const deletePhoto = async (imgUrl) => {
-  const filePath = imgUrl.split("/").slice(-1)[0];
-  return await supabase.storage.from("elysia_recipe_photo").remove([filePath]);
-};
-
-// Export recipe service
-const recipeService = {
+const RecipeService = {
+  fetchRecipeList,
   fetchRecipeDetails,
-  updateRecipe: upsertRecipe,
+  upsertRecipe,
   deleteRecipe,
-  toggleFavorite,
-  addPhoto,
-  deletePhoto,
 };
 
-export default recipeService;
+export default RecipeService;

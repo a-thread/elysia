@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import RecipeDetails from "./components/RecipeDetails";
 import IngredientsSection from "./components/IngredientsSection";
 import StepsSection from "./components/StepsSection";
-import recipeService from "../../shared/services/recipeService";
+import RecipeService from "../../shared/services/RecipeService";
 import Loading from "../../shared/components/Loading";
 import EmptyState from "../../shared/components/EmptyState";
-import { FavoriteButton } from "../../shared/components/Buttons";
 import { useAuth } from "../../shared/contexts/AuthContext";
-import { useToast } from "../../shared/services/toastManager";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import RecipeTimeSection from "./components/RecipeTimeSection";
 import EllipsisMenu from "./components/EllipsisMenu";
+import TitleDescHeader from "../../shared/components/TitleDescHeader";
 
 function Recipe() {
   const { id } = useParams();
   const { user } = useAuth();
-  const toast = useToast();
 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,7 +23,7 @@ function Recipe() {
     const loadRecipe = async () => {
       setLoading(true);
       try {
-        const recipeData = await recipeService.fetchRecipeDetails(id, user?.id);
+        const recipeData = await RecipeService.fetchRecipeDetails(id, user?.id);
         setRecipe(recipeData);
       } finally {
         setLoading(false);
@@ -35,20 +32,6 @@ function Recipe() {
 
     loadRecipe();
   }, [id, user?.id]);
-
-  const toggleFavorite = async () => {
-    try {
-      await recipeService.toggleFavorite(id, recipe.is_favorited, user?.id);
-      setRecipe((prevRecipe) => ({
-        ...prevRecipe,
-        is_favorited: !prevRecipe.is_favorited,
-      }));
-      toast.succcess("Favorite toggled successfully!");
-    } catch (error) {
-      console.error("Error toggling favorite:", error.message);
-      toast.error("Failed to toggle favorite. Please try again.");
-    }
-  };
 
   if (loading) {
     return <Loading className="mt-40"></Loading>;
@@ -68,15 +51,7 @@ function Recipe() {
           </div>
         </Link>
         <div className="flex justify-end gap-2">
-          {(!!user?.id) && (
-            <>
-              <FavoriteButton
-                onToggle={toggleFavorite}
-                isFavorited={recipe?.is_favorited}
-              />
-              <EllipsisMenu recipe={recipe} />
-            </>
-          )}
+          {!!user?.id && <EllipsisMenu recipe={recipe} />}
         </div>
       </div>
 
@@ -96,7 +71,10 @@ function Recipe() {
               !recipe?.img_url && "rounded-t-lg"
             }`}
           >
-            <RecipeDetails recipe={recipe} />
+            <TitleDescHeader
+              title={recipe.title}
+              description={recipe.description}
+            />
             <IngredientsSection ingredients={recipe.ingredients} />
             <StepsSection steps={recipe.steps} />
 

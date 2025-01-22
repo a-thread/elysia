@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useCallback } from 'react';
-import { useFetchRecipes } from './hooks/useFetchRecipes';
-import RecipeCard from './components/RecipeCard';
-import Loading from '../../shared/components/Loading';
-import EmptyState from '../../shared/components/EmptyState';
+import React, { useRef, useEffect, useCallback } from "react";
+import { useFetchRecipes } from "./hooks/useFetchRecipes";
+import Loading from "../../shared/components/Loading";
+import EmptyState from "../../shared/components/EmptyState";
+import { Link } from "react-router-dom";
+import ImgTitleDescription from "../../shared/components/ImgTitleDescCard";
 
 function Home() {
   const { recipes, loading, hasMore, loadMoreRecipes } = useFetchRecipes();
@@ -34,9 +35,7 @@ function Home() {
   }, [handleLoadMore]);
 
   return (
-    <div
-      className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300"
-    >
+    <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">
       <h1 className="text-3xl font-bold text-gray-800 dark:text-leafGreen-100 mb-6">
         Explore Recipes
       </h1>
@@ -46,7 +45,14 @@ function Home() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {recipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
+            <Link key={recipe.id} to={`/recipes/${recipe.id}`}>
+              <ImgTitleDescription
+                key={recipe.id}
+                title={recipe.title}
+                description={recipe.description}
+                imgUrl={recipe.img_url}
+              />
+            </Link>
           ))}
         </div>
       )}

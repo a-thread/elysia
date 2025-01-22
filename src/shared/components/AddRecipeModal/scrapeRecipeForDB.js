@@ -79,18 +79,19 @@ export async function scrapeRecipeForDB(url) {
     });
 
     const steps = [];
-    $('ol[class*="instructions"] li, ul[class*="instructions"] li').each((i, el) => {
+    $('ol[class*="instructionsP"] li, ul[class*="instructions"] li').each((i, el) => {
       steps.push(stripHtml($(el).html()));
     });
 
     // Find the label element containing the time value
-    const prepTime = $(`*[class*="prep_time"]`).filter(function () {
+    const prepTime = $(`*[class*="prep_time"], *[class*="prep-time"]`).filter(function () {
       return /\d+/.test($(this).text());
     });
 
-    const cookTime = $(`*[class*="cook_time"]`).filter(function () {
+    const cookTime = $(`*[class*="cook_time"], *[class*="cook-time"]`).filter(function () {
       return /\d+/.test($(this).text());
     });
+
 
     const servings = $(`*[class*="servings-with-unit"]`).filter(function () {
       return /\d+/.test($(this).text());
@@ -118,6 +119,7 @@ export async function scrapeRecipeForDB(url) {
       })),
       original_recipe_url: url,
     };
+    console.log("recipeData", recipeData)
     return recipeData;
   } catch (error) {
     console.error(`Failed to scrape recipe from ${url}:`, error.message);

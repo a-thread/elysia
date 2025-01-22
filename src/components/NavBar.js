@@ -140,17 +140,30 @@ function Navbar() {
                     </div>
                   </Link>
                 </li>
+                <li>
+                  <Link to="/collections">
+                    <div
+                      className={`block py-2 px-3 md:p-0 rounded ${
+                        location.pathname === "/collections"
+                          ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500"
+                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"
+                      }`}
+                    >
+                      Collections
+                    </div>
+                  </Link>
+                </li>
                 {isAuthenticated && (
                   <li>
-                    <Link to="/favorites">
+                    <Link to="/tags">
                       <div
                         className={`block py-2 px-3 md:p-0 rounded ${
-                          location.pathname === "/favorites"
+                          location.pathname === "/tags"
                             ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500"
                             : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"
                         }`}
                       >
-                        Favorites
+                        Tags
                       </div>
                     </Link>
                   </li>

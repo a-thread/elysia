@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Recipe from "./pages/Recipe";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/NavBar";
-import Favorites from "./pages/Favorites";
+import Tags from "./pages/Tags";
 import { ModalManager } from "./shared/services/modalManager";
 import About from "./pages/About";
 import ResetPassword from "./pages/ResetPassword";
@@ -12,6 +12,9 @@ import ForgotPassword from "./pages/ForgotPassword";
 import SignIn from "./pages/SignIn";
 import Register from "./pages/Register";
 import RecipeForm from "./pages/RecipeForm";
+import Collection from "./pages/Collection";
+import CollectionForm from "./pages/CollectionForm";
+import Collections from "./pages/Collections";
 
 function App() {
   return (
@@ -35,10 +38,10 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route
-                path="/favorites"
+                path="/tags"
                 element={
                   <ProtectedRoute>
-                    <Favorites />
+                    <Tags />
                   </ProtectedRoute>
                 }
               />
@@ -50,12 +53,37 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/recipe/:id" element={<Recipe />} />
+              <Route path="/recipes/:id" element={<Recipe />} />
               <Route
-                path="/recipe/:id/edit"
+                path="/recipes/:id/edit"
                 element={
                   <ProtectedRoute>
                     <RecipeForm />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/collections"
+                element={
+                  <ProtectedRoute>
+                    <Collections />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/collections/add-new"
+                element={
+                  <ProtectedRoute>
+                    <CollectionForm />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/collections/:id" element={<Collection />} />
+              <Route
+                path="/collections/:id/edit"
+                element={
+                  <ProtectedRoute>
+                    <CollectionForm />
                   </ProtectedRoute>
                 }
               />

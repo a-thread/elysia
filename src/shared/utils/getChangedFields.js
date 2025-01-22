@@ -53,9 +53,4 @@ const deepCompare = (original, updated) => {
 const getChangedFields = (original, updated) =>
   deepCompare(original, updated) || {};
 
-// Export recipe service
-const recipeFormUtils = {
-  getChangedFields,
-};
-
-export default recipeFormUtils;
+export default getChangedFields;

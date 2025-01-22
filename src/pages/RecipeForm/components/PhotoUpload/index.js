@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { TrashIcon } from "@heroicons/react/20/solid";
-import { Button } from '../../../shared/components/Buttons';
-import recipeService from '../../../shared/services/recipeService';
-import { useToast } from '../../../shared/services/toastManager';
+import { Button } from '../../../../shared/components/Buttons';
+import { useToast } from '../../../../shared/services/toastManager';
+import PhotoService from './photoService';
 
 const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
   const [hover, setHover] = useState(false);
@@ -16,7 +16,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
     try {
       setUploading(true);
 
-      const publicUrl = await recipeService.addPhoto(file);
+      const publicUrl = await PhotoService.addPhoto(file);
 
       onImgUrlChange(publicUrl);
     } catch (error) {
@@ -34,7 +34,7 @@ const PhotoUpload = ({ imgUrl, onImgUrlChange }) => {
     }
 
     try {
-      const { error } = await recipeService.deletePhoto(imgUrl);
+      const { error } = await PhotoService.deletePhoto(imgUrl);
       if (error) {
         toast.error('Failed to delete file. Please try again.');
         return;

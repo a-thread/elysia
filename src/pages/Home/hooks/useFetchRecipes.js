@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '../../../shared/services/supabase';
+import RecipeService from '../../../shared/services/RecipeService';
 
 export function useFetchRecipes() {
   const [currentSkip, setCurrentSkip] = useState(0);
@@ -13,10 +13,7 @@ export function useFetchRecipes() {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const { data, count, error } = await supabase
-        .from('recipes')
-        .select('*', { count: 'exact' })
-        .range(currentSkip, currentSkip + currentPageSize - 1);
+      const { data, count, error } = await RecipeService.fetchRecipeList(currentSkip, currentPageSize);
 
       if (error) {
         throw error;
@@ -30,7 +27,7 @@ export function useFetchRecipes() {
       setTotalCount(count);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching favorite recipes:', error.message);
+      console.error('Error fetching Tag recipes:', error.message);
     } finally {
       setLoading(false);
     }

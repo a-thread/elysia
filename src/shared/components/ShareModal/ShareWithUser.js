@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { Button } from "../../../../shared/components/Buttons";
-import { ShareService } from "./shareService";
-import { useToast } from "../../../../shared/services/toastManager";
+import { Button } from "../Buttons";
+import { useToast } from "../../services/toastManager";
 
-const ShareWithUser = ({ recipeId, setSharedUsers }) => {
+const ShareWithUser = ({ shareWithUser }) => {
   const [email, setEmail] = useState("");
   const [permission, setPermission] = useState("read");
   const [isOpen, setIsOpen] = useState(false);
@@ -24,17 +23,7 @@ const ShareWithUser = ({ recipeId, setSharedUsers }) => {
   const handleShareWithUser = async () => {
     if (!email) return toast.error("Please enter a valid email.");
 
-    try {
-      const user = await ShareService.findUserByEmail(email);
-      await ShareService.shareRecipeWithUser(recipeId, user.id, permission);
-      toast.success(
-        `Recipe shared with ${user.display_name} as ${permission}.`
-      );
-      setEmail("");
-      setSharedUsers(await ShareService.fetchSharedUsers(recipeId));
-    } catch (error) {
-      toast.error(error.message);
-    }
+    shareWithUser(email, permission);
   };
 
   // Close the menu if clicking outside

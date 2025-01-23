@@ -21,15 +21,15 @@ const Button: FC<ButtonProps> = ({
 
   const buttonTypes = {
     primary:
-      "text-white bg-leafGreen-700 dark:bg-leafGreen-600 hover:bg-leafGreen-800 dark:hover:bg-leafGreen-800 rounded-lg",
+      "text-white bg-leaf-green-700 dark:bg-leaf-green-600 hover:bg-leaf-green-800 dark:hover:bg-leaf-green-800 rounded-lg",
     secondary:
-      "text-leafGreen-600 dark:text-leafGreen-100 border border-leafGreen-600 dark:border-leafGreen-100 hover:bg-leafGreen-100 dark:hover:text-leafGreen-600 rounded-lg",
+      "text-leaf-green-600 dark:text-leaf-green-100 border border-leaf-green-600 dark:border-leaf-green-100 hover:bg-leaf-green-100 dark:hover:text-leaf-green-600 rounded-lg",
     delete:
       "text-red-500 border border-red-500 hover:text-white hover:bg-red-500 rounded-lg",
     dismissable:
       "text-gray-800 border border-gray-300 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg",
     dropdown:
-      "w-full text-leafGreen-600 dark:text-leafGreen-100 px-4 py-2 text-center hover:bg-leafGreen-100 dark:hover:text-leafGreen-600 transition focus:outline-hidden rounded-none",
+      "w-full text-leaf-green-600 dark:text-leaf-green-100 px-4 py-2 text-center hover:bg-leaf-green-100 dark:hover:text-leaf-green-600 transition focus:outline-hidden rounded-none",
   };
 
   const buttonClasses = `${baseClasses} ${buttonTypes[btnType] || ""} ${

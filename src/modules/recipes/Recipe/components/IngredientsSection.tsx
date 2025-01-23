@@ -5,7 +5,7 @@ import { StepIngredient } from "@shared/models/StepIngredient";
 const IngredientsSection: React.FC<{ingredients: StepIngredient[]}> = ({ ingredients }) => {
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-leafGreen-900 dark:text-leafGreen-100 mb-4">
+      <h2 className="text-2xl font-semibold text-leaf-green-900 dark:text-leaf-green-100 mb-4">
         Ingredients
       </h2>
       <ul className="list-disc pl-6 mb-6">

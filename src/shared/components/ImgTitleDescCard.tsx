@@ -16,7 +16,7 @@ const ImgTitleDescription: React.FC<TitleDescriptionImgUrl> = ({ title, descript
           !img_url ? "rounded-t-lg" : ""
         }`}
       >
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-leafGreen-100 mb-2">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-leaf-green-100 mb-2">
           {title}
         </h2>
         <p className="text-gray-600 dark:text-gray-400 text-sm">

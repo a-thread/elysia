@@ -22,7 +22,7 @@ const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = ({
 
   return (
     <textarea
-      className="border rounded-sm px-2 py-1 w-full mr-3 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 resize-none overflow-hidden"
+      className="border rounded-xs px-2 py-1 w-full mr-3 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 resize-none overflow-hidden"
       ref={textareaRef}
       onChange={onChange}
       placeholder={placeholder}

@@ -164,7 +164,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                 btnType="dropdown"
                 className={
                   (option.id && selectedIds.includes(option.id))
-                    ? "bg-leafGreen-100 dark:text-leafGreen-600"
+                    ? "bg-leaf-green-100 dark:text-leaf-green-600"
                     : ''
                 }
                 onClick={(e: React.MouseEvent) => {

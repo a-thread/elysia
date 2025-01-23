@@ -1,4 +1,40 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-leaf-green-50: #f0f8eb;
+  --color-leaf-green-100: #d9eed4;
+  --color-leaf-green-200: #b3dbaa;
+  --color-leaf-green-300: #8dc880;
+  --color-leaf-green-400: #67b456;
+  --color-leaf-green-500: #4a9c3d;
+  --color-leaf-green-600: #3a6b41;
+  --color-leaf-green-700: #2f5734;
+  --color-leaf-green-800: #23412a;
+  --color-leaf-green-900: #162d1e;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 body {
   margin: 0;

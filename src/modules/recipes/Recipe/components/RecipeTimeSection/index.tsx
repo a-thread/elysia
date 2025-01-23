@@ -16,7 +16,7 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   };
 
   return (
-    <div className="pb-5 pt-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leafGreen-100">
+    <div className="pb-5 pt-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">
       <div className="mb-2">
         <TimeLabelValue label="servings" value={recipe.servings} />
       </div>

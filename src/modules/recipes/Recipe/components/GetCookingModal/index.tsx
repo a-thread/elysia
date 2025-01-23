@@ -26,7 +26,7 @@ const GetCookingModal: React.FC<GetCookingModalProps> = ({ recipe }) => {
   };
 
   return (
-    <div className="w-full h-full p-4 pt-(1.5rem)">
+    <div className="w-full h-full p-4 pt-[1.5rem]">
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="h-full flex flex-col md:flex-row gap-6">

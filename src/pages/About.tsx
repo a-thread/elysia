@@ -21,8 +21,8 @@ const About: React.FC = () => {
         />
       </div>
 
-      <div className="bg-leafGreen-100 p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold text-leafGreen-800 mb-3">
+      <div className="bg-leaf-green-100 p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-leaf-green-800 mb-3">
           The Slug That Inspired It All
         </h2>
         <p className="text-gray-800">
@@ -35,8 +35,8 @@ const About: React.FC = () => {
         </p>
       </div>
 
-      <div className="mt-8 p-6 rounded-lg border border-4 border-dashed border-leafGreen-100 dark:leafGreen-200">
-        <h2 className="text-xl font-semibold text-leafGreen-800 dark:text-leafGreen-300 mb-3">
+      <div className="mt-8 p-6 rounded-lg border border-4 border-dashed border-leaf-green-100 dark:leaf-green-200">
+        <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-300 mb-3">
           The Vision Behind Elysia
         </h2>
         <p className="text-gray-800 dark:text-white">

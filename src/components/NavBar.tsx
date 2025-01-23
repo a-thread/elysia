@@ -53,7 +53,7 @@ function Navbar() {
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900" ref={menuRef}>
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div className="max-w-(--breakpoint-xl) flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           to="/"
           className="flex items-center space-x-2 rtl:space-x-reverse"
@@ -63,7 +63,7 @@ function Navbar() {
             className="h-8"
             alt="Elysia Logo"
           />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-leafGreen-100">
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-leaf-green-100">
             Elysia
           </span>
         </Link>
@@ -118,8 +118,8 @@ function Navbar() {
                     <div
                       className={`block py-2 px-3 md:p-0 rounded-sm ${
                         location.pathname === "/"
-                          ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500"
-                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"
+                          ? "text-white bg-leaf-green-700 md:bg-transparent dark:md:text-leaf-green-300 md:text-leaf-green-500"
+                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:bg-gray-700  dark:hover:text-leaf-green-300 md:dark:hover:bg-transparent"
                       }`}
                     >
                       Home
@@ -131,8 +131,8 @@ function Navbar() {
                     <div
                       className={`block py-2 px-3 md:p-0 rounded-sm ${
                         location.pathname === "/about"
-                          ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500"
-                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"
+                          ? "text-white bg-leaf-green-700 md:bg-transparent dark:md:text-leaf-green-300 md:text-leaf-green-500"
+                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:bg-gray-700  dark:hover:text-leaf-green-300 md:dark:hover:bg-transparent"
                       }`}
                     >
                       About
@@ -144,8 +144,8 @@ function Navbar() {
                     <div
                       className={`block py-2 px-3 md:p-0 rounded-sm ${
                         location.pathname === "/collections"
-                          ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500"
-                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"
+                          ? "text-white bg-leaf-green-700 md:bg-transparent dark:md:text-leaf-green-300 md:text-leaf-green-500"
+                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:bg-gray-700  dark:hover:text-leaf-green-300 md:dark:hover:bg-transparent"
                       }`}
                     >
                       Collections
@@ -158,8 +158,8 @@ function Navbar() {
                       <div
                         className={`block py-2 px-3 md:p-0 rounded-sm ${
                           location.pathname === "/tags"
-                            ? "text-white bg-leafGreen-700 md:bg-transparent dark:md:text-leafGreen-300 md:text-leafGreen-500"
-                            : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leafGreen-300 dark:text-leafGreen-100 dark:hover:bg-gray-700  dark:hover:text-leafGreen-300 md:dark:hover:bg-transparent"
+                            ? "text-white bg-leaf-green-700 md:bg-transparent dark:md:text-leaf-green-300 md:text-leaf-green-500"
+                            : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:bg-gray-700  dark:hover:text-leaf-green-300 md:dark:hover:bg-transparent"
                         }`}
                       >
                         Tags

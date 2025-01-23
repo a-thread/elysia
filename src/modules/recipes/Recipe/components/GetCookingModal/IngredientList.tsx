@@ -25,8 +25,8 @@ const IngredientItem: React.FC<IngredientItemProps> = ({ index, ingredient, isCh
       <label
         htmlFor={`checkbox-${index}`}
         className="w-6 h-6 flex items-center justify-center border-2 border-gray-400 rounded-md cursor-pointer transition-all 
-            peer-checked:bg-leafGreen-500 peer-checked:border-leafGreen-500 
-            dark:border-gray-600 dark:peer-checked:bg-leafGreen-400 dark:peer-checked:border-leafGreen-400"
+            peer-checked:bg-leaf-green-500 peer-checked:border-leaf-green-500 
+            dark:border-gray-600 dark:peer-checked:bg-leaf-green-400 dark:peer-checked:border-leaf-green-400"
       >
         <CheckIcon
           className={`w-4 h-4 text-white peer-checked:block ${

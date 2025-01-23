@@ -46,7 +46,7 @@ const Recipe: React.FC = () => {
     <div className="max-w-4xl mx-auto mt-4">
       <div className="w-full flex justify-between items-center mb-4">
         <Link to="/">
-          <div className="flex justify-center items-center font-medium text-center text-leafGreen-600 dark:text-leafGreen-100">
+          <div className="flex justify-center items-center font-medium text-center text-leaf-green-600 dark:text-leaf-green-100">
             <ChevronLeftIcon aria-hidden="true" className="size-6" />
             <p>Recipes</p>
           </div>

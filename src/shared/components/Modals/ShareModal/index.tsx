@@ -82,7 +82,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
         {sharedUsers.map((user) => (
           <li
             key={user.id}
-            className="flex justify-between items-center bg-white dark:bg-gray-800 rounded-sm gap-2 p-2"
+            className="flex justify-between items-center bg-white dark:bg-gray-800 rounded-xs gap-2 p-2"
           >
             <span className="text-gray-700 dark:text-gray-200 text-sm">
               {user.users.email} - {user.permission}

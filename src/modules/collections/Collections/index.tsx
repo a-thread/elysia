@@ -40,7 +40,7 @@ const Collections: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-leafGreen-100 mb-4">
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-leaf-green-100 mb-4">
         My Recipe Collections
       </h1>
       <p className="text-gray-600 mb-6">

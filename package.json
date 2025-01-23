@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "homepage": "https://a-thread.github.io/elysia",
+  "homepage": "https://a-thread.github.io/elysia/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

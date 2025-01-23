@@ -18,13 +18,18 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set Working Directory
+        run: echo "PWD=$(pwd)"
+
       - name: Install Dependencies
+        working-directory: .
         run: npm ci
 
       - name: Build Project
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+        working-directory: .
         run: npm run build
 
       - name: Deploy to GitHub Pages

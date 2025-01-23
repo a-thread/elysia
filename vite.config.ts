@@ -19,12 +19,7 @@ export default defineConfig({
     outDir: './dist',
     target: 'esnext',
     sourcemap: true,
-    rollupOptions: {
-      external: [
-        'react',
-        'react-dom'
-      ]
-    }
+    rollupOptions: {}
   },
   server: {
     port: 3000, // Default dev server port

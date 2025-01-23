@@ -16,8 +16,9 @@ export default defineConfig({
     },
   },
   build: {
-    target: 'esnext', // Matches tsconfig target
-    sourcemap: true, // Helps debugging with source maps
+    outDir: 'dist',
+    target: 'esnext',
+    sourcemap: true,
     rollupOptions: {
       external: [
         'react',

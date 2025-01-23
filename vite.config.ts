@@ -15,7 +15,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: './dist',
     target: 'esnext',
     sourcemap: true,
     rollupOptions: {

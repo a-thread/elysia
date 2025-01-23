@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          path: elysia  # Set explicit path to avoid double directory issue
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -19,12 +21,20 @@ jobs:
           node-version: 20
 
       - name: Install Dependencies
+        working-directory: ./elysia  # Explicitly set working directory
         run: npm ci
+
+      - name: Debug Directory Structure
+        run: |
+          pwd
+          ls -la /home/runner/work/elysia/
+          ls -la /home/runner/work/elysia/elysia/
 
       - name: Build Project
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+        working-directory: ./elysia  # Explicitly set working directory
         run: npm run build
 
       - name: Deploy to GitHub Pages

@@ -6,7 +6,7 @@ interface LoadingProps {
   className?: string;
 }
 
-const Loading: React.FC<LoadingProps> = ({ message = "Loading...", isLarge = true, className = '' }) => {
+const Loading: React.FC<LoadingProps> = ({ message = '', isLarge = true, className = '' }) => {
   return (
     <div className={`flex items-center justify-center space-x-2 ${className}`}>
       <svg

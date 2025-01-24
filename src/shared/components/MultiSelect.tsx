@@ -1,25 +1,22 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
-import { Button, Tag } from "./Buttons";
-
-// Define Option Type
-interface OptionType {
-  id?: string;
-  title: string;
-}
+import { Button, TagButton } from "./Buttons";
+import { Tag } from "@shared/models/Tag";
 
 // Define MultiSelect Props
 interface MultiSelectProps {
-  inputId?: string;
-  options: OptionType[];
-  selectedOptions: OptionType[];
-  setSelectedOptions: (options: OptionType[]) => void;
+  inputId: string;
+  options: Tag[];
+  selectedOptions: Tag[];
+  placeholder: string;
+  setSelectedOptions: (options: Tag[]) => void;
   onSearch: (searchTerm: string) => void;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
-  inputId = "multi-select-search",
+  inputId = "",
   options = [],
   selectedOptions = [],
+  placeholder = '',
   setSelectedOptions,
   onSearch,
 }) => {
@@ -71,7 +68,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   }, [isDropdownOpen]);
 
-  const handleSelect = (option: OptionType) => {
+  const handleSelect = (option: Tag) => {
     if (option.id) {
       const updatedOptions = selectedIds.includes(option.id)
         ? selectedOptions.filter((o) => o.id !== option.id)
@@ -80,7 +77,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   };
 
-  const handleRemove = (option: OptionType) => {
+  const handleRemove = (option: Tag) => {
     const updatedOptions = selectedOptions.filter((o) => o.id !== option.id);
     setSelectedOptions(updatedOptions);
   };
@@ -120,7 +117,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         aria-controls="multi-select-listbox"
       >
         {selectedOptions.map((option) => (
-          <Tag
+          <TagButton
             key={option.id}
             title={option.title}
             onClick={(e: React.MouseEvent) => {
@@ -129,19 +126,21 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             }}
           />
         ))}
-        <input
-          type="text"
-          id={inputId}
-          ref={inputRef}
-          placeholder={
-            selectedOptions.length === 0 ? `Select ${inputId}...` : ""
-          }
-          className="flex-1 p-1 border-none outline-hidden bg-transparent text-gray-900 dark:text-gray-100"
-          value={searchTerm}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-          onKeyDown={handleKeyDown}
-          aria-labelledby="multi-select-label"
-        />
+          <input
+            type="text"
+            id={inputId}
+            ref={inputRef}
+            placeholder={
+              selectedOptions.length === 0 ? placeholder : ""
+            }
+            className="flex-1 p-1 border-none outline-hidden bg-transparent text-gray-900 dark:text-gray-100"
+            value={searchTerm}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setSearchTerm(e.target.value)
+            }
+            onKeyDown={handleKeyDown}
+            aria-labelledby="multi-select-label"
+          />
       </div>
 
       {/* Dropdown List */}
@@ -163,16 +162,20 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                 key={option.id}
                 btnType="dropdown"
                 className={
-                  (option.id && selectedIds.includes(option.id))
+                  option.id && selectedIds.includes(option.id)
                     ? "bg-leaf-green-100 dark:text-leaf-green-600"
-                    : ''
+                    : ""
                 }
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   handleSelect(option);
                 }}
                 role="option"
-                aria-selected={option.id && selectedIds.includes(option.id) ? true : undefined}
+                aria-selected={
+                  option.id && selectedIds.includes(option.id)
+                    ? true
+                    : undefined
+                }
               >
                 {option.title}
               </Button>

@@ -35,14 +35,7 @@ const App = () => {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
-              <Route
-                path="/tags"
-                element={
-                  <ProtectedRoute>
-                    <Tags />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/tags" element={<Tags />} />
               <Route
                 path="/add-new"
                 element={
@@ -60,14 +53,7 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/collections"
-                element={
-                  <ProtectedRoute>
-                    <Collections />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/collections" element={<Collections />} />
               <Route
                 path="/collections/add-new"
                 element={
@@ -79,11 +65,7 @@ const App = () => {
               <Route path="/collections/:id" element={<Collection />} />
               <Route
                 path="/collections/:id/edit"
-                element={
-                  <ProtectedRoute>
-                    <CollectionForm />
-                  </ProtectedRoute>
-                }
+                element={<CollectionForm />}
               />
             </Routes>
           </div>

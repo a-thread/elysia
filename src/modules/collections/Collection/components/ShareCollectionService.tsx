@@ -2,7 +2,7 @@ import { supabase } from "@shared/services/supabase";
 
 const fetchSharedUsers = async (collectionId: string) => {
   const { data, error } = await supabase
-    .from("collection_shares")
+    .from("collection_to_users")
     .select("id, user_id, permission, users(email)")
     .eq("collection_id", collectionId);
 
@@ -59,7 +59,7 @@ const findUserByEmail = async (email: string) => {
 
 const shareCollectionWithUser = async (collectionId: string, userId: string, permission: string) => {
   const { error } = await supabase
-    .from("collection_shares")
+    .from("collection_to_users")
     .insert([{ collection_id: collectionId, user_id: userId, permission }]);
 
   if (error) {
@@ -69,7 +69,7 @@ const shareCollectionWithUser = async (collectionId: string, userId: string, per
 
 const revokeUserAccess = async (shareId: string) => {
   const { error } = await supabase
-    .from("collection_shares")
+    .from("collection_to_users")
     .delete()
     .eq("id", shareId);
 

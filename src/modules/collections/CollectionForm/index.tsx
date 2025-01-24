@@ -12,7 +12,6 @@ import PhotoUpload from "../../recipes/RecipeForm/components/PhotoUpload";
 import TitleDescriptionForm from "@shared/components/TitleDescriptionForm";
 import MultiSelect from "@shared/components/MultiSelect";
 
-
 const CollectionForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -98,7 +97,10 @@ const CollectionForm: React.FC = () => {
 
     try {
       if (isEditing) {
-        const updatedFields = getChangedFields(originalData, formData) as unknown as Collection;
+        const updatedFields = getChangedFields(
+          originalData,
+          formData
+        ) as unknown as Collection;
         if (!updatedFields) {
           toast.success("No changes detected.");
           setLoading(false);
@@ -110,7 +112,7 @@ const CollectionForm: React.FC = () => {
         navigate(`/collections/${id}`);
       } else {
         const newCollection = await CollectionService.upsertCollection(
-          '',
+          "",
           formData,
           user?.id
         );
@@ -160,6 +162,7 @@ const CollectionForm: React.FC = () => {
             Recipes
           </label>
           <MultiSelect
+            placeholder="Search for recipes..."
             inputId="Recipes"
             options={recipeList}
             selectedOptions={formData.recipes}
@@ -178,6 +181,7 @@ const CollectionForm: React.FC = () => {
             Tags
           </label>
           <MultiSelect
+            placeholder="Search for tags..."
             inputId="Tags"
             options={tagList}
             selectedOptions={formData.tags}

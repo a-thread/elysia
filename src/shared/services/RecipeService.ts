@@ -37,7 +37,7 @@ const fetchRecipeDetails = async (recipeId: string | undefined, userId: string |
           *,
           ingredients(id, sort_number, value),
           steps(id, sort_number, value),
-          recipe_shares(permission)
+          recipe_to_users(permission)
         `
       )
       .eq("id", recipeId);
@@ -69,7 +69,7 @@ const fetchRecipeDetails = async (recipeId: string | undefined, userId: string |
         })),
       can_edit:
         data.user_id === userId ||
-        (data.recipe_shares && data.recipe_shares.permission === "edit"),
+        (data.recipe_to_users && data.recipe_to_users.permission === "edit"),
     };
   } catch (error: any) {
     console.error("Error fetching recipe details:", error.message);

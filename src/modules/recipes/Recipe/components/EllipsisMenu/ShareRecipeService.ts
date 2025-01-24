@@ -2,7 +2,7 @@ import { supabase } from "@shared/services/supabase";
 
 const fetchSharedUsers = async (recipeId: string | undefined) => {
   const { data, error } = await supabase
-    .from("recipe_shares")
+    .from("recipe_to_users")
     .select("id, user_id, permission, users(email)")
     .eq("recipe_id", recipeId);
 
@@ -59,7 +59,7 @@ const findUserByEmail = async (email: string) => {
 
 const shareRecipeWithUser = async (recipeId: string | undefined | undefined, userId: string, permission: string) => {
   const { error } = await supabase
-    .from("recipe_shares")
+    .from("recipe_to_users")
     .insert([{ recipe_id: recipeId, user_id: userId, permission }]);
 
   if (error) {
@@ -69,7 +69,7 @@ const shareRecipeWithUser = async (recipeId: string | undefined | undefined, use
 
 const revokeUserAccess = async (shareId: string) => {
   const { error } = await supabase
-    .from("recipe_shares")
+    .from("recipe_to_users")
     .delete()
     .eq("id", shareId);
 

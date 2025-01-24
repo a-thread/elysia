@@ -2,10 +2,15 @@ import { useRef, useEffect, useCallback } from "react";
 import Loading from "@shared/components/Loading";
 import { useFetchTags } from "./hooks/useFetchTags";
 import { useDarkMode } from "../../components/DarkModeContext";
-import { Tag } from "@shared/components/Buttons";
+import { Button, Tag } from "@shared/components/Buttons";
+import { useAuth } from "../../modules/auth";
+import { useModalManager } from "@shared/components/Modals";
+import AddTagModal from "./components/AddTagModal";
 
 function Tags() {
   const { isDarkMode } = useDarkMode();
+  const { isAuthenticated } = useAuth();
+  const { openModal, closeModal } = useModalManager();
   const { tags, loading, hasMore, loadMoreTags } = useFetchTags();
   const containerRef = useRef(null);
   const observerRef = useRef(null);
@@ -17,6 +22,10 @@ function Tags() {
       loadMoreTags();
     }
   }, [hasMore, loading, loadMoreTags]);
+
+  const handleAddTag = () => {
+    openModal(<AddTagModal onCancel={closeModal} onAddTag={closeModal}/> )
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -49,9 +58,15 @@ function Tags() {
         Tags
       </h1>
 
+      {isAuthenticated && (
+        <Button btnType="primary" className="mb-6" onClick={handleAddTag}>
+          + New Tag
+        </Button>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
         {tags.map((tag) => (
-          <Tag key={tag.id} isReadOnly={false} title={tag.title}/>
+          <Tag key={tag.id} isReadOnly={false} title={tag.title} />
         ))}
       </div>
 

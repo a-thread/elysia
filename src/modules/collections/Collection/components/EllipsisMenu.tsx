@@ -14,7 +14,7 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
-  const [isPublic, setIsPublic] = useState(!!collection.is_public);
+  const [isPublic, setIsPublic] = useState(collection.is_public || false);
   const [sharedUsers, setSharedUsers] = useState<any[]>([]);
 
   const handleEditClick = () => {

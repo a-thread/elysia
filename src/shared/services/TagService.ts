@@ -31,7 +31,7 @@ const upsertTag = async (tagId: string, updatedTag: Tag) => {
         .from("tags")
         .insert([
           {
-            name: updatedTag.title,
+            title: updatedTag.title,
           },
         ])
         .select()

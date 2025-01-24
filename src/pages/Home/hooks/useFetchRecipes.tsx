@@ -3,36 +3,39 @@ import RecipeService from '@shared/services/RecipeService';
 import { Recipe } from '@shared/models/Recipe';
 
 export function useFetchRecipes() {
-  const [currentSkip, setCurrentSkip] = useState<number>(0);
-  const [currentPageSize] = useState<number>(10);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentSkip, setCurrentSkip] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [totalCount, setTotalCount] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
+  const resetAndLoadRecipes = async () => {
+    setCurrentSkip(0);
+    setRecipes([]);
+    await fetchRecipes(0, searchTerm);
+  };
+
   const loadMoreRecipes = async () => {
-    if (loading || !hasMore) return;
+    if (!loading && hasMore) {
+      await fetchRecipes(currentSkip, searchTerm);
+    }
+  };
+
+  const fetchRecipes = async (skip: number, term: string) => {
     setLoading(true);
     try {
-      const response = await RecipeService.fetchRecipeList(currentSkip, currentPageSize);
+      const response = await RecipeService.fetchRecipeList(skip, 10, term);
+      if (!response) throw new Error('Something went wrong.');
 
-      if (!response) {
-        throw new Error('Something went wrong. Please try again.');
-      }
-      if (response.data.length === 0) {
-        setHasMore(false);
-      } else {
-        setRecipes((prev) => [...prev, ...response.data]);
-        setCurrentSkip((prevSkip) => prevSkip + response.data.length);
-      }
-      setTotalCount(response.count || 0);
-      setLoading(false);
-    } catch (error: any) {
-      console.error('Error fetching Tag recipes:', error.message);
+      setRecipes((prev) => (skip === 0 ? response.data : [...prev, ...response.data]));
+      setCurrentSkip(skip + response.data.length);
+      setHasMore(response.data.length > 0);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  return { recipes, loading, hasMore, totalCount, loadMoreRecipes };
+  return { recipes, searchTerm, setSearchTerm, loading, hasMore, resetAndLoadRecipes, loadMoreRecipes };
 }

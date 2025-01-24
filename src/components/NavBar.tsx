@@ -1,30 +1,36 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { SunIcon, MoonIcon, Bars4Icon } from "@heroicons/react/24/outline";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  SunIcon,
+  MoonIcon,
+  Bars4Icon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { useDarkMode } from "./DarkModeContext";
 import { useAuth } from "../modules/auth";
 import { AddRecipeModal, useModalManager } from "../shared/components/Modals";
-import { Button, IconButton } from "../shared/components/Buttons";
+import { IconButton } from "../shared/components/Buttons";
+import {
+  ArrowLeftEndOnRectangleIcon,
+  ArrowRightEndOnRectangleIcon,
+  PlusIcon,
+} from "@heroicons/react/20/solid";
+import { supabase } from "@shared/services/supabase";
 
 function Navbar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
-  const { user } = useAuth();
-  const { openModal, closeModal } = useModalManager();
+  const { isAuthenticated } = useAuth();
+  const { isModalOpen, openModal, closeModal } = useModalManager();
+  const navigate = useNavigate();
 
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const navLinks = ["/", "/about", "/collections", "/tags"];
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
-  };
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      setMenuOpen(false);
-    }
   };
 
   const onCloseModal = () => {
@@ -36,15 +42,22 @@ function Navbar() {
     openModal(<AddRecipeModal onClose={onCloseModal} />);
   };
 
-  useEffect(() => {
-    if (user) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, [user]);
+  const handleLogin = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate("/sign-in");
+  };
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await supabase.auth.signOut();
+    navigate("/");
+  };
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -52,126 +65,108 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900" ref={menuRef}>
-      <div className="max-w-(--breakpoint-xl) flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link
-          to="/"
-          className="flex items-center space-x-2 rtl:space-x-reverse"
-        >
+    <nav
+      className={`bg-white border-gray-200 dark:bg-gray-900 ${
+        isModalOpen ? "opacity-50 pointer-events-none" : ""
+      }`}
+      ref={menuRef}
+    >
+      <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+        <Link to="/" className="flex items-center space-x-2">
           <img
             src="https://bbosgvxsamxhzjgzxiuz.supabase.co/storage/v1/object/public/elysia_recipe_photo/echlorotica_nature-removebg-preview_1737171542691_7626.png"
             className="h-8"
             alt="Elysia Logo"
           />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-leaf-green-100">
+          <span className="self-center text-2xl font-semibold dark:text-leaf-green-100">
             Elysia
           </span>
         </Link>
-        <>
-          <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse gap-2">
-            {isAuthenticated && (
-              <Button
-                className="hidden md:block"
-                onClick={handleAddRecipeClick}
-              >
-                Add New Recipe
-              </Button>
-            )}
+        <div className="hidden md:flex space-x-8">
+          {navLinks.map((path) => (
+            <Link
+              key={path}
+              to={path}
+              className={`py-2 px-3 rounded-md transition duration-200 ${
+                location.pathname === path
+                  ? "dark:text-leaf-green-300 text-leaf-green-500"
+                  : "hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:text-leaf-green-300"
+              }`}
+            >
+              {path === "/"
+                ? "Home"
+                : path.replace("/", "").charAt(0).toUpperCase() + path.slice(2)}
+            </Link>
+          ))}
+        </div>
+        <div className="flex space-x-3">
+          {isAuthenticated && (
             <IconButton
-              onClick={toggleDarkMode}
-              title="Toggle Dark Mode"
+              className="hidden md:block"
+              onClick={handleAddRecipeClick}
+              title="Add New Recipe"
               icon={
-                isDarkMode ? (
-                  <SunIcon className="w-6 h-6 text-yellow-400" />
-                ) : (
-                  <MoonIcon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
-                )
+                <PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
               }
             />
-            <IconButton
-              onClick={toggleMenu}
-              className="text-gray-500 rounded-lg md:hidden focus:ring-gray-200 dark:text-gray-400"
-              aria-controls="navbar-cta"
-              aria-expanded={menuOpen}
-              title="Open main menu"
-              icon={
-                <Bars4Icon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
-              }
-            />
-          </div>
-          <div
-            className={`items-center justify-between ${
-              menuOpen ? "block" : "hidden"
-            } w-full md:flex md:w-auto md:order-1`}
-            id="navbar-cta"
-          >
-            <div className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              {menuOpen && isAuthenticated && (
-                <Button className="w-full" onClick={handleAddRecipeClick}>
-                  Add New Recipe
-                </Button>
-              )}
-
-              <ul className="flex flex-col font-medium md:p-0 mt-4 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0">
-                <li>
-                  <Link to="/">
-                    <div
-                      className={`block py-2 px-3 md:p-0 rounded-sm ${
-                        location.pathname === "/"
-                          ? "text-white bg-leaf-green-700 md:bg-transparent dark:md:text-leaf-green-300 md:text-leaf-green-500"
-                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:bg-gray-700  dark:hover:text-leaf-green-300 md:dark:hover:bg-transparent"
-                      }`}
-                    >
-                      Home
-                    </div>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/about">
-                    <div
-                      className={`block py-2 px-3 md:p-0 rounded-sm ${
-                        location.pathname === "/about"
-                          ? "text-white bg-leaf-green-700 md:bg-transparent dark:md:text-leaf-green-300 md:text-leaf-green-500"
-                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:bg-gray-700  dark:hover:text-leaf-green-300 md:dark:hover:bg-transparent"
-                      }`}
-                    >
-                      About
-                    </div>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/collections">
-                    <div
-                      className={`block py-2 px-3 md:p-0 rounded-sm ${
-                        location.pathname === "/collections"
-                          ? "text-white bg-leaf-green-700 md:bg-transparent dark:md:text-leaf-green-300 md:text-leaf-green-500"
-                          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:bg-gray-700  dark:hover:text-leaf-green-300 md:dark:hover:bg-transparent"
-                      }`}
-                    >
-                      Collections
-                    </div>
-                  </Link>
-                </li>
-                {isAuthenticated && (
-                  <li>
-                    <Link to="/tags">
-                      <div
-                        className={`block py-2 px-3 md:p-0 rounded-sm ${
-                          location.pathname === "/tags"
-                            ? "text-white bg-leaf-green-700 md:bg-transparent dark:md:text-leaf-green-300 md:text-leaf-green-500"
-                            : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:bg-gray-700  dark:hover:text-leaf-green-300 md:dark:hover:bg-transparent"
-                        }`}
-                      >
-                        Tags
-                      </div>
-                    </Link>
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
-        </>
+          )}
+          <IconButton
+            onClick={toggleDarkMode}
+            title="Toggle Dark Mode"
+            icon={
+              isDarkMode ? (
+                <SunIcon className="w-6 h-6 text-yellow-400" />
+              ) : (
+                <MoonIcon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
+              )
+            }
+          />
+          <IconButton
+            onClick={isAuthenticated ? handleLogout : handleLogin}
+            title={isAuthenticated ? "Logout" : "Login"}
+            icon={
+              isAuthenticated ? (
+                <ArrowRightEndOnRectangleIcon className="w-6 h-6 text-red-500" />
+              ) : (
+                <ArrowLeftEndOnRectangleIcon className="w-6 h-6 text-green-500" />
+              )
+            }
+          />
+          <IconButton
+            onClick={toggleMenu}
+            className="text-gray-500 rounded-lg md:hidden focus:ring-gray-200 dark:text-gray-400"
+            title="Open main menu"
+            icon={
+              <Bars4Icon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
+            }
+          />
+        </div>
       </div>
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end md:hidden">
+          <div className="w-3/4 sm:w-[350px] h-full bg-white dark:bg-gray-900 shadow-lg p-6 pt-10 flex flex-col">
+            <button
+              onClick={toggleMenu}
+              className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+            >
+              <XMarkIcon className="w-6 h-6" title="Close Menu" />
+            </button>
+            {navLinks.filter(Boolean).map((path) => (
+              <Link
+                key={path}
+                to={path}
+                className="py-2 px-3 block rounded-md text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
+                onClick={toggleMenu}
+              >
+                {path === "/"
+                  ? "Home"
+                  : path.replace("/", "").charAt(0).toUpperCase() +
+                    path.slice(2)}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

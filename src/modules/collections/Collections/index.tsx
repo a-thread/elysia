@@ -6,8 +6,10 @@ import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import { Collection } from "@shared/models/Collection";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
+import { useAuth } from "../../auth";
 
 const Collections: React.FC = () => {
+  const { isAuthenticated } = useAuth();
   const { collections, loading, hasMore, loadMoreCollections } =
     useFetchCollections();
 
@@ -49,11 +51,13 @@ const Collections: React.FC = () => {
         <strong>keep them private</strong>.
       </p>
 
-      <Link to={`add-new`}>
-        <Button btnType="primary" className="mb-6">
-          + New Collection
-        </Button>
-      </Link>
+      {isAuthenticated && (
+        <Link to={`add-new`}>
+          <Button btnType="primary" className="mb-6">
+            + New Collection
+          </Button>
+        </Link>
+      )}
 
       {loading && <Loading className="mt-6" />}
 

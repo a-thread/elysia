@@ -14,7 +14,7 @@ const fetchCollectionDetails = async (collectionId: string, userId: string) => {
           recipe_id,
           recipes!inner(id, title, description, img_url, user_id, is_public)
         ),
-        collection_tagged_recipes!left(
+        collection_to_recipes!left(
           recipe_id,
           recipes!inner(id, title, description, img_url, user_id, is_public)
         ),
@@ -22,7 +22,7 @@ const fetchCollectionDetails = async (collectionId: string, userId: string) => {
           tag_id,
           tags:tags!collection_to_tags_tag_id_fkey(id, title)
         ),
-        collection_shares!left(permission)
+        collection_to_users!left(permission)
         `
       )
       .eq("id", collectionId);
@@ -40,7 +40,7 @@ const fetchCollectionDetails = async (collectionId: string, userId: string) => {
     const directRecipes =
       data?.collection_items?.map((item) => item.recipes) || [];
     const taggedRecipes =
-      data?.collection_tagged_recipes?.map((item) => item.recipes) || [];
+      data?.collection_to_recipes?.map((item) => item.recipes) || [];
       const uniqueRecipes = Array.from(
         new Map(
           [...directRecipes, ...taggedRecipes].map((r: any) => [r.id, r])
@@ -60,8 +60,8 @@ const fetchCollectionDetails = async (collectionId: string, userId: string) => {
       tags, // Now includes associated tags
       can_edit:
         data.user_id === userId ||
-        (data.collection_shares &&
-          data.collection_shares.some(
+        (data.collection_to_users &&
+          data.collection_to_users.some(
             (share: any) => share.permission === "edit"
           )),
     } as Collection;

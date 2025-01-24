@@ -6,7 +6,7 @@ interface TagProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   btnClass?: string;
 }
 
-const Tag: React.FC<TagProps> = ({
+const TagButton: React.FC<TagProps> = ({
   isReadOnly = false,
   title = "tag",
   onClick,
@@ -33,4 +33,4 @@ const Tag: React.FC<TagProps> = ({
   );
 };
 
-export default Tag;
+export default TagButton;

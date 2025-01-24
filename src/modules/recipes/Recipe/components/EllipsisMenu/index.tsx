@@ -18,7 +18,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
-  const [isPublic, setIsPublic] = useState(recipe.is_public);
+  const [isPublic, setIsPublic] = useState(recipe.is_public || false);
   const [sharedUsers, setSharedUsers] = useState<any[]>([]);
 
   const handleEditClick = () => {
@@ -89,7 +89,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       <ShareModal
         typeOfShare="Recipe"
         sharedUsers={sharedUsers}
-        isPublic={!!isPublic}
+        isPublic={isPublic}
         onTogglePublicShare={handleTogglePublicShare}
         shareWithUser={handleShareWithUser}
         onRevokeAccess={handleRevokeAccess}

@@ -5,12 +5,12 @@ import StepsSection from "./components/StepsSection";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import RecipeTimeSection from "./components/RecipeTimeSection";
 import EllipsisMenu from "./components/EllipsisMenu";
-import { useAuth } from "../../../auth";
 import RecipeService from "@shared/services/RecipeService";
 import { Recipe as RecipeDetails } from "@shared/models/Recipe";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
+import { useAuth } from "@shared/contexts/AuthContext";
 
 const Recipe: React.FC = () => {
   const { id } = useParams();

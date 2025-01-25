@@ -6,10 +6,10 @@ import {
   Bars4Icon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { useDarkMode } from "./DarkModeContext";
-import { useAuth } from "../auth";
-import { AddRecipeModal, useModalManager } from "../shared/components/Modals";
-import { IconButton } from "../shared/components/Buttons";
+import { useDarkMode } from "../contexts/DarkModeContext";
+import { useAuth } from "@shared/contexts/AuthContext";
+import { AddRecipeModal, useModalManager } from "./Modals";
+import { IconButton } from "./Buttons";
 import {
   ArrowLeftEndOnRectangleIcon,
   ArrowRightEndOnRectangleIcon,

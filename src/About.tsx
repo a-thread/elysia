@@ -1,6 +1,6 @@
 import React from "react";
-import { AddRecipeModal, useModalManager } from "../shared/components/Modals";
-import { Button } from "../shared/components/Buttons";
+import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
+import { Button } from "@shared/components/Buttons";
 
 const About: React.FC = () => {
   const { openModal, closeModal } = useModalManager();

@@ -1,7 +1,7 @@
 import { useToast } from "@shared/components/Toast";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../../auth";
+import { useAuth } from "@shared/contexts/AuthContext";
 import { Collection } from "@shared/models/Collection";
 import RecipeService from "@shared/services/RecipeService";
 import TagService from "@shared/services/TagService";

@@ -1,18 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Navbar from "./components/NavBar";
-import Tags from "./pages/Tags";
-import About from "./pages/About";
+import Home from "./home";
+import ProtectedRoute from "@shared/utils/ProtectedRoute";
+import Navbar from "@shared/components/NavBar";
+import Tags from "./tags";
+import About from "./About";
 import ResetPassword from "./auth/ResetPassword";
 import SignIn from "./auth/SignIn";
 import Register from "./auth/Register";
-import CollectionForm from "./modules/collections/CollectionForm";
-import Collections from "./modules/collections/Collections";
+import { Collection, CollectionForm, Collections } from "./collections";
 import { ModalManager } from "@shared/components/Modals";
 import { ForgotPassword } from "./auth";
-import { Recipe, RecipeForm } from "./modules/recipes";
-import { Collection } from "./modules/collections";
+import { Recipe, RecipeForm } from "./recipes";
 
 const App = () => {
   return (

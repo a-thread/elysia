@@ -1,7 +1,7 @@
 import React from "react";
 import { TitleDescriptionImgUrl } from "../models/TitleDescriptionImgUrl";
 import { IconButton } from "./Buttons";
-import { useAuth } from "../../auth";
+import { useAuth } from "@shared/contexts/AuthContext";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
 interface TitleDescHeaderProps extends TitleDescriptionImgUrl {

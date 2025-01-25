@@ -1,7 +1,7 @@
 import { useRef, useEffect, useCallback } from "react";
 import Loading from "@shared/components/Loading";
 import { useFetchTags } from "./hooks/useFetchTags";
-import { useDarkMode } from "../../components/DarkModeContext";
+import { useDarkMode } from "@shared/contexts/DarkModeContext";
 import { TagButton } from "@shared/components/Buttons";
 import { useModalManager } from "@shared/components/Modals";
 import AddTagModal from "./components/AddTagModal";

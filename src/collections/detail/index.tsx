@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import EllipsisMenu from "./components/EllipsisMenu";
-import { useAuth } from "../../../auth";
+import { useAuth } from "@shared/contexts/AuthContext";
 import { Collection as CollectionData } from "@shared/models/Collection";
 import CollectionService from "@shared/services/CollectionService";
 import Loading from "@shared/components/Loading";

@@ -2,7 +2,7 @@ import React, { useEffect, useState, FormEvent } from "react";
 import { useNavigate, useLocation, useParams, Link } from "react-router-dom";
 import PhotoUpload from "./components/PhotoUpload";
 import EditableSectionForm from "./components/EditableSectionForm";
-import { useAuth } from "../../../auth";
+import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";
 import { Recipe } from "@shared/models/Recipe";
 import getChangedFields from "@shared/utils/getChangedFields";

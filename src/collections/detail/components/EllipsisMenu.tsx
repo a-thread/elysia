@@ -22,6 +22,7 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
   const handleDeleteClick = () =>
     openModal(
       <DeleteConfirmationModal
+        label="collection"
         onCancelDelete={closeModal}
         onDelete={deleteCollection}
       />

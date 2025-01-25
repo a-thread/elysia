@@ -7,7 +7,7 @@ import { Collection } from "@shared/models/Collection";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 
-const Collections: React.FC = () => {
+const CollectionList: React.FC = () => {
   const navigate = useNavigate();
   const { collections, loading, hasMore, loadMoreCollections } =
     useFetchCollections();
@@ -78,4 +78,4 @@ const Collections: React.FC = () => {
   );
 };
 
-export default Collections;
+export default CollectionList;

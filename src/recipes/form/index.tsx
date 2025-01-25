@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FormEvent } from "react";
 import { useNavigate, useLocation, useParams, Link } from "react-router-dom";
-import PhotoUpload from "./components/PhotoUpload";
+import PhotoUpload from "../../shared/components/PhotoUpload";
 import EditableSectionForm from "./components/EditableSectionForm";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";

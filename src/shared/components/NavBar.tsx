@@ -9,13 +9,15 @@ import {
 import { useDarkMode } from "../contexts/DarkModeContext";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { AddRecipeModal, useModalManager } from "./Modals";
-import { IconButton } from "./Buttons";
+import { DropdownButton, IconButton } from "./Buttons";
 import {
   ArrowLeftEndOnRectangleIcon,
   ArrowRightEndOnRectangleIcon,
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import { supabase } from "@shared/services/supabase";
+import { DropdownOption } from "./Buttons/DropdownButton";
+import AddTagModal from "@shared/components/AddTagModal";
 
 function Navbar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -41,6 +43,19 @@ function Navbar() {
   const handleAddRecipeClick = () => {
     openModal(<AddRecipeModal onClose={onCloseModal} />);
   };
+
+  const handleAddTagClick = () => {
+    openModal(<AddTagModal onCancel={onCloseModal} onAddTag={onCloseModal} />);
+  };
+
+  const options: DropdownOption[] = [
+    { label: "Add Recipe", onClick: handleAddRecipeClick },
+    {
+      label: "Add Collection",
+      onClick: () => navigate("/collections/add-new"),
+    },
+    { label: "Add Tag", onClick: handleAddTagClick },
+  ];
 
   const handleLogin = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -101,10 +116,8 @@ function Navbar() {
         </div>
         <div className="flex space-x-3">
           {isAuthenticated && (
-            <IconButton
-              className="hidden md:block"
-              onClick={handleAddRecipeClick}
-              title="Add New Recipe"
+            <DropdownButton
+              options={options}
               icon={
                 <PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
               }

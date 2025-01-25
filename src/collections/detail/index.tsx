@@ -11,7 +11,7 @@ import TitleDescHeader from "@shared/components/TitleDescHeader";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { TagButton } from "@shared/components/Buttons";
 
-const Collection: React.FC = () => {
+const CollectionDetail: React.FC = () => {
   const { id } = useParams<{id: string}>();
   const { user } = useAuth();
 
@@ -112,4 +112,4 @@ const Collection: React.FC = () => {
   );
 }
 
-export default Collection;
+export default CollectionDetail;

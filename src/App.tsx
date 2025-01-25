@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./home";
 import ProtectedRoute from "@shared/utils/ProtectedRoute";
 import Navbar from "@shared/components/NavBar";
 import Tags from "./tags";
@@ -7,10 +6,10 @@ import About from "./About";
 import ResetPassword from "./auth/ResetPassword";
 import SignIn from "./auth/SignIn";
 import Register from "./auth/Register";
-import { Collection, CollectionForm, Collections } from "./collections";
+import { CollectionList, CollectionDetail, CollectionForm } from "./collections";
 import { ModalManager } from "@shared/components/Modals";
 import { ForgotPassword } from "./auth";
-import { Recipe, RecipeForm } from "./recipes";
+import { RecipeList, RecipeDetail, RecipeForm } from "./recipes";
 
 const App = () => {
   return (
@@ -31,7 +30,7 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<RecipeList />} />
               <Route path="/about" element={<About />} />
               <Route path="/tags" element={<Tags />} />
               <Route
@@ -42,7 +41,7 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/recipes/:id" element={<Recipe />} />
+              <Route path="/recipes/:id" element={<RecipeDetail />} />
               <Route
                 path="/recipes/:id/edit"
                 element={
@@ -51,7 +50,7 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/collections" element={<Collections />} />
+              <Route path="/collections" element={<CollectionList />} />
               <Route
                 path="/collections/add-new"
                 element={
@@ -60,7 +59,7 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/collections/:id" element={<Collection />} />
+              <Route path="/collections/:id" element={<CollectionDetail />} />
               <Route
                 path="/collections/:id/edit"
                 element={<CollectionForm />}

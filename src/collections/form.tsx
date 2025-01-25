@@ -8,7 +8,7 @@ import TagService from "@shared/services/TagService";
 import getChangedFields from "@shared/utils/getChangedFields";
 import CollectionService from "@shared/services/CollectionService";
 import { Button } from "@shared/components/Buttons";
-import PhotoUpload from "../../recipes/RecipeForm/components/PhotoUpload";
+import PhotoUpload from "@shared/components/PhotoUpload";
 import TitleDescriptionForm from "@shared/components/TitleDescriptionForm";
 import MultiSelect from "@shared/components/MultiSelect";
 

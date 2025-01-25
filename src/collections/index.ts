@@ -1,3 +1,3 @@
-export { default as Collection } from "./detail";
-export { default as Collections } from "./list";
-export { default as CollectionForm } from "./editable-detail";
+export { default as CollectionDetail } from "./detail";
+export { default as CollectionList } from "./list";
+export { default as CollectionForm } from "./form";

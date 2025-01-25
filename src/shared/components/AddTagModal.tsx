@@ -35,8 +35,8 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ onCancel, onAddTag }) => {
   };
 
   return (
-    <div className="text-center p-4">
-      <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
+    <div className="p-4">
+      <h2 className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
         Add New Tag
       </h2>
       <form className="w-full">
@@ -60,7 +60,7 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ onCancel, onAddTag }) => {
           </label>
         </div>
       </form>
-      <div className="flex justify-center space-x-4 pt-2">
+      <div className="flex justify-end space-x-4 pt-2">
         <Button btnType="dismissable" onClick={onCancel} disabled={loading}>
           Cancel
         </Button>

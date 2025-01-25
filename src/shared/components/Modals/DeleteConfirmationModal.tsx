@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import Loading from "../Loading";
 
 interface DeleteConfirmationModalProps {
+  label: string;
   onCancelDelete: () => void;
   onDelete: () => Promise<void>;
 }
 
-const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({ onCancelDelete, onDelete }) => {
+const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
+  label = "recipe",
+  onCancelDelete,
+  onDelete,
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDelete = async () => {
@@ -23,7 +28,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({ onCan
   return (
     <div className="text-center p-4">
       <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-        Are you sure you want to delete this recipe?
+        Are you sure you want to delete this {label}?
       </h2>
       <div className="flex justify-center space-x-4 pt-2">
         <button

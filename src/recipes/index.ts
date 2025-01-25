@@ -1,2 +1,3 @@
-export { default as Recipe } from "./Recipe";
-export { default as RecipeForm } from "./RecipeForm";
+export { default as RecipeDetail } from "./detail";
+export { default as RecipeList } from "./list";
+export { default as RecipeForm } from "./form";

@@ -4,7 +4,7 @@ import { useFetchTags } from "./hooks/useFetchTags";
 import { useDarkMode } from "@shared/contexts/DarkModeContext";
 import { TagButton } from "@shared/components/Buttons";
 import { useModalManager } from "@shared/components/Modals";
-import AddTagModal from "./components/AddTagModal";
+import AddTagModal from "../shared/components/AddTagModal";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 
 function Tags() {

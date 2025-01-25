@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import EllipsisMenu from "./components/EllipsisMenu";
-import { useAuth } from "../../auth";
+import { useAuth } from "../../../auth";
 import { Collection as CollectionData } from "@shared/models/Collection";
 import CollectionService from "@shared/services/CollectionService";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
-import { Tag } from "@shared/components/Buttons";
+import { TagButton } from "@shared/components/Buttons";
 
 const Collection: React.FC = () => {
   const { id } = useParams<{id: string}>();
@@ -90,7 +90,7 @@ const Collection: React.FC = () => {
             </h2>
             <div>
               {collection.tags.map((tag) => (
-                <Tag key={tag.id} title={tag.title} isReadOnly={true} />
+                <TagButton key={tag.id} title={tag.title} isReadOnly={true} />
               ))}
             </div>
           </>

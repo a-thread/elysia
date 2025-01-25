@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
@@ -9,12 +9,10 @@ import {
 } from "@shared/components/Modals";
 import { ShareService } from "./ShareRecipeService";
 import RecipeService from "@shared/services/RecipeService";
-import { IconButton } from "@shared/components/Buttons";
 import { Recipe } from "@shared/models/Recipe";
+import DropdownButton, { DropdownOption } from "@shared/components/Buttons/DropdownButton";
 
 const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
@@ -23,7 +21,6 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
   const handleEditClick = () => {
     navigate(`/recipes/${recipe.id}/edit`, { state: { recipe } });
-    setIsOpen(false);
   };
 
   const handleDeleteClick = () =>
@@ -110,60 +107,17 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    const options: DropdownOption[] = [
+      {label: "Edit", onClick: handleEditClick},
+      {label: "Delete", onClick: handleDeleteClick},
+      {label: "Share", onClick: handleShareClick},
+    ];
 
   return (
-    <div className="relative inline-block" ref={menuRef}>
-      <IconButton
-        icon={
-          <EllipsisVerticalIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-        }
-        onClick={() => setIsOpen(!isOpen)}
-        title="More Options"
-      />
-
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
-          <ul className="py-2 text-gray-700 dark:text-gray-200">
-            <li>
-              <button
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={handleEditClick}
-              >
-                Edit
-              </button>
-            </li>
-            <li>
-              <button
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={handleDeleteClick}
-              >
-                Delete
-              </button>
-            </li>
-            <li>
-              <button
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={handleShareClick}
-              >
-                Share
-              </button>
-            </li>
-          </ul>
-        </div>
-      )}
-    </div>
+    <DropdownButton
+      options={options}
+      icon={<EllipsisVerticalIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />}
+    />
   );
 };
 

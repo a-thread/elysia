@@ -7,11 +7,26 @@ import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { Recipe } from "@shared/models/Recipe";
 import { Tag } from "@shared/models/Tag";
 import SearchBar from "@shared/components/SearchBar";
+import TitleDescHeader from "@shared/components/TitleDescHeader";
+import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
 
 function Home() {
-  const { recipes, loading, hasMore, searchTerm, setSearchTerm, resetAndLoadRecipes, loadMoreRecipes } = useFetchRecipes();
+  const {
+    recipes,
+    loading,
+    hasMore,
+    searchTerm,
+    setSearchTerm,
+    resetAndLoadRecipes,
+    loadMoreRecipes,
+  } = useFetchRecipes();
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const { openModal, closeModal } = useModalManager();
   const observerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleAddRecipe = () => {
+    openModal(<AddRecipeModal onClose={closeModal} />);
+  };
 
   // Load more recipes when user scrolls
   const handleLoadMore = useCallback(() => {
@@ -40,7 +55,12 @@ function Home() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-leaf-green-100 mb-6">Explore Recipes</h1>
+      <TitleDescHeader
+        classes="mb-4"
+        title="Recipes"
+        actionName="+ New Recipe"
+        onAction={handleAddRecipe}
+      />
 
       <SearchBar
         options={[]}
@@ -62,7 +82,11 @@ function Home() {
       )}
 
       {loading && <Loading className="mt-6" />}
-      {!hasMore && !loading && <div className="text-gray-500 mt-6 animate-fade-in">You’ve reached the end! No more recipes to load.</div>}
+      {!hasMore && !loading && (
+        <div className="text-gray-500 mt-6 animate-fade-in">
+          You’ve reached the end! No more recipes to load.
+        </div>
+      )}
       {hasMore && <div ref={observerRef} className="h-1"></div>}
     </div>
   );

@@ -5,7 +5,7 @@ import StepsSection from "./components/StepsSection";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import RecipeTimeSection from "./components/RecipeTimeSection";
 import EllipsisMenu from "./components/EllipsisMenu";
-import { useAuth } from "../../auth";
+import { useAuth } from "../../../auth";
 import RecipeService from "@shared/services/RecipeService";
 import { Recipe as RecipeDetails } from "@shared/models/Recipe";
 import Loading from "@shared/components/Loading";

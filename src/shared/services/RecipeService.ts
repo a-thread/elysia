@@ -26,6 +26,30 @@ const fetchRecipeList = async (currentSkip: number, currentPageSize: number, sea
   }
 };
 
+const fetchRecipeListWithTags = async (currentSkip: number, currentPageSize: number, searchTerm: string = '') => {
+  try {
+    let query = supabase
+      .from("recipe_search")
+      .select("*", { count: "exact" })
+      .range(currentSkip, currentSkip + currentPageSize - 1);
+
+    if (searchTerm) {
+      query = query.or(
+        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%,tags_text.ilike.%${searchTerm}%`
+      );
+    }
+
+    const { data, count, error } = await query;
+
+    if (error) throw new Error("Failed to fetch recipes.");
+
+    return { data, count, error: null };
+  } catch (error: any) {
+    return { data: [], count: 0, error: error.message };
+  }
+};
+
+
 
 
 const fetchRecipeDetails = async (recipeId: string | undefined, userId: string | undefined) => {
@@ -206,6 +230,7 @@ const deleteRecipe = async (recipeId: string | undefined) => {
 
 const RecipeService = {
   fetchRecipeList,
+  fetchRecipeListWithTags,
   fetchRecipeDetails,
   upsertRecipe,
   deleteRecipe,

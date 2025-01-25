@@ -4,13 +4,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/NavBar";
 import Tags from "./pages/Tags";
 import About from "./pages/About";
-import ResetPassword from "./modules/auth/ResetPassword";
-import SignIn from "./modules/auth/SignIn";
-import Register from "./modules/auth/Register";
+import ResetPassword from "./auth/ResetPassword";
+import SignIn from "./auth/SignIn";
+import Register from "./auth/Register";
 import CollectionForm from "./modules/collections/CollectionForm";
 import Collections from "./modules/collections/Collections";
 import { ModalManager } from "@shared/components/Modals";
-import { ForgotPassword } from "./modules/auth";
+import { ForgotPassword } from "./auth";
 import { Recipe, RecipeForm } from "./modules/recipes";
 import { Collection } from "./modules/collections";
 

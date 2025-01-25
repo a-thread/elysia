@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFetchCollections } from "./useFetchCollections";
-import { Button } from "@shared/components/Buttons";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import { Collection } from "@shared/models/Collection";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
-import { useAuth } from "../../auth";
+import TitleDescHeader from "@shared/components/TitleDescHeader";
 
 const Collections: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const { collections, loading, hasMore, loadMoreCollections } =
     useFetchCollections();
 
@@ -41,23 +40,20 @@ const Collections: React.FC = () => {
   }, [handleLoadMore]);
 
   return (
-    <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-leaf-green-100 mb-4">
-        My Recipe Collections
-      </h1>
-      <p className="text-gray-600 mb-6">
-        A collection is like a <strong>recipe book</strong> where you can{" "}
-        <strong>organize recipes, share them</strong> with others, or{" "}
-        <strong>keep them private</strong>.
-      </p>
-
-      {isAuthenticated && (
-        <Link to={`add-new`}>
-          <Button btnType="primary" className="mb-6">
-            + New Collection
-          </Button>
-        </Link>
-      )}
+    <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center transition-all duration-300">
+      <div className="w-full">
+        <TitleDescHeader
+          title="Collections"
+          actionName="+ New Collection"
+          classes="mb-2"
+          onAction={() => navigate("add-new")}
+        />
+        <p className="text-gray-600 mb-4">
+          A collection is like a <strong>recipe book</strong> where you can{" "}
+          <strong>organize recipes, share them</strong> with others, or{" "}
+          <strong>keep them private</strong>.
+        </p>
+      </div>
 
       {loading && <Loading className="mt-6" />}
 

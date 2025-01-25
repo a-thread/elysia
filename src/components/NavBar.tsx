@@ -7,7 +7,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useDarkMode } from "./DarkModeContext";
-import { useAuth } from "../modules/auth";
+import { useAuth } from "../auth";
 import { AddRecipeModal, useModalManager } from "../shared/components/Modals";
 import { IconButton } from "../shared/components/Buttons";
 import {

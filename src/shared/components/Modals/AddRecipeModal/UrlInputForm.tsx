@@ -64,7 +64,7 @@ const UrlInputForm: React.FC<UrlInputFormProps> = ({ onCancel }) => {
                 <Button type="button" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit" isLoading={isLoading}>Fetch Recipe</Button>
+                <Button type="submit" isLoading={isLoading}>Import</Button>
             </div>
         </form>
     );

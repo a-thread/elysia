@@ -26,7 +26,7 @@ const CollectionDetail: React.FC = () => {
         if (!id || !user?.id) {
           throw new Error("no id found");
         }
-        const collectionData = await CollectionService.fetchCollectionDetails(
+        const collectionData = await CollectionService.getDetail(
           id,
           user?.id
         );

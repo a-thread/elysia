@@ -16,7 +16,7 @@ const Modal: React.FC<BaseModalProps> = ({
       ? "max-w-5xl sm:max-w-[1200px] sm:w-[calc(100%-64px)] sm:max-h-[calc(100%-64px)]"
       : "sm:max-w-md sm:w-auto sm:h-auto";
 
-  const modalClasses = `relative bg-white dark:bg-gray-800 text-black/90 shadow-lg sm:shadow-xl transition-shadow-xs duration-300 ease-in-out rounded-none sm:rounded-lg flex flex-col overflow-hidden h-screen w-screen ${modalSize} p-6`;
+  const modalClasses = `relative bg-white dark:bg-gray-800 text-black/90 shadow-lg sm:shadow-xl transition-shadow-xs duration-300 ease-in-out rounded-none sm:rounded-lg flex flex-col h-screen w-screen ${modalSize} p-6`;
 
   const handleOutsideClick = () => {
     if (modalRef.current) {

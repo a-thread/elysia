@@ -1,7 +1,7 @@
 import React from "react";
 import { TitleDescriptionImgUrl } from "../models/TitleDescriptionImgUrl";
 
-const ImgTitleDescription: React.FC<TitleDescriptionImgUrl> = ({ title, description, img_url }) => {
+const ImgTitleDescription: React.FC<TitleDescriptionImgUrl> = ({ title, img_url }) => {
   return (
     <>
       {img_url && (
@@ -19,9 +19,6 @@ const ImgTitleDescription: React.FC<TitleDescriptionImgUrl> = ({ title, descript
         <h2 className="text-xl font-semibold text-gray-800 dark:text-leaf-green-100 mb-2">
           {title}
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 text-sm">
-          {description}
-        </p>
       </div>
     </>
   );

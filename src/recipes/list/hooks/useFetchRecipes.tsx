@@ -24,7 +24,7 @@ export function useFetchRecipes() {
   const fetchRecipes = async (skip: number, term: string) => {
     setLoading(true);
     try {
-      const response = await RecipeService.fetchRecipeListWithTags(skip, 10, term);
+      const response = await RecipeService.getListWithTags(skip, 10, term);
       if (!response) throw new Error('Something went wrong.');
 
       setRecipes((prev) => (skip === 0 ? response.data : [...prev, ...response.data]));

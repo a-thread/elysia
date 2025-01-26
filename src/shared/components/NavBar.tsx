@@ -15,15 +15,17 @@ import {
   ArrowRightEndOnRectangleIcon,
   PlusIcon,
 } from "@heroicons/react/20/solid";
-import { supabase } from "@shared/services/supabase";
 import { DropdownOption } from "./Buttons/DropdownButton";
 import AddTagModal from "@shared/components/AddTagModal";
+import { UserService } from "@shared/services/UserService";
+import { useToast } from "./Toast";
 
 function Navbar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const { isAuthenticated } = useAuth();
   const { isModalOpen, openModal, closeModal } = useModalManager();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
@@ -61,10 +63,15 @@ function Navbar() {
     e.stopPropagation();
     navigate("/sign-in");
   };
+
   const handleLogout = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    await supabase.auth.signOut();
-    navigate("/");
+    try {
+      await UserService.signOut();
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {

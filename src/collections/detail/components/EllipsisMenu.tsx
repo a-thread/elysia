@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
-import { ShareCollectionService } from "./ShareCollectionService";
 import { useToast } from "@shared/components/Toast";
 import { useModalManager, DeleteConfirmationModal, ShareModal } from "@shared/components/Modals";
 import CollectionService from "@shared/services/CollectionService";
 import { Collection } from "@shared/models/Collection";
 import DropdownButton, { DropdownOption } from "@shared/components/Buttons/DropdownButton";
+import { UserService } from "@shared/services/UserService";
 
 const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
   const navigate = useNavigate();
@@ -31,7 +31,8 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (collection.id) {
-        setSharedUsers(await ShareCollectionService.fetchSharedUsers(collection.id));
+        const sharedUsers = await CollectionService.fetchSharedUsers(collection.id);
+        setSharedUsers(sharedUsers!);
       }
     }
     fetchData();
@@ -43,11 +44,11 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
         throw new Error('No Collection id found.');
       }
 
-      const newStatus = await ShareCollectionService.togglePublicShare(
+      const newStatus = await CollectionService.setIsPublic(
         collection.id,
         !!collection.is_public
       );
-      setIsPublic(newStatus);
+      setIsPublic(newStatus!);
       toast.success(`Collection is now ${newStatus ? "public" : "private"}!`);
     } catch (error: any) {
       toast.error(error.message);
@@ -59,12 +60,13 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
     if (!collection.id) return toast.error();;
 
     try {
-      const user = await ShareCollectionService.findUserByEmail(email);
-      await ShareCollectionService.shareCollectionWithUser(collection.id, user.id, permission);
+      const user = await UserService.findByEmail(email);
+      await CollectionService.share(collection.id, user?.id!, permission);
       toast.success(
-        `Collection shared with ${user.display_name} as ${permission}.`
+        `Collection shared with ${user?.display_name} as ${permission}.`
       );
-      setSharedUsers(await ShareCollectionService.fetchSharedUsers(collection.id));
+      const sharedUsers = await CollectionService.fetchSharedUsers(collection.id);
+      setSharedUsers(sharedUsers!);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -73,9 +75,10 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
   const handleRevokeAccess = async (shareId: string) => {
     if (!collection.id) return toast.error();
     try {
-      await ShareCollectionService.revokeUserAccess(shareId);
+      await CollectionService.revokeAccess(shareId);
       toast.success("Access revoked.");
-      setSharedUsers(await ShareCollectionService.fetchSharedUsers(collection.id));
+      const sharedUsers = await CollectionService.fetchSharedUsers(collection.id);
+      setSharedUsers(sharedUsers!);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -105,7 +108,7 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
   const deleteCollection = async () => {
     try {
       if (!collection.id) return toast.error();
-      await CollectionService.deleteCollection(collection.id);
+      await CollectionService.deleteById(collection.id);
       toast.success("Collection deleted successfully!");
       closeModal();
       navigate("/");

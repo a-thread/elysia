@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import IngredientsSection from "./components/IngredientsSection";
 import StepsSection from "./components/StepsSection";
-import { ChevronLeftIcon } from "@heroicons/react/20/solid";
+import { ChevronLeftIcon, PlusIcon } from "@heroicons/react/20/solid";
 import RecipeTimeSection from "./components/RecipeTimeSection";
 import EllipsisMenu from "./components/EllipsisMenu";
 import RecipeService from "@shared/services/RecipeService";
@@ -11,20 +11,34 @@ import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import { useAuth } from "@shared/contexts/AuthContext";
+import { DropdownButton } from "@shared/components/Buttons";
+import { useModalManager } from "@shared/components/Modals";
+import AddRecipeToCollectionsModal from "./components/AddRecipeToCollections";
+import { DropdownOption } from "@shared/components/Buttons/DropdownButton";
+import AddTagsToRecipeModal from "./components/AddTagsToRecipeModal";
 
 const Recipe: React.FC = () => {
   const { id } = useParams();
   const { user } = useAuth();
+  const { openModal } = useModalManager();
 
   const [recipe, setRecipe] = useState<RecipeDetails | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const options: DropdownOption[] = [
+    { label: "Add Tags", onClick: () => openModal(<AddTagsToRecipeModal recipeId={recipe?.id} />) },
+    {
+      label: "Add to Collection",
+      onClick: () => () => openModal(<AddRecipeToCollectionsModal recipeId={recipe?.id} />),
+    },
+  ];
 
   // Fetch recipe details
   useEffect(() => {
     const loadRecipe = async () => {
       setLoading(true);
       try {
-        const recipeData = await RecipeService.fetchRecipeDetails(id, user?.id);
+        const recipeData = await RecipeService.getDetail(id, user?.id);
         setRecipe(recipeData);
       } finally {
         setLoading(false);
@@ -44,6 +58,7 @@ const Recipe: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto mt-4">
+      {/* actions */}
       <div className="w-full flex justify-between items-center mb-4">
         <Link to="/">
           <div className="flex justify-center items-center font-medium text-center text-leaf-green-600 dark:text-leaf-green-100">
@@ -52,7 +67,17 @@ const Recipe: React.FC = () => {
           </div>
         </Link>
         <div className="flex justify-end gap-2">
-          {!!user?.id && <EllipsisMenu recipe={recipe} />}
+          {!!user?.id && (
+            <>
+              <DropdownButton
+                options={options}
+                icon={
+                  <PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
+                }
+              />
+              <EllipsisMenu recipe={recipe} />
+            </>
+          )}
         </div>
       </div>
 
@@ -97,6 +122,6 @@ const Recipe: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Recipe;

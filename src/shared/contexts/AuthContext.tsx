@@ -6,7 +6,8 @@ import React, {
   ReactNode,
 } from "react";
 import { User } from "@supabase/supabase-js";
-import { supabase } from "@shared/services/supabase";
+import { UserService } from "@shared/services/UserService";
+import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
 
 interface AuthContextType {
   user: User | null;
@@ -25,23 +26,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const checkUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const session = await UserService.getSession();
       setUser(session?.user || null);
     };
 
     checkUser();
 
     // Listen to auth state changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
+    const authListener = supabaseWithAbort.request(
+      "onAuthStateChange",
+      async (client) => {
+        return client.auth.onAuthStateChange((_event, session) => {
+          setUser(session?.user || null);
+        });
+      }
+    );
 
     return () => {
-      subscription?.unsubscribe();
+      authListener.then(
+        (listener) => listener && listener.data.subscription?.unsubscribe()
+      );
     };
   }, []);
 
@@ -50,7 +54,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, isAuthenticated }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
-import { supabase } from "@shared/services/supabase";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import { Button } from "@shared/components/Buttons";
+import { UserService } from "@shared/services/UserService";
 
 const ResetPassword: React.FC = () => {
   const [newPassword, setNewPassword] = useState<string>("");
@@ -26,15 +26,15 @@ const ResetPassword: React.FC = () => {
       return;
     }
 
-    setIsResetting(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    setIsResetting(false);
-
-    if (error) {
-      toast.error(error.message);
-    } else {
+    try {
+      setIsResetting(true);
+      await UserService.updatePassword(newPassword);
       toast.success("Password updated successfully! You can now sign in.");
       navigate("/sign-in");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -59,7 +59,9 @@ const ResetPassword: React.FC = () => {
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               value={newPassword}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setNewPassword(e.target.value)
+              }
               required
             />
             <label
@@ -79,7 +81,9 @@ const ResetPassword: React.FC = () => {
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               value={confirmPassword}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setConfirmPassword(e.target.value)
+              }
               required
             />
             <label

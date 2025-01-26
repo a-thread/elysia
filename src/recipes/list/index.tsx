@@ -10,7 +10,7 @@ import SearchBar from "@shared/components/SearchBar";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
 
-function Home() {
+function RecipeList() {
   const {
     recipes,
     loading,
@@ -92,4 +92,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default RecipeList;

@@ -1,8 +1,8 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
-import { supabase } from "@shared/services/supabase";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import { Button } from "@shared/components/Buttons";
+import { UserService } from "@shared/services/UserService";
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -13,17 +13,15 @@ const SignIn: React.FC = () => {
 
   const handleSignIn = async (e: FormEvent) => {
     e.preventDefault();
-    setIsLoggingIn(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
-      toast.error(error.message);
-    } else {
+    try {
+      setIsLoggingIn(true);
+      await UserService.signIn(email, password);
       navigate("/");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsLoggingIn(false);
     }
-    setIsLoggingIn(false);
   };
 
   return (
@@ -48,7 +46,9 @@ const SignIn: React.FC = () => {
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               value={email}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
               required
             />
             <label
@@ -66,7 +66,9 @@ const SignIn: React.FC = () => {
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               value={password}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               required
             />
             <label
@@ -93,6 +95,6 @@ const SignIn: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default SignIn;

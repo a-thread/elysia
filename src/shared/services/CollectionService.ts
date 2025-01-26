@@ -1,190 +1,236 @@
-import { Recipe } from "@shared/models/Recipe";
-import { supabase } from "./supabase";
+import { supabaseWithAbort } from "./SupabaseWithAbort";
 import { Collection } from "@shared/models/Collection";
-import { Tag } from "@shared/models/Tag";
+import { TableNames } from "./TableNames";
 
-const fetchCollectionDetails = async (collectionId: string, userId: string) => {
-  try {
-    let query = supabase
-      .from("collections")
-      .select(
-        `
-        id, title, description, img_url, is_public, user_id,
-        collection_items!left(
-          recipe_id,
-          recipes!inner(id, title, description, img_url, user_id, is_public)
-        ),
-        collection_to_recipes!left(
-          recipe_id,
-          recipes!inner(id, title, description, img_url, user_id, is_public)
-        ),
-        collection_to_tags!left(
-          tag_id,
-          tags:tags!collection_to_tags_tag_id_fkey(id, title)
-        ),
+const getList = async (
+  currentSkip: number,
+  currentPageSize: number,
+  searchTerm: string
+) => {
+  return await supabaseWithAbort.request("getList", async (client) => {
+    let query = client
+      .from(TableNames.COLLECTIONS)
+      .select("*", { count: "exact" });
+    if (searchTerm) {
+      query = query.or(
+        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`
+      );
+    }
+    const { data, count, error } = await query.range(
+      currentSkip,
+      currentSkip + currentPageSize - 1
+    );
+    if (error) throw new Error("Failed to fetch collections.");
+    return { data, count };
+  });
+};
+
+const getDetail = async (collectionId: string, userId: string) => {
+  return await supabaseWithAbort.request(
+    `getDetail-${collectionId}`,
+    async (client) => {
+      let query = client
+        .from(TableNames.COLLECTIONS)
+        .select(
+          `
+          id, title, description, img_url, is_public, user_id,
+          collection_to_recipes!left(
+            recipes!inner(
+              id, title, description, img_url, user_id, is_public, 
+              recipe_to_tags!left(tags!inner(id, title))
+            )
+          ),
+        collection_to_tags!left(tags!inner(id, title)),
         collection_to_users!left(permission)
         `
-      )
-      .eq("id", collectionId);
+        )
+        .eq("id", collectionId);
+      if (userId) {
+        query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
+      } else {
+        query = query.eq("is_public", true);
+      }
+      const { data, error } = await query.maybeSingle();
+      if (error) throw new Error("Failed to fetch collection details.");
+      if (!data) throw new Error("No data returned.");
 
-    if (userId) {
-      query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
-    } else {
-      query = query.eq("is_public", true);
+      // Extract unique recipes FOR fetchCollectionDetails
+      const recipes =
+        data?.collection_to_recipes?.map((item: any) => ({
+          ...item.recipes,
+          tags: item.recipes.recipe_to_tags?.map((tag: any) => tag.tags) || [],
+        })) || [];
+
+      // Extract unique collection-level tags
+      const tags =
+        data?.collection_to_tags?.map((item: any) => item.tags) || [];
+      return {
+        ...data,
+        recipes,
+        tags, // Includes tags linked directly to the collection
+        can_edit:
+          data.user_id === userId ||
+          (data.collection_to_users &&
+            data.collection_to_users.some(
+              (share: any) => share.permission === "edit"
+            )),
+      };
     }
-
-    const { data, error } = await query.maybeSingle();
-    if (error) throw new Error("Failed to fetch collection details.");
-
-    // Extract unique recipes (directly added & via tags)
-    const directRecipes =
-      data?.collection_items?.map((item) => item.recipes) || [];
-    const taggedRecipes =
-      data?.collection_to_recipes?.map((item) => item.recipes) || [];
-      const uniqueRecipes = Array.from(
-        new Map(
-          [...directRecipes, ...taggedRecipes].map((r: any) => [r.id, r])
-        ).values()
-      );
-
-    // Extract unique tags
-    const tags: Tag[] = data?.collection_to_tags?.flatMap((item) => item.tags) || [];
-
-    if (!data) {
-      throw new Error("no data returned");
-    }
-
-    return{
-      ...data,
-      recipes: uniqueRecipes,
-      tags, // Now includes associated tags
-      can_edit:
-        data.user_id === userId ||
-        (data.collection_to_users &&
-          data.collection_to_users.some(
-            (share: any) => share.permission === "edit"
-          )),
-    } as Collection;
-  } catch (error: any) {
-    console.error("Error fetching collection details:", error.message);
-    return null;
-  }
+  );
 };
 
-const upsertCollection = async (
+// NEED TO ADD LOGIC TO ADD TAG / RESOURCE ASSOCIATION
+const upsert = async (
   collectionId: string,
-  updatedCollection: Collection,
-  userId?: string | undefined
+  simpleValues: Partial<Collection>,
+  userId?: string
 ) => {
-  try {
-    let newCollectionId = collectionId;
-
-    if (!collectionId) {
-      const { data, error: insertError } = await supabase
-        .from("collections")
-        .insert([
-          {
-            title: updatedCollection.title,
-            description: updatedCollection.description,
-            img_url: updatedCollection.img_url,
-            is_public: updatedCollection.is_public,
-            user_id: userId,
-          },
-        ])
-        .select("*")
-        .single();
-
-      if (insertError)
-        throw new Error(
-          `Failed to insert new collection: ${insertError.message}`
-        );
-      newCollectionId = data.id;
-    } else {
-      const updatePayload = {} as Partial<Collection>;
-      (
-        ["title", "description", "img_url", "is_public"] as (keyof Collection)[]
-      ).forEach((field) => {
-        if (updatedCollection[field]) {
-          updatePayload[field] = updatedCollection[field] as any;
-        }
-      });
-
-      if (Object.keys(updatePayload).length > 0) {
-        const { error: updateError } = await supabase
-          .from("collections")
-          .update(updatePayload)
+  return await supabaseWithAbort.request(
+    `upsert-${collectionId || "new"}`,
+    async (client) => {
+      let newCollectionId = collectionId;
+      if (!collectionId) {
+        const { data, error } = await client
+          .from(TableNames.COLLECTIONS)
+          .insert([
+            {
+              title: simpleValues.title,
+              description: simpleValues.description,
+              img_url: simpleValues.img_url,
+              is_public: simpleValues.is_public,
+              user_id: userId,
+            },
+          ])
+          .select()
+          .single();
+        if (error)
+          throw new Error(`Failed to insert new collection: ${error.message}`);
+        newCollectionId = data.id;
+      } else {
+        const { error } = await client
+          .from(TableNames.COLLECTIONS)
+          .update(simpleValues)
           .eq("id", collectionId);
+        if (error)
+          throw new Error(`Failed to update collection: ${error.message}`);
+      }
+      return { success: true, collectionId: newCollectionId };
+    }
+  );
+};
 
-        if (updateError)
-          throw new Error(
-            `Failed to update collection: ${updateError.message}`
-          );
+const deleteById = async (collectionId: string) => {
+  return await supabaseWithAbort.request(
+    `deleteById-${collectionId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.COLLECTIONS)
+        .delete()
+        .eq("id", collectionId);
+      if (error) throw new Error("Failed to delete collection.");
+    }
+  );
+};
+
+const setIsPublic = async (collectionId: string, isPublic: boolean) => {
+  return await supabaseWithAbort.request(
+    `setIsPublic-${collectionId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.COLLECTIONS)
+        .update({ is_public: !isPublic })
+        .eq("id", collectionId);
+
+      if (error) {
+        throw new Error("Failed to update public status.");
+      }
+      return !isPublic;
+    }
+  );
+};
+
+const fetchSharedUsers = async (collectionId: string) => {
+  return await supabaseWithAbort.request(
+    `fetchSharedUsers-${collectionId}`,
+    async (client) => {
+      const { data, error } = await client
+        .from(TableNames.COLLECTION_TO_USERS)
+        .select("id, user_id, permission, users(email)")
+        .eq("collection_id", collectionId);
+
+      if (error) {
+        console.error("Error fetching shared users:", error);
+        return [];
+      }
+      return data || [];
+    }
+  );
+};
+
+const share = async (
+  collectionId: string,
+  userId: string,
+  permission: string
+) => {
+  return await supabaseWithAbort.request(
+    `share-${collectionId}-${userId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.COLLECTION_TO_USERS)
+        .insert([{ collection_id: collectionId, user_id: userId, permission }]);
+
+      if (error) {
+        throw new Error("Failed to share collection.");
       }
     }
-
-    // Update associated recipes and tags
-    await updateCollectionRecipes(newCollectionId, updatedCollection.recipes);
-    await updateCollectionTags(newCollectionId, updatedCollection.tags);
-
-    return { success: true, collectionId: newCollectionId };
-  } catch (error: any) {
-    console.error("Error updating or inserting collection:", error.message);
-    throw error;
-  }
+  );
 };
 
-const updateCollectionRecipes = async (
-  collectionId: string,
-  recipes: Recipe[]
-) => {
-  await supabase
-    .from("collection_items")
-    .delete()
-    .eq("collection_id", collectionId);
+const revokeAccess = async (shareId: string) => {
+  return await supabaseWithAbort.request(
+    `revokeAccess-${shareId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.COLLECTION_TO_USERS)
+        .delete()
+        .eq("id", shareId);
 
-  if (recipes.length > 0) {
-    const recipeEntries = recipes.map((recipe) => ({
-      collection_id: collectionId,
-      recipe_id: recipe.id,
-    }));
-
-    await supabase.from("collection_items").insert(recipeEntries);
-  }
+      if (error) {
+        throw new Error("Failed to revoke access.");
+      }
+    }
+  );
 };
 
-const updateCollectionTags = async (collectionId: string, tags: Tag[]) => {
-  await supabase
-    .from("collection_to_tags")
-    .delete()
-    .eq("collection_id", collectionId);
+const getIsPublic = async (collectionId: string) => {
+  return await supabaseWithAbort.request(
+    `getIsPublic-${collectionId}`,
+    async (client) => {
+      const { data, error } = await client
+        .from(TableNames.COLLECTIONS)
+        .select("is_public")
+        .eq("id", collectionId)
+        .single();
 
-  if (tags.length > 0) {
-    const tagEntries = tags.map((tag) => ({
-      collection_id: collectionId,
-      tag_id: tag.id,
-    }));
-
-    await supabase.from("collection_to_tags").insert(tagEntries);
-  }
-};
-
-const deleteCollection = async (collectionId: string) => {
-  try {
-    const { error } = await supabase
-      .from("collections")
-      .delete()
-      .eq("id", collectionId);
-    if (error) throw new Error("Failed to delete collection.");
-  } catch (error: any) {
-    console.error("Error deleting collection:", error.message);
-    throw error;
-  }
+      if (error) {
+        console.error("Error fetching collection visibility:", error);
+        return false;
+      }
+      return data.is_public;
+    }
+  );
 };
 
 const CollectionService = {
-  fetchCollectionDetails,
-  upsertCollection,
-  deleteCollection,
+  getList,
+  getDetail,
+  upsert,
+  deleteById,
+  getIsPublic,
+  setIsPublic,
+  fetchSharedUsers,
+  share,
+  revokeAccess,
 };
 
 export default CollectionService;

@@ -27,7 +27,11 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
 
   // set values on first load
   useEffect(() => {
-    setFormState(originalFormState);
+    const updatedValues = formState.map((i) => ({
+      ...i,
+      isActive: true,
+    }))
+    setFormState(updatedValues);
   }, [originalFormState]);
 
   // Debounce function to emit new values every 400ms

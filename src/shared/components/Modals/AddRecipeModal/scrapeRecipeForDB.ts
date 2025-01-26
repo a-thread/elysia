@@ -80,13 +80,40 @@ export async function scrapeRecipeForDB(url: string) {
       }
     });
 
+    if (ingredients.length === 0) {
+      $('div[class*="ingredients"] li').each((_, el) => {
+        const rawIngredient = $(el).html();
+        if (rawIngredient) {
+          ingredients.push(parseIngredient(rawIngredient));
+        }
+      });
+    }
+
     const steps: string[] = [];
-    $('ol[class*="instructionsP"] li, ul[class*="instructions"] li').each((_, el) => {
+    $('ol[class*="instructions"] li, ul[class*="instructions"] li').each((_, el) => {
       const stepHtml = $(el).html()
       if (stepHtml) {
         steps.push(stripHtml(stepHtml));
       }
     });
+
+    if (steps.length === 0) {
+      $('div[class*="instructions"] li').each((_, el) => {
+        const stepHtml = $(el).html();
+        if (stepHtml) {
+          steps.push(stripHtml(stepHtml));
+        }
+      });
+    }
+
+    if (steps.length === 0) {
+      $('ol[class*="preparation"] li').each((_, el) => {
+        const stepHtml = $(el).html();
+        if (stepHtml) {
+          steps.push(stripHtml(stepHtml));
+        }
+      });
+    }
 
     // Find the label element containing the time value
     const prepTime = $(`*[class*="prep_time"], *[class*="prep-time"]`).filter(function () {
@@ -98,9 +125,15 @@ export async function scrapeRecipeForDB(url: string) {
     });
 
 
-    const servings = $(`*[class*="servings-with-unit"]`).filter(function () {
+    let servings = $(`*[class*="servings"]`).filter(function () {
       return /\d+/.test($(this).text());
     })?.text()?.trim();
+
+    if (!servings) {
+     servings = $(`*[class*="yield"]`).filter(function () {
+      return /\d+/.test($(this).text());
+    })?.text()?.trim();
+    }
 
 
     const recipeData = {

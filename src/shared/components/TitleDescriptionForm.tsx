@@ -1,13 +1,13 @@
 import React, { ChangeEvent } from "react";
-import { TitleDescriptionImgUrl } from "../models/TitleDescriptionImgUrl";
 
 // Define prop types
 interface TitleDescriptionFormProps {
-  formData: TitleDescriptionImgUrl;
+  title: string;
+  description: string;
   onFormChange: (key: "title" | "description", value: string) => void;
 }
 
-const TitleDescriptionForm: React.FC<TitleDescriptionFormProps> = ({ formData, onFormChange }) => {
+const TitleDescriptionForm: React.FC<TitleDescriptionFormProps> = ({ title, description, onFormChange }) => {
   return (
     <form className="w-full">
       {/* Title Input */}
@@ -18,7 +18,7 @@ const TitleDescriptionForm: React.FC<TitleDescriptionFormProps> = ({ formData, o
           id="title"
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
           placeholder=" "
-          value={formData.title}
+          value={title}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onFormChange("title", e.target.value)}
           required
         />
@@ -37,7 +37,7 @@ const TitleDescriptionForm: React.FC<TitleDescriptionFormProps> = ({ formData, o
           id="description"
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
           placeholder=" "
-          value={formData.description}
+          value={description}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onFormChange("description", e.target.value)}
           required
         ></textarea>

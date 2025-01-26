@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Collection } from "@shared/models/Collection";
-import { supabase } from "@shared/services/supabase";
+import CollectionService from "@shared/services/CollectionService";
 
 export function useFetchCollections() {
   const [currentSkip, setCurrentSkip] = useState<number>(0);
   const [currentPageSize] = useState<number>(10);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -14,22 +15,20 @@ export function useFetchCollections() {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const { data, count, error } = await supabase
-        .from("collections")
-        .select("*", { count: "exact" })
-        .order("created_at", { ascending: false })
-        .range(currentSkip, currentSkip + currentPageSize - 1);
+      const response =
+        await CollectionService.getList(
+          currentSkip,
+          currentPageSize,
+          searchTerm
+        );
 
-      if (error) {
-        throw error;
-      }
-      if (data.length === 0) {
+      if (!response || response.data.length === 0) {
         setHasMore(false);
       } else {
-        setCollections((prev) => [...prev, ...data]);
-        setCurrentSkip((prevSkip) => prevSkip + data.length);
+        setCollections((prev) => [...prev, ...response.data]);
+        setCurrentSkip((prevSkip) => prevSkip + response.data.length);
+        setTotalCount(response.count || 0);
       }
-      setTotalCount(count || 0);
       setLoading(false);
     } catch (error: any) {
       console.error("Error fetching collections:", error.message);
@@ -38,5 +37,5 @@ export function useFetchCollections() {
     }
   };
 
-  return { collections, loading, hasMore, totalCount, loadMoreCollections };
+  return { collections, searchTerm, setSearchTerm, loading, hasMore, totalCount, loadMoreCollections };
 }

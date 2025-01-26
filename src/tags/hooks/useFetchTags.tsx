@@ -16,7 +16,7 @@ export function useFetchTags() {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const response = await TagService.fetchTagList(
+      const response = await TagService.getList(
         currentSkip,
         currentPageSize,
         searchTerm

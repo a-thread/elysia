@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import { Button, TagButton } from "./Buttons";
 import { Tag } from "@shared/models/Tag";
+import Loading from "./Loading";
 
 // Define MultiSelect Props
 interface MultiSelectProps {
+  isLoading?: boolean;
   inputId: string;
   options: Tag[];
   selectedOptions: Tag[];
@@ -13,6 +15,7 @@ interface MultiSelectProps {
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
+  isLoading = false,
   inputId = "",
   options = [],
   selectedOptions = [],
@@ -141,6 +144,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             onKeyDown={handleKeyDown}
             aria-labelledby="multi-select-label"
           />
+         {isLoading && <Loading /> } 
       </div>
 
       {/* Dropdown List */}
@@ -150,7 +154,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
           role="listbox"
           tabIndex={0}
           aria-labelledby="multi-select-label"
-          className={`absolute w-full border border-gray-300 bg-white dark:bg-gray-800 shadow-md max-h-40 overflow-y-auto focus:outline-hidden ${
+          className={`absolute w-full z-10 border border-gray-300 bg-white dark:bg-gray-800 shadow-md max-h-40 overflow-y-auto focus:outline-hidden ${
             openUpwards
               ? "bottom-full pb-2 rounded-t-lg"
               : "top-full pt-2 rounded-b-lg"

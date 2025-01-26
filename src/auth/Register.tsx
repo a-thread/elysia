@@ -1,8 +1,8 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
-import { supabase } from "@shared/services/supabase";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import { Button } from "@shared/components/Buttons";
+import { UserService } from "@shared/services/UserService";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -13,17 +13,18 @@ const Register: React.FC = () => {
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
-    setIsRegistering(true);
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      toast.error(error.message);
-    } else {
+    try {
+      setIsRegistering(true);
+      await UserService.signUp(email, password);
       toast.success(
         "Registration successful! A confirmation link has been sent to your email."
       );
       navigate("/");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsRegistering(false);
     }
-    setIsRegistering(false);
   };
 
   return (
@@ -48,7 +49,9 @@ const Register: React.FC = () => {
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               value={email}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
               required
             />
             <label
@@ -66,7 +69,9 @@ const Register: React.FC = () => {
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               value={password}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               required
             />
             <label
@@ -90,6 +95,6 @@ const Register: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Register;

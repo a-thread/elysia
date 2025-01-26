@@ -1,13 +1,17 @@
 import { Recipe } from "../models/Recipe";
-import { StepIngredient } from "../models/StepIngredient";
-import { supabase } from "./supabase";
+import { supabaseWithAbort } from "./SupabaseWithAbort";
+import { TableNames } from "./TableNames";
+import { StepIngredientDto } from "@shared/models/StepIngredientDto";
 
-const fetchRecipeList = async (currentSkip: number, currentPageSize: number, searchTerm: string = '') => {
-  try {
-    let query = supabase
-      .from("recipe_search")
-      .select("*", { count: "exact" })
-      .range(currentSkip, currentSkip + currentPageSize - 1);
+const getList = async (
+  currentSkip: number,
+  currentPageSize: number,
+  searchTerm: string = ""
+) => {
+  return await supabaseWithAbort.request("fetchRecipeList", async (client) => {
+    let query = client
+      .from(TableNames.RECIPE_SEARCH)
+      .select("*", { count: "exact" });
 
     if (searchTerm) {
       query = query.or(
@@ -15,225 +19,357 @@ const fetchRecipeList = async (currentSkip: number, currentPageSize: number, sea
       );
     }
 
-    const { data, count, error } = await query;
-
+    const { data, count, error } = await query.range(
+      currentSkip,
+      currentSkip + currentPageSize - 1
+    );
     if (error) throw new Error("Failed to fetch recipes.");
-
     return { data, count };
-  } catch (error) {
-    // console.error("Error fetching recipe list:", error.message);
-    return null;
-  }
+  });
 };
 
-const fetchRecipeListWithTags = async (currentSkip: number, currentPageSize: number, searchTerm: string = '') => {
-  try {
-    let query = supabase
-      .from("recipe_search")
-      .select("*", { count: "exact" })
-      .range(currentSkip, currentSkip + currentPageSize - 1);
+const getListWithTags = async (
+  currentSkip: number,
+  currentPageSize: number,
+  searchTerm: string = ""
+) => {
+  return await supabaseWithAbort.request(
+    "fetchRecipeListWithTags",
+    async (client) => {
+      let query = client
+        .from(TableNames.RECIPE_SEARCH)
+        .select("*", { count: "exact" })
+        .range(currentSkip, currentSkip + currentPageSize - 1);
 
-    if (searchTerm) {
-      query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%,tags_text.ilike.%${searchTerm}%`
-      );
+      if (searchTerm) {
+        query = query.or(
+          `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%,tags_text.ilike.%${searchTerm}%`
+        );
+      }
+
+      const { data, count, error } = await query;
+      if (error) throw new Error("Failed to fetch recipes.");
+      return { data, count };
     }
-
-    const { data, count, error } = await query;
-
-    if (error) throw new Error("Failed to fetch recipes.");
-
-    return { data, count, error: null };
-  } catch (error: any) {
-    return { data: [], count: 0, error: error.message };
-  }
+  );
 };
 
+const getDetail = async (
+  recipeId: string | undefined,
+  userId: string | undefined
+) => {
+  return await supabaseWithAbort.request(
+    `fetchRecipeDetails-${recipeId}`,
+    async (client) => {
+      let query = client
+        .from(TableNames.RECIPES)
+        .select(
+          `
+      id, title, description, img_url, user_id, is_public, servings, prep_time, cook_time, original_recipe_url,
+      ingredients!left(id, sort_number, value),
+      steps!left(id, sort_number, value),
+      recipe_to_users!left(permission),
+      collection_to_recipes!left(collections!inner(id, title)),
+      recipe_to_tags!left(tags!inner(id, title))
+    `
+        )
+        .eq("id", recipeId);
 
+      if (userId) {
+        query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
+      } else {
+        query = query.eq("is_public", true);
+      }
 
+      const { data, error } = await query.maybeSingle();
+      if (error) throw new Error("Failed to fetch recipe details.");
+      if (!data) throw new Error("No data returned for the given recipe.");
 
-const fetchRecipeDetails = async (recipeId: string | undefined, userId: string | undefined) => {
-  try {
-    let query = supabase
-      .from("recipes")
-      .select(
-        `
-          *,
-          ingredients(id, sort_number, value),
-          steps(id, sort_number, value),
-          recipe_to_users(permission)
-        `
-      )
-      .eq("id", recipeId);
-
-    if (userId) {
-      query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
-    } else {
-      query = query.eq("is_public", true);
+      return {
+        ...data,
+        total_time: (data.prep_time || 0) + (data.cook_time || 0),
+        ingredients: (data.ingredients || []).sort(
+          (a, b) => a.sort_number - b.sort_number
+        ),
+        steps: (data.steps || []).sort((a, b) => a.sort_number - b.sort_number),
+        collections: (data.collection_to_recipes || []).map(
+          (item) => item.collections
+        ),
+        tags: (data.recipe_to_tags || []).map((item) => item.tags),
+      };
     }
-
-    const { data, error } = await query.maybeSingle(); // Use `maybeSingle()` to avoid errors if no data is returned
-
-    if (error) throw new Error("Failed to fetch recipe details.");
-
-    return {
-      ...data,
-      total_time: data.prep_time + data.cook_time || 0,
-      ingredients: data.ingredients
-        .sort((a: StepIngredient, b: StepIngredient) => a.sort_number - b.sort_number)
-        .map((ingredient: StepIngredient) => ({
-          ...ingredient,
-          isActive: true,
-        })),
-      steps: data.steps
-        .sort((a: StepIngredient, b: StepIngredient) => a.sort_number - b.sort_number)
-        .map((step: StepIngredient) => ({
-          ...step,
-          isActive: true,
-        })),
-      can_edit:
-        data.user_id === userId ||
-        (data.recipe_to_users && data.recipe_to_users.permission === "edit"),
-    };
-  } catch (error: any) {
-    console.error("Error fetching recipe details:", error.message);
-    return null;
-  }
+  );
 };
 
-const upsertRecipe = async (recipeId: string | undefined, updatedRecipe: Partial<Recipe>, userId?: string | undefined) => {
-  try {
-    let newRecipeId = recipeId;
+const upsert = async (
+  recipeId: string | undefined,
+  updatedRecipe: Partial<Recipe>,
+  userId?: string | undefined
+) => {
+  return await supabaseWithAbort.request(
+    `upsertRecipe-${recipeId || "new"}`,
+    async (client) => {
+      if (!recipeId) {
+        const { data, error } = await client
+          .from(TableNames.RECIPES)
+          .insert([{ ...updatedRecipe, user_id: userId }])
+          .select()
+          .single();
+        if (error)
+          throw new Error(`Failed to insert new recipe: ${error.message}`);
+        recipeId = data.id;
+      } else {
+        const { error } = await client
+          .from(TableNames.RECIPES)
+          .update(updatedRecipe)
+          .eq("id", recipeId);
+        if (error) throw new Error(`Failed to update recipe: ${error.message}`);
+      }
+      return { success: true, recipeId };
+    }
+  );
+};
 
-    // If it's a new recipe, insert it first
-    if (!recipeId) {
-      const { data, error: insertError } = await supabase
-        .from("recipes")
-        .insert([
-          {
-            title: updatedRecipe.title,
-            description: updatedRecipe.description,
-            servings: updatedRecipe.servings,
-            prep_time: updatedRecipe.prep_time,
-            cook_time: updatedRecipe.cook_time,
-            img_url: updatedRecipe.img_url,
-            original_recipe_url: updatedRecipe.img_url,
-            user_id: userId,
-          },
-        ])
-        .select()
+const deleteIngredients = async (
+  idsToDelete: string[]
+) => {
+  return await supabaseWithAbort.request(
+    `deleteIngredients`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.INGREDIENTS)
+        .delete()
+        .in("id", idsToDelete);
+      if (error)
+        throw new Error(`Failed to delete ingredients: ${error.message}`);
+    }
+  );
+};
+
+const upsertIngredients = async (
+  ingredientsToUpsert: StepIngredientDto[]
+) => {
+  return await supabaseWithAbort.request(
+    `upsertIngredients`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.INGREDIENTS)
+        .upsert(ingredientsToUpsert, { onConflict: "id" });
+      if (error)
+        throw new Error(`Failed to upsert ingredients: ${error.message}`);
+    }
+  );
+};
+
+const deleteSteps = async (
+  idsToDelete: string[]
+) => {
+  return await supabaseWithAbort.request(
+    `deleteSteps`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.STEPS)
+        .delete()
+        .in("id", idsToDelete);
+      if (error)
+        throw new Error(`Failed to delete steps: ${error.message}`);
+    }
+  );
+};
+
+const upsertSteps = async (
+  stepsToUpsert: StepIngredientDto[]
+) => {
+  return await supabaseWithAbort.request(
+    `upsertSteps`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.STEPS)
+        .upsert(stepsToUpsert, { onConflict: "id" });
+      if (error)
+        throw new Error(`Failed to delete steps: ${error.message}`);
+    }
+  );
+};
+
+const deleteById = async (recipeId: string | undefined) => {
+  return await supabaseWithAbort.request(
+    `deleteRecipe-${recipeId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.RECIPES)
+        .delete()
+        .eq("id", recipeId);
+      if (error) throw new Error("Failed to delete recipe.");
+    }
+  );
+};
+
+const addOneToManyCollections = async (
+  recipeId: string,
+  collectionIds: string[]
+) => {
+  const upsertItems = collectionIds.map((id) => ({
+    recipe_id: recipeId,
+    collection_id: id,
+  }));
+  return await supabaseWithAbort.request(
+    `addOneToManyCollections-${recipeId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.COLLECTION_TO_RECIPES)
+        .insert(upsertItems);
+      if (error) throw new Error("Failed to delete collection.");
+    }
+  );
+};
+
+const addManyToOneCollection = async (
+  collection_id: string,
+  recipes: Recipe[]
+) => {
+  const upsertItems = recipes.map((recipe) => ({
+    recipe_id: recipe.id,
+    collection_id: collection_id,
+  }));
+  return await supabaseWithAbort.request(
+    `addManyToOneCollection-${collection_id}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.COLLECTION_TO_RECIPES)
+        .insert(upsertItems);
+      if (error) throw new Error("Failed to delete collection.");
+    }
+  );
+};
+
+const removeManyFromCollection = async (
+  collection_id: string,
+  recipes: Recipe[]
+) => {
+  const recipeIds = recipes.map((recipe) => recipe.id);
+
+  return await supabaseWithAbort.request(
+    `removeManyFromCollection-${collection_id}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.COLLECTION_TO_RECIPES)
+        .delete()
+        .eq("collection_id", collection_id)
+        .in("recipe_id", recipeIds);
+
+      if (error) throw new Error("Failed to remove recipes from collection.");
+    }
+  );
+};
+
+const getSharedUsers = async (recipeId: string | undefined) => {
+  return await supabaseWithAbort.request(
+    `fetchSharedUsers-${recipeId}`,
+    async (client) => {
+      const { data, error } = await client
+        .from(TableNames.RECIPE_TO_USERS)
+        .select("id, user_id, permission, users(email)")
+        .eq("recipe_id", recipeId);
+
+      if (error) {
+        console.error("Error fetching shared users:", error);
+        return [];
+      }
+      return data || [];
+    }
+  );
+};
+
+const getIsPublic = async (recipeId: string | undefined) => {
+  return await supabaseWithAbort.request(
+    `fetchRecipeVisibility-${recipeId}`,
+    async (client) => {
+      const { data, error } = await client
+        .from(TableNames.RECIPES)
+        .select("is_public")
+        .eq("id", recipeId)
         .single();
 
-      if (insertError)
-        throw new Error(`Failed to insert new recipe: ${insertError.message}`);
-      newRecipeId = data.id;
-    } else {
-      // If updating, create the update payload
-      const updatePayload: Partial<Recipe> = {};
-      ([
-        "title",
-        "description",
-        "prep_time",
-        "cook_time",
-        "img_url",
-        "original_recipe_url",
-      ] as (keyof Recipe)[]).forEach((field) => {
-        if (updatedRecipe[field]) updatePayload[field] = updatedRecipe[field] as any;
-      });
-
-      if (Object.keys(updatePayload).length > 0) {
-        const { error: updateError } = await supabase
-          .from("recipes")
-          .update(updatePayload)
-          .eq("id", recipeId);
-
-        if (updateError)
-          throw new Error(`Failed to update recipe: ${updateError.message}`);
+      if (error) {
+        console.error("Error fetching recipe visibility:", error);
+        return false;
       }
+      return data.is_public;
     }
-
-    // Process ingredients
-    const promises = [];
-
-    const ingredientsToDelete =
-      updatedRecipe.ingredients?.filter((i: StepIngredient) => !i.isActive).map((i: any) => i.id) ||
-      [];
-    const ingredientsToUpsert =
-      updatedRecipe.ingredients
-        ?.filter((i: StepIngredient) => i.isActive)
-        .map((ingredient: StepIngredient, index: number) => ({
-          id: ingredient.id,
-          sort_number: index + 1,
-          recipe_id: newRecipeId,
-          value: ingredient.value,
-        })) || [];
-
-    if (ingredientsToDelete.length) {
-      promises.push(
-        supabase.from("ingredients").delete().in("id", ingredientsToDelete)
-      );
-    }
-
-    if (ingredientsToUpsert.length) {
-      promises.push(
-        supabase
-          .from("ingredients")
-          .upsert(ingredientsToUpsert, { onConflict: "id" })
-      );
-    }
-
-    // Process steps
-    const stepsToDelete =
-      updatedRecipe.steps?.filter((s: StepIngredient) => !s.isActive).map((step: StepIngredient) => step.id) ||
-      [];
-    const stepsToUpsert =
-      updatedRecipe.steps
-        ?.filter((s: StepIngredient) => s.isActive)
-        .map((step: StepIngredient, index: number) => ({
-          id: step.id,
-          recipe_id: newRecipeId,
-          sort_number: index + 1,
-          value: step.value,
-        })) || [];
-
-    if (stepsToDelete.length) {
-      promises.push(supabase.from("steps").delete().in("id", stepsToDelete));
-    }
-
-    if (stepsToUpsert.length) {
-      promises.push(
-        supabase.from("steps").upsert(stepsToUpsert, { onConflict: "id" })
-      );
-    }
-
-    await Promise.all(promises);
-    return { success: true, recipeId: newRecipeId };
-  } catch (error: any) {
-    console.error("Error updating or inserting recipe:", error.message);
-    throw error;
-  }
+  );
 };
 
-// Delete a recipe
-const deleteRecipe = async (recipeId: string | undefined) => {
-  try {
-    const { error } = await supabase
-      .from("recipes")
-      .delete()
-      .eq("id", recipeId);
-    if (error) throw new Error("Failed to delete recipe.");
-  } catch (error: any) {
-    console.error("Error deleting recipe:", error.message);
-    throw error;
-  }
+const setIsPublic = async (recipeId: string | undefined, isPublic: boolean) => {
+  return await supabaseWithAbort.request(
+    `togglePublicShare-${recipeId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.RECIPES)
+        .update({ is_public: !isPublic })
+        .eq("id", recipeId);
+
+      if (error) {
+        throw new Error("Failed to update public status.");
+      }
+      return !isPublic;
+    }
+  );
+};
+
+const shareWithUser = async (
+  recipeId: string | undefined,
+  userId: string,
+  permission: string
+) => {
+  return await supabaseWithAbort.request(
+    `shareRecipe-${recipeId}-${userId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.RECIPE_TO_USERS)
+        .insert([{ recipe_id: recipeId, user_id: userId, permission }]);
+
+      if (error) {
+        throw new Error("Failed to share recipe.");
+      }
+    }
+  );
+};
+
+const revokeAccess = async (shareId: string) => {
+  return await supabaseWithAbort.request(
+    `revokeUserAccess-${shareId}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.RECIPE_TO_USERS)
+        .delete()
+        .eq("id", shareId);
+
+      if (error) {
+        throw new Error("Failed to revoke access.");
+      }
+    }
+  );
 };
 
 const RecipeService = {
-  fetchRecipeList,
-  fetchRecipeListWithTags,
-  fetchRecipeDetails,
-  upsertRecipe,
-  deleteRecipe,
+  getList,
+  getListWithTags,
+  getDetail,
+  upsert,
+  upsertIngredients,
+  deleteIngredients,
+  upsertSteps,
+  deleteSteps,
+  deleteById,
+  addOneToManyCollections,
+  addManyToOneCollection,
+  removeManyFromCollection,
+  getSharedUsers,
+  getIsPublic,
+  setIsPublic,
+  shareWithUser,
+  revokeAccess,
 };
 
 export default RecipeService;

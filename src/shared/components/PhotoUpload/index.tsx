@@ -21,8 +21,9 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({ imgUrl, onImgUrlChange }) => 
       setUploading(true);
 
       const publicUrl = await PhotoService.addPhoto(file);
-
-      onImgUrlChange(publicUrl);
+      if (publicUrl !== null) {
+        onImgUrlChange(publicUrl);
+      }
     } catch (error: any) {
       console.error('Error uploading file:', error.message);
       toast.error('Failed to upload file. Please try again.');
@@ -38,8 +39,8 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({ imgUrl, onImgUrlChange }) => 
     }
 
     try {
-      const { error } = await PhotoService.deletePhoto(imgUrl);
-      if (error) {
+      const response = await PhotoService.deletePhoto(imgUrl);
+      if (response?.error) {
         toast.error('Failed to delete file. Please try again.');
         return;
       } else {

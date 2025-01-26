@@ -224,7 +224,7 @@ const deleteById = async (recipeId: string | undefined) => {
 
 const addOneToManyCollections = async (
   recipeId: string,
-  collectionIds: string[]
+  collectionIds: (string | undefined)[]
 ) => {
   const upsertItems = collectionIds.map((id) => ({
     recipe_id: recipeId,

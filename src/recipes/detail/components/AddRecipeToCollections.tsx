@@ -4,7 +4,8 @@ import { Button } from "@shared/components/Buttons";
 import { useModalManager } from "@shared/components/Modals";
 import { useToast } from "@shared/components/Toast";
 import CollectionService from "@shared/services/CollectionService";
-import { Collection } from "@shared/models/Collection";
+import RecipeService from "@shared/services/RecipeService";
+import { IdTitle } from "@shared/models/Tag";
 
 interface AddRecipeToCollectionsModalProps {
   recipeId: string | undefined;
@@ -14,8 +15,8 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
   const { closeModal } = useModalManager();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [selectedOptions, setSelectedOptions] = useState<Collection[]>([]);
+  const [collections, setCollections] = useState<IdTitle[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<IdTitle[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleSearch = (term: string) => {
@@ -47,7 +48,7 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
     const idsToInsert = selectedOptions.map(o => o.id);
     if (recipeId && idsToInsert.length > 0) {
       try {
-        await CollectionService.addRecipeToCollections(recipeId, idsToInsert);
+        await RecipeService.addOneToManyCollections(recipeId, idsToInsert);
         toast.success("Recipe has been added to selected collection(s)!");
         closeModal();
       } catch (error) {

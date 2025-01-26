@@ -83,7 +83,7 @@ const CollectionDetail: React.FC = () => {
           description={collection.description}
         />
 
-        {collection.tags.length > 0 && (
+        {collection.tags && collection.tags.length > 0 && (
           <>
             <h2 className="pb-2 pt-3 text-xl font-bold text-leaf-green-900 dark:text-leaf-green-100">
               Tags
@@ -97,7 +97,7 @@ const CollectionDetail: React.FC = () => {
         )}
       </div>
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-        {collection.recipes.map((recipe) => (
+        {collection.recipes && collection.recipes.map((recipe) => (
           <Link key={recipe.id} to={`/recipes/${recipe.id}`}>
             <ImgTitleDescription
               key={recipe.id}

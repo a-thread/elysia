@@ -22,8 +22,8 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ onCancel, onAddTag }) => {
     setLoading(true);
     try {
       const newTag: IdTitle = { id: Date.now().toString(), title: title };
-      const { success } = await TagService.upsert("", newTag);
-      if (success) {
+      const response = await TagService.upsert("", newTag);
+      if (response?.success) {
         toast.success("Tag added successfully!")
         onAddTag();
       }

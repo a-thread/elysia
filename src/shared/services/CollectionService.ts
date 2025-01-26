@@ -25,7 +25,7 @@ const getList = async (
   });
 };
 
-const getDetail = async (collectionId, userId) => {
+const getDetail = async (collectionId: string, userId: string) => {
   return await supabaseWithAbort.request(
     `getDetail-${collectionId}`,
     async (client) => {
@@ -55,20 +55,20 @@ const getDetail = async (collectionId, userId) => {
       const { data, error } = await query.maybeSingle();
       if (error) throw new Error("Failed to fetch collection details.");
       if (!data) throw new Error("No data returned.");
-      
+
       // Extract collection-level tags
-      const collectionTags = data?.collection_to_tags?.map((item) => item.tags) || [];
+      const collectionTags = data?.collection_to_tags?.flatMap((item) => item.tags) || [];
       
       // Extract recipes directly associated with the collection
-      const directRecipes = data?.collection_to_recipes?.map((item) => {
+      const directRecipes = data?.collection_to_recipes?.flatMap((item) => {
         const recipe = item.recipes;
-        return { ...recipe, tags: recipe.recipe_to_tags?.map((tag) => tag.tags) || [] };
+        return { ...recipe, tags: (recipe as any).recipe_to_tags?.map((tag: any) => tag.tags) || [] };
       }) || [];
       
       // Extract recipes associated with tags linked to the collection
-      const taggedRecipes = data?.collection_to_tags?.flatMap((item) => {
-        return item.tags.recipe_to_tags?.map((taggedRecipe) => {
-          return { ...taggedRecipe.recipes, tags: taggedRecipe.recipes.recipe_to_tags?.map((tag) => tag.tags) || [] };
+      const taggedRecipes = (data as any)?.collection_to_tags?.flatMap((item: any) => {
+        return item.tags.recipe_to_tags?.map((taggedRecipe: any) => {
+          return { ...taggedRecipe.recipes, tags: taggedRecipe.recipes.recipe_to_tags?.map((tag: any) => tag.tags) || [] };
         }) || [];
       }) || [];
       
@@ -81,7 +81,7 @@ const getDetail = async (collectionId, userId) => {
       return {
         ...data,
         recipes: Array.from(recipeMap.values()),
-        tags: collectionTags, // Includes tags linked directly to the collection
+        tags: collectionTags,
         can_edit:
           data.user_id === userId ||
           (data.collection_to_users &&

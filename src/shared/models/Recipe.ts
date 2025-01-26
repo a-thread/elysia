@@ -1,6 +1,5 @@
-import { Collection } from "./Collection";
 import { StepIngredient } from "./StepIngredient";
-import { Tag } from "./Tag";
+import { IdTitle } from "./Tag";
 import { TitleDescriptionImgUrl } from "./TitleDescriptionImgUrl";
 
 export interface Recipe extends TitleDescriptionImgUrl {
@@ -11,9 +10,8 @@ export interface Recipe extends TitleDescriptionImgUrl {
 
     ingredients: StepIngredient[];
     steps: StepIngredient[];
-    collections?: Collection[];
-    tags?: Tag[];
-
+    collections?: IdTitle[];
+    tags?: IdTitle[];
     // set by FE:
     id?: string;
     total_time?: number;

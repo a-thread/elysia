@@ -157,7 +157,6 @@ export async function scrapeRecipeForDB(url: string) {
       })),
       original_recipe_url: url,
     };
-    console.log("recipeData", recipeData)
     return recipeData;
   } catch (error: any) {
     console.error(`Failed to scrape recipe from ${url}:`, error.message);

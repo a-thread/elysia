@@ -5,7 +5,7 @@ import EmptyState from "@shared/components/EmptyState";
 import { Link } from "react-router-dom";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { Recipe } from "@shared/models/Recipe";
-import { Tag } from "@shared/models/Tag";
+import { IdTitle } from "@shared/models/Tag";
 import SearchBar from "@shared/components/SearchBar";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
@@ -20,7 +20,7 @@ function RecipeList() {
     resetAndLoadRecipes,
     loadMoreRecipes,
   } = useFetchRecipes();
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<IdTitle[]>([]);
   const { openModal, closeModal } = useModalManager();
   const observerRef = useRef<HTMLDivElement | null>(null);
 

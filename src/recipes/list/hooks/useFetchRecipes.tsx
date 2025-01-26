@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import RecipeService from '@shared/services/RecipeService';
 import { Recipe } from '@shared/models/Recipe';
+import { useAuth } from '@shared/contexts/AuthContext';
 
 export function useFetchRecipes() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -8,6 +9,7 @@ export function useFetchRecipes() {
   const [currentSkip, setCurrentSkip] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const { user } = useAuth();
 
   const resetAndLoadRecipes = async () => {
     setCurrentSkip(0);
@@ -24,7 +26,7 @@ export function useFetchRecipes() {
   const fetchRecipes = async (skip: number, term: string) => {
     setLoading(true);
     try {
-      const response = await RecipeService.getListWithTags(skip, 10, term);
+      const response = await RecipeService.getList(skip, 10, term, user?.id);
       if (!response) throw new Error('Something went wrong.');
 
       setRecipes((prev) => (skip === 0 ? response.data : [...prev, ...response.data]));

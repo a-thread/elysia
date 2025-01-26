@@ -1,6 +1,6 @@
 import { Button } from "@shared/components/Buttons";
 import { useToast } from "@shared/components/Toast";
-import { Tag } from "@shared/models/Tag";
+import { IdTitle } from "@shared/models/Tag";
 import TagService from "@shared/services/TagService";
 import React, { ChangeEvent, useState } from "react";
 
@@ -21,7 +21,7 @@ const AddTagModal: React.FC<AddTagModalProps> = ({ onCancel, onAddTag }) => {
   const handleAddTag = async () => {
     setLoading(true);
     try {
-      const newTag: Tag = { id: Date.now().toString(), title: title };
+      const newTag: IdTitle = { id: Date.now().toString(), title: title };
       const { success } = await TagService.upsert("", newTag);
       if (success) {
         toast.success("Tag added successfully!")

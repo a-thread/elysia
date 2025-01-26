@@ -45,7 +45,6 @@ export const useRecipeForm = () => {
         ingredients: existingRecipe.ingredients || [],
         steps: existingRecipe.steps || [],
       };
-      console.log(formData)
       setFormData(formData);
       setOriginalData(formData);
     }

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import TagService from "@shared/services/TagService";
-import { Tag } from "@shared/models/Tag";
+import { IdTitle } from "@shared/models/Tag";
 
 export function useFetchTags() {
   const [currentSkip, setCurrentSkip] = useState<number>(0);
   const [currentPageSize] = useState<number>(10);
   const [searchTerm] = useState<string>("");
-  const [tags, setTags] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<IdTitle[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   const [loading, setLoading] = useState<boolean>(false);

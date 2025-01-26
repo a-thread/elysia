@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TrashButton } from "../../Buttons";
 import ShareWithUser from "./ShareWithUser";
 import { CheckIcon } from "@heroicons/react/20/solid";
@@ -35,6 +35,16 @@ const ShareModal: React.FC<ShareModalProps> = ({
   onCopyLink,
   onClose,
 }) => {
+  const [isPublicLocal, setIsPublicLocal] = useState(isPublic);
+
+  useEffect(() => {
+    setIsPublicLocal(isPublic);
+  }, [isPublic]);
+
+  const handleTogglePublicShare = () => {
+    setIsPublicLocal(!isPublicLocal);
+    onTogglePublicShare();
+  }
   return (
     <>
       <h2 className="text-lg font-semibold mb-4 min-w-[300px]">
@@ -46,8 +56,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
         <label className="text-sm">Make Public</label>
         <input
           type="checkbox"
-          checked={isPublic}
-          onChange={onTogglePublicShare}
+          checked={isPublicLocal}
+          onChange={handleTogglePublicShare}
           className="peer hidden"
           id="custom-checkbox"
         />
@@ -63,7 +73,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
         </label>
       </div>
 
-      {isPublic && (
+      {isPublicLocal && (
         <Button btnType="secondary" onClick={onCopyLink} className="w-full">
           Copy Public Link
         </Button>

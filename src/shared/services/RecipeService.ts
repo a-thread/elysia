@@ -6,12 +6,23 @@ import { StepIngredientDto } from "@shared/models/StepIngredientDto";
 const getList = async (
   currentSkip: number,
   currentPageSize: number,
-  searchTerm: string = ""
+  searchTerm: string = "",
+  userId?: string
 ) => {
   return await supabaseWithAbort.request("fetchRecipeList", async (client) => {
     let query = client
       .from(TableNames.RECIPE_SEARCH)
       .select("*", { count: "exact" });
+
+    // Only filter by user permissions if a user is logged in
+    if (userId) {
+      query = query.or(
+          `is_public.eq.true,user_permissions.cs.["${userId}"],user_id.eq.${userId}`
+      );
+    } else {
+      // If no user, only show public recipes
+      query = query.eq("is_public", true);
+    }
 
     if (searchTerm) {
       query = query.or(
@@ -23,23 +34,35 @@ const getList = async (
       currentSkip,
       currentSkip + currentPageSize - 1
     );
+
     if (error) throw new Error("Failed to fetch recipes.");
     return { data, count };
   });
 };
 
+
 const getListWithTags = async (
   currentSkip: number,
   currentPageSize: number,
-  searchTerm: string = ""
+  searchTerm: string = "",
+  userId?: string // User ID is now optional
 ) => {
   return await supabaseWithAbort.request(
     "fetchRecipeListWithTags",
     async (client) => {
       let query = client
         .from(TableNames.RECIPE_SEARCH)
-        .select("*", { count: "exact" })
-        .range(currentSkip, currentSkip + currentPageSize - 1);
+        .select("*", { count: "exact" });
+
+      // Only filter by user permissions if a user is logged in
+      if (userId) {
+        query = query.or(
+          `is_public.eq.true,user_permissions.cs.[${userId}],user_id.eq.${userId}`
+        );
+      } else {
+        // If no user, only show public recipes
+        query = query.eq("is_public", true);
+      }
 
       if (searchTerm) {
         query = query.or(
@@ -47,12 +70,17 @@ const getListWithTags = async (
         );
       }
 
-      const { data, count, error } = await query;
+      const { data, count, error } = await query.range(
+        currentSkip,
+        currentSkip + currentPageSize - 1
+      );
+
       if (error) throw new Error("Failed to fetch recipes.");
       return { data, count };
     }
   );
 };
+
 
 const getDetail = async (
   recipeId: string | undefined,
@@ -85,18 +113,7 @@ const getDetail = async (
       if (error) throw new Error("Failed to fetch recipe details.");
       if (!data) throw new Error("No data returned for the given recipe.");
 
-      return {
-        ...data,
-        total_time: (data.prep_time || 0) + (data.cook_time || 0),
-        ingredients: (data.ingredients || []).sort(
-          (a, b) => a.sort_number - b.sort_number
-        ),
-        steps: (data.steps || []).sort((a, b) => a.sort_number - b.sort_number),
-        collections: (data.collection_to_recipes || []).map(
-          (item) => item.collections
-        ),
-        tags: (data.recipe_to_tags || []).map((item) => item.tags),
-      };
+      return data;
     }
   );
 };

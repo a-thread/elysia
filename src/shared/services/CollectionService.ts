@@ -25,7 +25,7 @@ const getList = async (
   });
 };
 
-const getDetail = async (collectionId: string, userId: string) => {
+const getDetail = async (collectionId, userId) => {
   return await supabaseWithAbort.request(
     `getDetail-${collectionId}`,
     async (client) => {
@@ -40,40 +40,52 @@ const getDetail = async (collectionId: string, userId: string) => {
               recipe_to_tags!left(tags!inner(id, title))
             )
           ),
-        collection_to_tags!left(tags!inner(id, title)),
-        collection_to_users!left(permission)
-        `
+          collection_to_tags!left(tags!inner(id, title, recipe_to_tags!left(recipes!inner(id, title, description, img_url, user_id, is_public)))) ,
+          collection_to_users!left(permission)
+          `
         )
         .eq("id", collectionId);
+      
       if (userId) {
         query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
       } else {
         query = query.eq("is_public", true);
       }
+      
       const { data, error } = await query.maybeSingle();
       if (error) throw new Error("Failed to fetch collection details.");
       if (!data) throw new Error("No data returned.");
-
-      // Extract unique recipes FOR fetchCollectionDetails
-      const recipes =
-        data?.collection_to_recipes?.map((item: any) => ({
-          ...item.recipes,
-          tags: item.recipes.recipe_to_tags?.map((tag: any) => tag.tags) || [],
-        })) || [];
-
-      // Extract unique collection-level tags
-      const tags =
-        data?.collection_to_tags?.map((item: any) => item.tags) || [];
+      
+      // Extract collection-level tags
+      const collectionTags = data?.collection_to_tags?.map((item) => item.tags) || [];
+      
+      // Extract recipes directly associated with the collection
+      const directRecipes = data?.collection_to_recipes?.map((item) => {
+        const recipe = item.recipes;
+        return { ...recipe, tags: recipe.recipe_to_tags?.map((tag) => tag.tags) || [] };
+      }) || [];
+      
+      // Extract recipes associated with tags linked to the collection
+      const taggedRecipes = data?.collection_to_tags?.flatMap((item) => {
+        return item.tags.recipe_to_tags?.map((taggedRecipe) => {
+          return { ...taggedRecipe.recipes, tags: taggedRecipe.recipes.recipe_to_tags?.map((tag) => tag.tags) || [] };
+        }) || [];
+      }) || [];
+      
+      // Merge recipes, ensuring uniqueness
+      const recipeMap = new Map();
+      [...directRecipes, ...taggedRecipes].forEach((recipe) => {
+        recipeMap.set(recipe.id, recipe);
+      });
+      
       return {
         ...data,
-        recipes,
-        tags, // Includes tags linked directly to the collection
+        recipes: Array.from(recipeMap.values()),
+        tags: collectionTags, // Includes tags linked directly to the collection
         can_edit:
           data.user_id === userId ||
           (data.collection_to_users &&
-            data.collection_to_users.some(
-              (share: any) => share.permission === "edit"
-            )),
+            data.collection_to_users.some((share) => share.permission === "edit")),
       };
     }
   );

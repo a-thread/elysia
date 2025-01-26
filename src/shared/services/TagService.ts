@@ -1,4 +1,4 @@
-import { Tag } from "../models/Tag";
+import { IdTitle } from "../models/Tag";
 import { supabaseWithAbort } from "./SupabaseWithAbort";
 import { TableNames } from "./TableNames";
 
@@ -23,7 +23,7 @@ const getList = async (
   });
 };
 
-const upsert = async (tagId: string, updatedTag: Tag) => {
+const upsert = async (tagId: string, updatedTag: IdTitle) => {
   return await supabaseWithAbort.request(
     `upsert-${tagId || "new"}`,
     async (client) => {
@@ -67,7 +67,7 @@ const deleteById = async (tagId: string) => {
   );
 };
 
-const addToRecipe = async (recipeId: string, tags: Tag[]) => {
+const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
   return await supabaseWithAbort.request(
     `addToRecipe-${recipeId}`,
     async (client) => {
@@ -84,7 +84,7 @@ const addToRecipe = async (recipeId: string, tags: Tag[]) => {
   );
 };
 
-const addToCollection = async (collectionId: string, tags: Tag[]) => {
+const addToCollection = async (collectionId: string, tags: IdTitle[]) => {
   return await supabaseWithAbort.request(
     `addToCollection-${collectionId}`,
     async (client) => {
@@ -101,7 +101,7 @@ const addToCollection = async (collectionId: string, tags: Tag[]) => {
   );
 };
 
-const removeFromCollection = async (collection_id: string, tags: Tag[]) => {
+const removeFromCollection = async (collection_id: string, tags: IdTitle[]) => {
   const tagIds = tags.map((tag) => tag.id);
 
   return await supabaseWithAbort.request(

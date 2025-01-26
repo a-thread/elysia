@@ -2,13 +2,19 @@ import { useState, useEffect } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
-import { useModalManager, DeleteConfirmationModal, ShareModal } from "@shared/components/Modals";
+import {
+  useModalManager,
+  DeleteConfirmationModal,
+  ShareModal,
+} from "@shared/components/Modals";
 import CollectionService from "@shared/services/CollectionService";
 import { Collection } from "@shared/models/Collection";
-import DropdownButton, { DropdownOption } from "@shared/components/Buttons/DropdownButton";
+import DropdownButton, {
+  DropdownOption,
+} from "@shared/components/Buttons/DropdownButton";
 import { UserService } from "@shared/services/UserService";
 
-const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
+const EllipsisMenu: React.FC<{ collection: Collection }> = ({ collection }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
@@ -31,25 +37,20 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (collection.id) {
-        const sharedUsers = await CollectionService.fetchSharedUsers(collection.id);
+        const sharedUsers = await CollectionService.fetchSharedUsers(
+          collection.id
+        );
         setSharedUsers(sharedUsers!);
       }
-    }
+    };
     fetchData();
   }, [collection.id]);
 
   const handleTogglePublicShare = async () => {
+    setIsPublic(!isPublic);
     try {
-      if (!collection.id) {
-        throw new Error('No Collection id found.');
-      }
-
-      const newStatus = await CollectionService.setIsPublic(
-        collection.id,
-        !!collection.is_public
-      );
-      setIsPublic(newStatus!);
-      toast.success(`Collection is now ${newStatus ? "public" : "private"}!`);
+      await CollectionService.setIsPublic(collection.id, isPublic);
+      toast.success(`Collection is now ${isPublic ? "public" : "private"}!`);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -57,7 +58,7 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
 
   const handleShareWithUser = async (email: string, permission: string) => {
     if (!email) return toast.error("Please enter a valid email.");
-    if (!collection.id) return toast.error();;
+    if (!collection.id) return toast.error();
 
     try {
       const user = await UserService.findByEmail(email);
@@ -65,7 +66,9 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
       toast.success(
         `Collection shared with ${user?.display_name} as ${permission}.`
       );
-      const sharedUsers = await CollectionService.fetchSharedUsers(collection.id);
+      const sharedUsers = await CollectionService.fetchSharedUsers(
+        collection.id
+      );
       setSharedUsers(sharedUsers!);
     } catch (error: any) {
       toast.error(error.message);
@@ -77,7 +80,9 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
     try {
       await CollectionService.revokeAccess(shareId);
       toast.success("Access revoked.");
-      const sharedUsers = await CollectionService.fetchSharedUsers(collection.id);
+      const sharedUsers = await CollectionService.fetchSharedUsers(
+        collection.id
+      );
       setSharedUsers(sharedUsers!);
     } catch (error: any) {
       toast.error(error.message);
@@ -111,22 +116,24 @@ const EllipsisMenu: React.FC<{collection: Collection}> = ({ collection }) => {
       await CollectionService.deleteById(collection.id);
       toast.success("Collection deleted successfully!");
       closeModal();
-      navigate("/");
+      navigate("/collections");
     } catch (error: any) {
       toast.error("Failed to delete collection. Please try again.");
     }
   };
 
   const options: DropdownOption[] = [
-    {label: "Edit", onClick: handleEditClick},
-    {label: "Delete", onClick: handleDeleteClick},
-    {label: "Share", onClick: handleShareClick},
+    { label: "Edit", onClick: handleEditClick },
+    { label: "Delete", onClick: handleDeleteClick },
+    { label: "Share", onClick: handleShareClick },
   ];
 
   return (
     <DropdownButton
       options={options}
-      icon={<EllipsisVerticalIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />}
+      icon={
+        <EllipsisVerticalIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+      }
     />
   );
 };

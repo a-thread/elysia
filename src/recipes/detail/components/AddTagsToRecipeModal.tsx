@@ -4,7 +4,7 @@ import { Button } from "@shared/components/Buttons";
 import { useModalManager } from "@shared/components/Modals";
 import { useToast } from "@shared/components/Toast";
 import TagService from "@shared/services/TagService";
-import { Tag } from "@shared/models/Tag";
+import { IdTitle } from "@shared/models/Tag";
 
 interface AddTagsToRecipeModalProps {
   recipeId: string | undefined;
@@ -14,8 +14,8 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId })
   const { closeModal } = useModalManager();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [selectedOptions, setSelectedOptions] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<IdTitle[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<IdTitle[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleSearch = (term: string) => {

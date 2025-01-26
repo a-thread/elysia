@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import { Button, TagButton } from "./Buttons";
-import { Tag } from "@shared/models/Tag";
+import { IdTitle } from "@shared/models/Tag";
 import Loading from "./Loading";
 
 // Define MultiSelect Props
 interface MultiSelectProps {
   isLoading?: boolean;
   inputId: string;
-  options: Tag[];
-  selectedOptions: Tag[];
+  options: IdTitle[];
+  selectedOptions: IdTitle[];
   placeholder: string;
-  setSelectedOptions: (options: Tag[]) => void;
+  setSelectedOptions: (options: IdTitle[]) => void;
   onSearch: (searchTerm: string) => void;
 }
 
@@ -71,7 +71,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   }, [isDropdownOpen]);
 
-  const handleSelect = (option: Tag) => {
+  const handleSelect = (option: IdTitle) => {
     if (option.id) {
       const updatedOptions = selectedIds.includes(option.id)
         ? selectedOptions.filter((o) => o.id !== option.id)
@@ -80,7 +80,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   };
 
-  const handleRemove = (option: Tag) => {
+  const handleRemove = (option: IdTitle) => {
     const updatedOptions = selectedOptions.filter((o) => o.id !== option.id);
     setSelectedOptions(updatedOptions);
   };

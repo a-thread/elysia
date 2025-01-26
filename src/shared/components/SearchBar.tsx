@@ -1,12 +1,12 @@
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Tag } from "@shared/models/Tag";
+import { IdTitle } from "@shared/models/Tag";
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 
 interface SearchDropdownProps {
-  options: Tag[];
-  selectedOptions: Tag[];
+  options: IdTitle[];
+  selectedOptions: IdTitle[];
   placeholder?: string;
-  setSelectedOptions: (options: Tag[]) => void;
+  setSelectedOptions: (options: IdTitle[]) => void;
   onSearch: (searchTerm: string) => void;
 }
 
@@ -57,7 +57,7 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
     }
   }, [isDropdownOpen]);
 
-  const handleSelect = (option: Tag) => {
+  const handleSelect = (option: IdTitle) => {
     const alreadySelected = selectedOptions.find((o) => o.id === option.id);
     setSelectedOptions(
       alreadySelected
@@ -66,7 +66,7 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
     );
   };
 
-  const handleRemove = (option: Tag) => {
+  const handleRemove = (option: IdTitle) => {
     setSelectedOptions(selectedOptions.filter((o) => o.id !== option.id));
   };
 

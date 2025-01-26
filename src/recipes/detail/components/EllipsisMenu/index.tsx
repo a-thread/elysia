@@ -9,14 +9,16 @@ import {
 } from "@shared/components/Modals";
 import RecipeService from "@shared/services/RecipeService";
 import { Recipe } from "@shared/models/Recipe";
-import DropdownButton, { DropdownOption } from "@shared/components/Buttons/DropdownButton";
+import DropdownButton, {
+  DropdownOption,
+} from "@shared/components/Buttons/DropdownButton";
 import { UserService } from "@shared/services/UserService";
 
 const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
-  const [isPublic, setIsPublic] = useState(recipe.is_public || false);
+  let isPublic = recipe.is_public!;
   const [sharedUsers, setSharedUsers] = useState<any[]>([]);
 
   const handleEditClick = () => {
@@ -39,13 +41,10 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   // }, [recipe.id]);
 
   const handleTogglePublicShare = async () => {
+    isPublic = !isPublic
     try {
-      const newStatus = await RecipeService.setIsPublic(
-        recipe.id,
-        !!recipe.is_public
-      );
-      setIsPublic(newStatus!);
-      toast.success(`Recipe is now ${newStatus ? "public" : "private"}!`);
+      await RecipeService.setIsPublic(recipe.id, isPublic);
+      toast.success(`Recipe is now ${isPublic ? "public" : "private"}!`);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -56,7 +55,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
     try {
       const user = await UserService.findByEmail(email);
-      if (!user) throw Error('user not found');
+      if (!user) throw Error("user not found");
       await RecipeService.shareWithUser(recipe.id, user?.id!, permission);
       toast.success(
         `Recipe shared with ${user.display_name} as ${permission}.`
@@ -111,16 +110,18 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     }
   };
 
-    const options: DropdownOption[] = [
-      {label: "Edit", onClick: handleEditClick},
-      {label: "Delete", onClick: handleDeleteClick},
-      {label: "Share", onClick: handleShareClick},
-    ];
+  const options: DropdownOption[] = [
+    { label: "Edit", onClick: handleEditClick },
+    { label: "Delete", onClick: handleDeleteClick },
+    { label: "Share", onClick: handleShareClick },
+  ];
 
   return (
     <DropdownButton
       options={options}
-      icon={<EllipsisVerticalIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />}
+      icon={
+        <EllipsisVerticalIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+      }
     />
   );
 };

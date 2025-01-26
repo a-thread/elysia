@@ -27,7 +27,7 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
 
   // set values on first load
   useEffect(() => {
-    const updatedValues = formState.map((i) => ({
+    const updatedValues = originalFormState.map((i) => ({
       ...i,
       isActive: true,
     }))

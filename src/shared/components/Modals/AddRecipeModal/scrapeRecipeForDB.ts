@@ -79,6 +79,15 @@ export async function scrapeRecipeForDB(url: string) {
         ingredients.push(parseIngredient(rawIngredient));
       }
     });
+    
+    if (ingredients.length === 0) {
+      $('ol[class*="ingredients"] li').each((_, el) => {
+        const rawIngredient = $(el).html();
+        if (rawIngredient) {
+          ingredients.push(parseIngredient(rawIngredient));
+        }
+      });
+    }
 
     if (ingredients.length === 0) {
       $('div[class*="ingredients"] li').each((_, el) => {
@@ -105,6 +114,16 @@ export async function scrapeRecipeForDB(url: string) {
         }
       });
     }
+
+    if (steps.length === 0) {
+      $('div[class*="instructions"] div[class*="step"]').each((_, el) => {
+        const stepHtml = $(el).html();
+        if (stepHtml) {
+          steps.push(stripHtml(stepHtml));
+        }
+      });
+    }
+    
 
     if (steps.length === 0) {
       $('ol[class*="preparation"] li').each((_, el) => {

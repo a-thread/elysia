@@ -22,16 +22,10 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
   setOriginalFormState,
   sectionName,
 }) => {
-  const [formState, setFormState] =
-    useState<StepIngredient[]>(originalFormState);
+  const [formState, setFormState] = useState<StepIngredient[]>(originalFormState);
 
-  // set values on first load
   useEffect(() => {
-    const updatedValues = originalFormState.map((i) => ({
-      ...i,
-      isActive: true,
-    }))
-    setFormState(updatedValues);
+    setFormState([...originalFormState]);
   }, [originalFormState]);
 
   // Debounce function to emit new values every 400ms

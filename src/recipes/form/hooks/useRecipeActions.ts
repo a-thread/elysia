@@ -6,6 +6,7 @@ import RecipeService from "@shared/services/RecipeService";
 import FormUtils from "@shared/utils/form-field-helpers";
 import { getStepIngredientDto } from "@shared/models/StepIngredientDto";
 import { useAuth } from "@shared/contexts/AuthContext";
+import TagService from "@shared/services/TagService";
 
 export const useRecipeActions = (
   formData: Recipe,
@@ -32,20 +33,26 @@ export const useRecipeActions = (
           return;
         }
         const simpleObject = FormUtils.extractSimpleValues(updatedFields);
-        await RecipeService.upsert(id, simpleObject);
+        if (Object.keys(simpleObject).length > 0) {
+          await RecipeService.upsert(id, simpleObject);
+        }
+
+        await handleIngredientChanges(id, updatedFields.ingredients || []);
+        await handleStepChanges(id, updatedFields.steps || []);
+        await handleTagChanges(
+          id,
+          updatedFields.tags || [],
+          originalData?.tags || []
+        );
+        console.log(updatedFields.tags);
+        await handleCollectionChanges(
+          id,
+          updatedFields.collections || [],
+          originalData?.collections || []
+        );
+
         toast.success("Recipe updated successfully!");
         navigate(`/recipes/${id}`);
-
-        const ingredientsToUpsert = getStepIngredientDto(
-          id,
-          updatedFields.ingredients
-        );
-        if (ingredientsToUpsert.length)
-          await RecipeService.upsertIngredients(ingredientsToUpsert);
-
-        const stepsToUpsert = getStepIngredientDto(id, updatedFields.steps);
-        if (stepsToUpsert.length)
-          await RecipeService.upsertSteps(stepsToUpsert);
       } else {
         const simpleObject = FormUtils.extractSimpleValues(formData);
         const response = await RecipeService.upsert(
@@ -53,20 +60,35 @@ export const useRecipeActions = (
           simpleObject,
           user?.id
         );
+        const recipeId = response?.recipeId || "";
 
+        // Ingredients
         const ingredientsToUpsert = getStepIngredientDto(
-          response?.recipeId!,
+          recipeId,
           formData.ingredients
         );
-        if (ingredientsToUpsert.length)
+        if (ingredientsToUpsert.length > 0) {
           await RecipeService.upsertIngredients(ingredientsToUpsert);
+        }
+        const stepsToUpsert = getStepIngredientDto(recipeId, formData.steps);
 
-        const stepsToUpsert = getStepIngredientDto(
-          response?.recipeId!,
-          formData.steps
-        );
-        if (stepsToUpsert.length)
+        // Steps
+        if (stepsToUpsert.length > 0) {
           await RecipeService.upsertSteps(stepsToUpsert);
+        }
+
+        // Tags
+        if (formData.tags && formData.tags.length > 0) {
+          await TagService.addToRecipe(recipeId, formData.tags);
+        }
+
+        // Collections
+        if (formData.collections && formData.collections.length > 0) {
+          await RecipeService.addOneToManyCollections(
+            recipeId,
+            formData.collections.map((i) => i.id)
+          );
+        }
 
         toast.success("Recipe added successfully!");
         navigate(`/recipes/${response?.recipeId!}`);
@@ -77,4 +99,94 @@ export const useRecipeActions = (
   };
 
   return { handleSave };
+};
+
+/**
+ * Handles changes in Ingredients (adds new ones, removes deleted ones).
+ */
+const handleIngredientChanges = async (
+  recipeId: string,
+  ingredients: any[]
+) => {
+  const ingredientsToUpsert = getStepIngredientDto(recipeId, ingredients);
+  const ingredientsToRemove = ingredients
+    .filter((i) => i.isActive)
+    .map((i) => i.id);
+
+  if (ingredientsToUpsert.length > 0) {
+    await RecipeService.upsertIngredients(ingredientsToUpsert);
+  }
+
+  if (ingredientsToRemove.length > 0) {
+    await RecipeService.deleteIngredients(ingredientsToRemove);
+  }
+};
+
+/**
+ * Handles changes in Steps (adds new ones, removes deleted ones).
+ */
+const handleStepChanges = async (recipeId: string, steps: any[]) => {
+  const stepsToUpsert = getStepIngredientDto(recipeId, steps);
+  const stepsToRemove = steps.filter((i) => i.isActive).map((i) => i.id);
+
+  if (stepsToUpsert.length > 0) {
+    await RecipeService.upsertSteps(stepsToUpsert);
+  }
+
+  if (stepsToRemove.length > 0) {
+    await RecipeService.deleteSteps(stepsToRemove);
+  }
+};
+
+/**
+ * Handles changes in Tags (adds new ones, removes deleted ones).
+ */
+const handleTagChanges = async (
+  recipeId: string,
+  updatedTags: any[],
+  originalTags: any[]
+) => {
+  const tagsToAdd = updatedTags.filter(
+    (tag) => !originalTags.some((origTag) => origTag.id === tag.id)
+  );
+  const tagsToRemove = originalTags.filter(
+    (origTag) => !updatedTags.some((tag) => tag.id === origTag.id)
+  );
+  console.log(tagsToAdd, tagsToRemove, originalTags)
+  if (tagsToAdd.length > 0) {
+    await TagService.addToRecipe(recipeId, tagsToAdd);
+  }
+
+  if (tagsToRemove.length > 0) {
+    await TagService.removeFromRecipe(recipeId, tagsToRemove);
+  }
+};
+
+/**
+ * Handles changes in Collections (adds new ones, removes deleted ones).
+ */
+const handleCollectionChanges = async (
+  recipeId: string,
+  updatedColl: any[],
+  originalColl: any[]
+) => {
+  const collectionsToUpsert = updatedColl.filter(
+    (updatedColl) =>
+      !originalColl.some((originColl) => originColl.id === updatedColl.id)
+  );
+  const collectionsToRemove = originalColl.filter(
+    (originalColl) =>
+      !updatedColl.some((updatedColl) => updatedColl.id === originalColl.id)
+  );
+
+  if (collectionsToUpsert.length > 0) {
+    await RecipeService.addOneToManyCollections(recipeId, collectionsToUpsert);
+  }
+
+  if (collectionsToRemove.length > 0) {
+    await RecipeService.removeManyFromManyCollections(
+      [recipeId],
+      collectionsToRemove
+    );
+  }
 };

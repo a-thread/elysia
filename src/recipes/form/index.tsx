@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PhotoUpload from "../../shared/components/PhotoUpload";
 import EditableSectionForm from "./components/EditableSectionForm";
 import { Button } from "@shared/components/Buttons";
@@ -7,10 +7,22 @@ import TitleDescriptionForm from "@shared/components/TitleDescriptionForm";
 import RecipeDetailsForm from "@shared/components/RecipeDetailsForm";
 import { useRecipeForm } from "./hooks/useRecipeForm";
 import { useRecipeActions } from "./hooks/useRecipeActions";
+import MultiSelect from "@shared/components/MultiSelect";
 
 const RecipeForm: React.FC = () => {
-  const { formData, originalData, onFormChange, isEditing, id, loading } =
-    useRecipeForm();
+  const navigate = useNavigate();
+  const {
+    formData,
+    originalData,
+    onFormChange,
+    isEditing,
+    id,
+    loading,
+    collectionList,
+    tagList,
+    setCollectionSearch,
+    setTagSearch,
+  } = useRecipeForm();
   const { handleSave } = useRecipeActions(
     formData,
     originalData,
@@ -21,9 +33,9 @@ const RecipeForm: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto mt-4">
       <div className="w-full flex justify-end items-center mb-4 gap-4">
-        <Link to={isEditing ? `/recipes/${id}` : "/"}>
-          <Button btnType="dismissable">Cancel</Button>
-        </Link>
+        <Button btnType="dismissable" onClick={() => navigate(-1)}>
+          Cancel
+        </Button>
         <Button onClick={handleSave} isLoading={loading}>
           {isEditing ? "Save" : "Add"}
         </Button>
@@ -55,6 +67,44 @@ const RecipeForm: React.FC = () => {
           setOriginalFormState={(e) => onFormChange("steps", e)}
           sectionName="Step"
         />
+
+        <div className="mb-2">
+          <label
+            htmlFor="Tags"
+            className="peer-focus:font-medium text-sm text-gray-500 dark:text-gray-400 mb-2"
+          >
+            Tags
+          </label>
+          <MultiSelect
+            placeholder="Search for tags..."
+            inputId="Tags"
+            options={tagList}
+            selectedOptions={formData.tags || []}
+            setSelectedOptions={(selectedTags) =>
+              onFormChange("tags", selectedTags)
+            }
+            onSearch={setTagSearch}
+          />
+        </div>
+
+        <div className="mb-2">
+          <label
+            htmlFor="Collections"
+            className="peer-focus:font-medium text-sm text-gray-500 dark:text-gray-400 mb-2"
+          >
+            Collections
+          </label>
+          <MultiSelect
+            placeholder="Search for collections..."
+            inputId="Collections"
+            options={collectionList}
+            selectedOptions={formData.collections || []}
+            setSelectedOptions={(selectedCollections) =>
+              onFormChange("collections", selectedCollections)
+            }
+            onSearch={setCollectionSearch}
+          />
+        </div>
       </div>
     </div>
   );

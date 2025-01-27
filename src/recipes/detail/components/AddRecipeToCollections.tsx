@@ -9,12 +9,12 @@ import { IdTitle } from "@shared/models/Tag";
 
 interface AddRecipeToCollectionsModalProps {
   recipeId: string | undefined;
+  collectionAdded: () => void;
 }
 
-const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = ({ recipeId }) => {
+const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = ({ recipeId, collectionAdded }) => {
   const { closeModal } = useModalManager();
   const toast = useToast();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [collections, setCollections] = useState<IdTitle[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<IdTitle[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -25,7 +25,6 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       try {
         const response = await CollectionService.getList(
           0,
@@ -37,8 +36,6 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
         }
       } catch (error) {
         console.error("Error fetching tags:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchData();
@@ -49,6 +46,7 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
     if (recipeId && idsToInsert.length > 0) {
       try {
         await RecipeService.addOneToManyCollections(recipeId, idsToInsert);
+        collectionAdded();
         toast.success("Recipe has been added to selected collection(s)!");
         closeModal();
       } catch (error) {
@@ -61,7 +59,6 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
     <>
       <h2 className="text-xl font-semibold mb-4">Save Recipe</h2>
       <MultiSelect
-        isLoading={isLoading}
         inputId="collections"
         options={collections}
         selectedOptions={selectedOptions}

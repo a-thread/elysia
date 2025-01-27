@@ -1,12 +1,19 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Recipe } from "@shared/models/Recipe";
+import TagService from "@shared/services/TagService";
+import CollectionService from "@shared/services/CollectionService";
 
 export const useRecipeForm = () => {
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
 
   const isEditing = !!id;
+
+  const [collectionSearch, setCollectionSearch] = useState("");
+  const [collectionList, setCollectionList] = useState<any[]>([]);
+  const [tagSearch, setTagSearch] = useState("");
+  const [tagList, setTagList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<Recipe>({
     title: "",
@@ -18,6 +25,8 @@ export const useRecipeForm = () => {
     original_recipe_url: "",
     ingredients: [],
     steps: [],
+    collections: [],
+    tags: [],
   });
   const [originalData, setOriginalData] = useState<Recipe | null>({
     title: "",
@@ -29,6 +38,8 @@ export const useRecipeForm = () => {
     original_recipe_url: "",
     ingredients: [],
     steps: [],
+    collections: [],
+    tags: [],
   });
 
   useEffect(() => {
@@ -44,6 +55,8 @@ export const useRecipeForm = () => {
         original_recipe_url: existingRecipe.original_recipe_url || "",
         ingredients: existingRecipe.ingredients || [],
         steps: existingRecipe.steps || [],
+        tags: existingRecipe.tags ? [...existingRecipe.tags] : [],
+        collections: existingRecipe.collections ? [...existingRecipe.collections] : [],
       };
       setFormData(formData);
       setOriginalData(formData);
@@ -54,5 +67,49 @@ export const useRecipeForm = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  return { formData, originalData, onFormChange, isEditing, id, loading, setLoading };
+  // Fetch Tags
+  const fetchTags = useCallback(async () => {
+    try {
+      const response = await TagService.getList(0, 25, tagSearch);
+      if (response?.data) {
+        setTagList(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+    }
+  }, [tagSearch]);
+
+  // Fetch Recipes
+  const fetchCollections = useCallback(async () => {
+    try {
+      const response = await CollectionService.getList(0, 25, collectionSearch);
+      if (response?.data) {
+        setCollectionList(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+    }
+  }, [collectionSearch]);
+
+  useEffect(() => {
+    fetchCollections();
+  }, [collectionSearch]);
+
+  useEffect(() => {
+    fetchTags();
+  }, [fetchTags]);
+
+  return {
+    formData,
+    originalData,
+    onFormChange,
+    isEditing,
+    id,
+    loading,
+    setLoading,
+    collectionList,
+    tagList,
+    setCollectionSearch,
+    setTagSearch,
+  };
 };

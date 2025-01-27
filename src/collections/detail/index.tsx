@@ -12,7 +12,7 @@ import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { TagButton } from "@shared/components/Buttons";
 
 const CollectionDetail: React.FC = () => {
-  const { id } = useParams<{id: string}>();
+  const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
 
   const [collection, setCollection] = useState<CollectionData | null>(null);
@@ -26,10 +26,7 @@ const CollectionDetail: React.FC = () => {
         if (!id || !user?.id) {
           throw new Error("no id found");
         }
-        const collectionData = await CollectionService.getDetail(
-          id,
-          user?.id
-        );
+        const collectionData = await CollectionService.getDetail(id, user?.id);
         if (!collectionData) {
           throw new Error("no data returned");
         }
@@ -53,13 +50,13 @@ const CollectionDetail: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto mt-4">
       <div className="w-full flex justify-between items-center mb-4">
-        <Link to="/">
+        <Link to="/collections">
           <div className="flex justify-center items-center font-medium text-center text-leaf-green-600 dark:text-leaf-green-100">
             <ChevronLeftIcon aria-hidden="true" className="size-6" />
             <p>Collections</p>
           </div>
         </Link>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end flex-wrap gap-2">
           {!!user?.id && <EllipsisMenu collection={collection} />}
         </div>
       </div>
@@ -84,32 +81,28 @@ const CollectionDetail: React.FC = () => {
         />
 
         {collection.tags && collection.tags.length > 0 && (
-          <>
-            <h2 className="pb-2 pt-3 text-xl font-bold text-leaf-green-900 dark:text-leaf-green-100">
-              Tags
-            </h2>
-            <div>
-              {collection.tags.map((tag) => (
-                <TagButton key={tag.id} title={tag.title} isReadOnly={true} />
-              ))}
-            </div>
-          </>
+          <div className="mt-4">
+            {collection.tags.map((tag) => (
+              <TagButton key={tag.id} title={tag.title} isReadOnly={true} />
+            ))}
+          </div>
         )}
       </div>
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-        {collection.recipes && collection.recipes.map((recipe) => (
-          <Link key={recipe.id} to={`/recipes/${recipe.id}`}>
-            <ImgTitleDescription
-              key={recipe.id}
-              title={recipe.title}
-              description={recipe.description}
-              img_url={recipe.img_url}
-            />
-          </Link>
-        ))}
+        {collection.recipes &&
+          collection.recipes.map((recipe) => (
+            <Link key={recipe.id} to={`/recipes/${recipe.id}`}>
+              <ImgTitleDescription
+                key={recipe.id}
+                title={recipe.title}
+                description={recipe.description}
+                img_url={recipe.img_url}
+              />
+            </Link>
+          ))}
       </div>
     </div>
   );
-}
+};
 
 export default CollectionDetail;

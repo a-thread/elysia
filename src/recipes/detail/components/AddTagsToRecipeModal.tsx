@@ -8,12 +8,12 @@ import { IdTitle } from "@shared/models/Tag";
 
 interface AddTagsToRecipeModalProps {
   recipeId: string | undefined;
+  tagAdded: () => void;
 }
 
-const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId }) => {
+const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId, tagAdded }) => {
   const { closeModal } = useModalManager();
   const toast = useToast();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tags, setTags] = useState<IdTitle[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<IdTitle[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -24,7 +24,6 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId })
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       try {
         const response = await TagService.getList(
           0,
@@ -36,8 +35,6 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId })
         }
       } catch (error) {
         console.error("Error fetching tags:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchData();
@@ -47,6 +44,7 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId })
     if (recipeId) {
       try {
         await TagService.addToRecipe(recipeId, selectedOptions);
+        tagAdded();
         toast.success("Tags have been added to recipe!");
         closeModal();
       } catch (error) {
@@ -59,7 +57,6 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId })
     <>
       <h2 className="text-xl font-semibold mb-4">Save Recipe</h2>
       <MultiSelect
-        isLoading={isLoading}
         inputId="tags"
         options={tags}
         selectedOptions={selectedOptions}

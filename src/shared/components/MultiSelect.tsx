@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import { Button, TagButton } from "./Buttons";
 import { IdTitle } from "@shared/models/Tag";
-import Loading from "./Loading";
 
 // Define MultiSelect Props
 interface MultiSelectProps {
-  isLoading?: boolean;
   inputId: string;
   options: IdTitle[];
   selectedOptions: IdTitle[];
@@ -15,7 +13,6 @@ interface MultiSelectProps {
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
-  isLoading = false,
   inputId = "",
   options = [],
   selectedOptions = [],
@@ -144,7 +141,6 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             onKeyDown={handleKeyDown}
             aria-labelledby="multi-select-label"
           />
-         {isLoading && <Loading /> } 
       </div>
 
       {/* Dropdown List */}

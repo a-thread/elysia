@@ -104,6 +104,6 @@ const handleRecipeChanges = async (collectionId: string, originalRecipes: any[],
   }
 
   if (recipesToRemove.length > 0) {
-    await RecipeService.removeManyFromCollection(collectionId, recipesToRemove);
+    await RecipeService.removeManyFromManyCollections([collectionId], recipesToRemove);
   }
 };

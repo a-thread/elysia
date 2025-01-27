@@ -20,15 +20,30 @@ const Recipe: React.FC = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const { openModal } = useModalManager();
-  
-  const { recipe, loading } = useRecipeDetails(id, user?.id);
+
+  const { recipe, loading, fetchRecipe } = useRecipeDetails(id, user?.id);
 
   if (loading) return <Loading className="mt-40" />;
   if (!recipe) return <EmptyState message="Recipe not found." />;
 
   const options: DropdownOption[] = [
-    { label: "Add Tags", onClick: () => openModal(<AddTagsToRecipeModal recipeId={recipe.id} />) },
-    { label: "Add to Collection", onClick: () => openModal(<AddRecipeToCollectionsModal recipeId={recipe.id} />) },
+    {
+      label: "Add Tags",
+      onClick: () =>
+        openModal(
+          <AddTagsToRecipeModal recipeId={recipe.id} tagAdded={fetchRecipe} />
+        ),
+    },
+    {
+      label: "Add to Collection",
+      onClick: () =>
+        openModal(
+          <AddRecipeToCollectionsModal
+            recipeId={recipe.id}
+            collectionAdded={fetchRecipe}
+          />
+        ),
+    },
   ];
 
   return (
@@ -39,7 +54,11 @@ const Recipe: React.FC = () => {
   );
 };
 
-const Header: React.FC<{ user: any; options: DropdownOption[]; recipe: any }> = ({ user, options, recipe }) => (
+const Header: React.FC<{
+  user: any;
+  options: DropdownOption[];
+  recipe: any;
+}> = ({ user, options, recipe }) => (
   <div className="w-full flex justify-between items-center mb-4">
     <Link to="/">
       <div className="flex items-center font-medium text-leaf-green-600 dark:text-leaf-green-100">
@@ -49,7 +68,12 @@ const Header: React.FC<{ user: any; options: DropdownOption[]; recipe: any }> = 
     </Link>
     {user?.id && (
       <div className="flex gap-2">
-        <DropdownButton options={options} icon={<PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />} />
+        <DropdownButton
+          options={options}
+          icon={
+            <PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
+          }
+        />
         <EllipsisMenu recipe={recipe} />
       </div>
     )}
@@ -59,12 +83,27 @@ const Header: React.FC<{ user: any; options: DropdownOption[]; recipe: any }> = 
 const Content: React.FC<{ recipe: any }> = ({ recipe }) => (
   <div className="flex flex-col-reverse md:flex-row gap-6">
     <div className="w-full md:w-3/4">
-      {recipe.img_url && <img src={recipe.img_url} alt={recipe.title} className="w-full h-64 object-cover rounded-t-lg" />}
-      <div className={`bg-white dark:bg-gray-900 p-6 ${!recipe.img_url && "rounded-lg"}`}>
-        <TitleDescHeader title={recipe.title} description={recipe.description} />
+      {recipe.img_url && (
+        <img
+          src={recipe.img_url}
+          alt={recipe.title}
+          className="w-full h-64 object-cover rounded-t-lg"
+        />
+      )}
+      <div
+        className={`bg-white dark:bg-gray-900 p-6 ${
+          !recipe.img_url && "rounded-lg"
+        }`}
+      >
+        <TitleDescHeader
+          title={recipe.title}
+          description={recipe.description}
+        />
         <IngredientsSection ingredients={recipe.ingredients} />
         <StepsSection steps={recipe.steps} />
-        {recipe.original_recipe_url && <SourceLink url={recipe.original_recipe_url} />}
+        {recipe.original_recipe_url && (
+          <SourceLink url={recipe.original_recipe_url} />
+        )}
       </div>
     </div>
     <div className="w-full md:w-1/4">
@@ -76,7 +115,10 @@ const Content: React.FC<{ recipe: any }> = ({ recipe }) => (
 const SourceLink: React.FC<{ url: string }> = ({ url }) => (
   <div className="mx-2">
     <small>
-      source: <a className="pl-1 italic" href={url}>{url}</a>
+      source:{" "}
+      <a className="pl-1 italic" href={url}>
+        {url}
+      </a>
     </small>
   </div>
 );

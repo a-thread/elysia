@@ -91,7 +91,6 @@ const getDetail = async (collectionId: string, userId: string) => {
   );
 };
 
-// NEED TO ADD LOGIC TO ADD TAG / RESOURCE ASSOCIATION
 const upsert = async (
   collectionId: string,
   simpleValues: Partial<Collection>,

@@ -31,7 +31,7 @@ function Navbar() {
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const navLinks = ["/", "/about", "/collections", "/tags"];
+  const navLinks = ["/", "/collections", "/tags", "/about"];
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -116,7 +116,7 @@ function Navbar() {
               }`}
             >
               {path === "/"
-                ? "Home"
+                ? "Recipes"
                 : path.replace("/", "").charAt(0).toUpperCase() + path.slice(2)}
             </Link>
           ))}
@@ -179,7 +179,7 @@ function Navbar() {
                 onClick={toggleMenu}
               >
                 {path === "/"
-                  ? "Home"
+                  ? "Recipes"
                   : path.replace("/", "").charAt(0).toUpperCase() +
                     path.slice(2)}
               </Link>

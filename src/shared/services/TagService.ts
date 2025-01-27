@@ -84,6 +84,23 @@ const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
   );
 };
 
+const removeFromRecipe = async (recipe_id: string, tags: IdTitle[]) => {
+  const tagIds = tags.map((tag) => tag.id);
+console.log(tagIds)
+  return await supabaseWithAbort.request(
+    `removeManyFromCollection-${recipe_id}`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.RECIPE_TO_TAGS)
+        .delete()
+        .eq("recipe_id", recipe_id)
+        .in("tag_id", tagIds);
+
+      if (error) throw new Error("Failed to remove tags from collection.");
+    }
+  );
+};
+
 const addToCollection = async (collectionId: string, tags: IdTitle[]) => {
   return await supabaseWithAbort.request(
     `addToCollection-${collectionId}`,
@@ -122,6 +139,7 @@ const TagService = {
   addToRecipe,
   addToCollection,
   removeFromCollection,
+  removeFromRecipe,
   getList,
   upsert,
   deleteById,

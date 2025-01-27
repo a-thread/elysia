@@ -22,12 +22,18 @@ const CollectionForm: React.FC = () => {
     collectionId,
   } = useCollectionForm();
 
-  const { handleSave } = useCollectionActions(formData, isEditing, originalData, collectionId, userId);
+  const { handleSave } = useCollectionActions(
+    formData,
+    isEditing,
+    originalData,
+    collectionId,
+    userId
+  );
 
   return (
     <div className="max-w-2xl mx-auto mt-4">
       <div className="w-full flex justify-end items-center mb-4 gap-4">
-        <Button btnType="dismissable" onClick={() => navigate("/collections")}>
+        <Button btnType="dismissable" onClick={() => navigate(-1)}>
           Cancel
         </Button>
         <Button onClick={handleSave} isLoading={loading}>

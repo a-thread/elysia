@@ -17,6 +17,15 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
   return (
     <div className="flex flex-col gap-4">
+      <Button
+        className="w-full bg-white"
+        btnType="secondary"
+        onClick={onCookClick}
+      >
+        Get Cookin
+        <FireIcon className="h-5 w-5" />
+      </Button>
+
       <div className="py-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">
         <div className="mb-2">
           <TimeLabelValue label="servings" value={recipe.servings} />
@@ -34,19 +43,15 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
           />
         </div>
       </div>
-      <Button
-        className="w-full bg-white"
-        btnType="secondary"
-        onClick={onCookClick}
-      >
-        Get Cookin
-        <FireIcon className="h-5 w-5" />
-      </Button>
 
-      {recipe.collections && (
-        <div>
-          <h4>Collections</h4>
-          <div className="flex gap-2">
+      {recipe.collections && recipe.collections.length > 0 && (
+        <div className="pt-2 pb-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">
+          <div className="mb-1">
+            <small className="text-leaf-green-800 dark:text-leaf-green-100">
+              collections
+            </small>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {recipe.collections.map((collection) => (
               <TagButton
                 key={collection.id}
@@ -58,10 +63,14 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
         </div>
       )}
 
-      {recipe.tags && (
-        <div>
-          <h4>Tags</h4>
-          <div className="flex gap-2">
+      {recipe.tags && recipe.tags.length > 0 && (
+        <div className="pt-2 pb-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">
+          <div className="mb-1">
+            <small className="text-leaf-green-800 dark:text-leaf-green-100">
+              tags
+            </small>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {recipe.tags.map((tag) => (
               <TagButton key={tag.id} title={tag.title} isReadOnly={true} />
             ))}

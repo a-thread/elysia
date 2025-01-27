@@ -260,22 +260,20 @@ const addManyToOneCollection = async (
   );
 };
 
-const removeManyFromCollection = async (
-  collection_id: string,
-  recipes: Recipe[]
+const removeManyFromManyCollections = async (
+  collectionIds: string[],
+  recipeIds: string[]
 ) => {
-  const recipeIds = recipes.map((recipe) => recipe.id);
-
   return await supabaseWithAbort.request(
-    `removeManyFromCollection-${collection_id}`,
+    `removeManyFromManyCollections`,
     async (client) => {
       const { error } = await client
         .from(TableNames.COLLECTION_TO_RECIPES)
         .delete()
-        .eq("collection_id", collection_id)
+        .in("collection_id", collectionIds)
         .in("recipe_id", recipeIds);
 
-      if (error) throw new Error("Failed to remove recipes from collection.");
+      if (error) throw new Error("Failed to remove recipes from collection(s).");
     }
   );
 };
@@ -381,7 +379,7 @@ const RecipeService = {
   deleteById,
   addOneToManyCollections,
   addManyToOneCollection,
-  removeManyFromCollection,
+  removeManyFromManyCollections,
   getSharedUsers,
   getIsPublic,
   setIsPublic,

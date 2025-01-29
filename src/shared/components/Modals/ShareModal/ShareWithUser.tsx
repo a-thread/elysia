@@ -49,7 +49,7 @@ const ShareWithUser: React.FC<ShareWithUserProps> = ({ shareWithUser }) => {
 
   return (
     <>
-      <h3 className="text-sm font-medium mb-2">Share with a User</h3>
+      <h3 className="text-sm font-medium mb-2 dark:text-leaf-green-100">Share with a User</h3>
       <div className="flex flex-col space-y-2 mb-4">
         {/* Email Input */}
         <div className="relative z-0 w-full group">
@@ -74,7 +74,7 @@ const ShareWithUser: React.FC<ShareWithUserProps> = ({ shareWithUser }) => {
         <div className="relative inline-block" ref={menuRef}>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-hidden focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 flex justify-between"
+            className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-hidden focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 flex justify-between text-gray-600 dark:text-gray-300"
           >
             {options.find((opt) => opt.value === permission)?.label}
             <ChevronDownIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />

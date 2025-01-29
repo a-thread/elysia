@@ -47,12 +47,12 @@ const ShareModal: React.FC<ShareModalProps> = ({
   }
   return (
     <>
-      <h2 className="text-lg font-semibold mb-4 min-w-[300px]">
+      <h2 className="text-lg font-semibold mb-4 min-w-[300px] dark:text-leaf-green-100">
         Share {typeOfShare}
       </h2>
 
       {/* Toggle Public Access */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 dark:text-leaf-green-100">
         <label className="text-sm">Make Public</label>
         <input
           type="checkbox"
@@ -68,7 +68,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
           dark:border-gray-600 dark:peer-checked:bg-blue-400 dark:peer-checked:border-blue-400"
         >
           <CheckIcon
-            className={`w-4 h-4 text-white ${isPublic ? "block" : "hidden"}`}
+            className={`w-4 h-4 text-white ${isPublicLocal ? "block" : "hidden"}`}
           />
         </label>
       </div>
@@ -87,8 +87,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
       <hr className="border-gray-700 my-4" />
 
       {/* List of Shared Users */}
-      <h3 className="text-sm font-medium mb-2">Shared Users</h3>
-      <ul className="space-y-2 mb-4">
+      <h3 className="text-sm font-medium mb-2 dark:text-leaf-green-100">Shared Users</h3>
+      <ul className="space-y-2 mb-4 dark:text-leaf-green-100">
         {sharedUsers.map((user) => (
           <li
             key={user.id}

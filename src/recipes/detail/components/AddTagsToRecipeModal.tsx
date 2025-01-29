@@ -55,7 +55,7 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId, t
 
   return (
     <>
-      <h2 className="text-xl font-semibold mb-4">Save Recipe</h2>
+      <h2 className="text-xl font-medium mb-4 text-leaf-green-900 dark:text-leaf-green-100">Add Tags</h2>
       <MultiSelect
         inputId="tags"
         options={tags}

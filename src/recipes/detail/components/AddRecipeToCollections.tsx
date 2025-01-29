@@ -57,7 +57,7 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
 
   return (
     <>
-      <h2 className="text-xl font-semibold mb-4">Save Recipe</h2>
+      <h2 className="text-xl font-medium mb-4 text-leaf-green-900 dark:text-leaf-green-100">Add to Collections</h2>
       <MultiSelect
         inputId="collections"
         options={collections}

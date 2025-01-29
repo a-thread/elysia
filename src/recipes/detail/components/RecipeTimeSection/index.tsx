@@ -18,7 +18,7 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   return (
     <div className="flex flex-col gap-4">
       <Button
-        className="w-full bg-white"
+        className="w-full bg-white dark:bg-gray-900"
         btnType="secondary"
         onClick={onCookClick}
       >
@@ -27,21 +27,27 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       </Button>
 
       <div className="py-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">
-        <div className="mb-2">
-          <TimeLabelValue label="servings" value={recipe.servings} />
-        </div>
-        <div className="mb-2">
-          <TimeLabelValue
-            label="prep time"
-            value={formatMinutes(recipe.prep_time)}
-          />
-        </div>
-        <div className="mb-3">
-          <TimeLabelValue
-            label="total time"
-            value={formatMinutes(recipe.total_time)}
-          />
-        </div>
+        {recipe.servings > 0 && (
+          <div className="mb-2">
+            <TimeLabelValue label="servings" value={recipe.servings} />
+          </div>
+        )}
+        {recipe.prep_time > 0 && (
+          <div className="mb-2">
+            <TimeLabelValue
+              label="prep time"
+              value={formatMinutes(recipe.prep_time)}
+            />
+          </div>
+        )}
+        {recipe.total_time! > 0 && (
+          <div className="mb-3">
+            <TimeLabelValue
+              label="total time"
+              value={formatMinutes(recipe.total_time)}
+            />
+          </div>
+        )}
       </div>
 
       {recipe.collections && recipe.collections.length > 0 && (

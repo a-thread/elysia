@@ -23,7 +23,7 @@ const Button: FC<ButtonProps> = ({
     primary:
       "text-white bg-leaf-green-700 dark:bg-leaf-green-600 hover:bg-leaf-green-800 dark:hover:bg-leaf-green-800 rounded-lg",
     secondary:
-      "text-leaf-green-600 dark:text-leaf-green-100 border border-leaf-green-600 dark:border-leaf-green-100 hover:bg-leaf-green-100 dark:hover:text-leaf-green-600 rounded-lg",
+      "text-leaf-green-600 dark:text-leaf-green-100 border border-leaf-green-600 dark:border-leaf-green-100 hover:bg-leaf-green-100 dark:hover:bg-leaf-green-100 dark:hover:text-leaf-green-600 rounded-lg",
     delete:
       "text-red-500 border border-red-500 hover:text-white hover:bg-red-500 rounded-lg",
     dismissable:

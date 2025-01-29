@@ -12,6 +12,7 @@ import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  authHasBeenChecked: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,11 +24,13 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authHasBeenChecked, setAuthHasBeenChecked] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
       const session = await UserService.getSession();
       setUser(session?.user || null);
+      setAuthHasBeenChecked(true);
     };
 
     checkUser();
@@ -54,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, authHasBeenChecked }}>
       {children}
     </AuthContext.Provider>
   );

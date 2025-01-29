@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { useFetchRecipes } from "./hooks/useFetchRecipes";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
@@ -9,6 +9,7 @@ import { IdTitle } from "@shared/models/Tag";
 import SearchBar from "@shared/components/SearchBar";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
+import { useAuth } from "@shared/contexts/AuthContext";
 
 function RecipeList() {
   const {
@@ -20,38 +21,51 @@ function RecipeList() {
     resetAndLoadRecipes,
     loadMoreRecipes,
   } = useFetchRecipes();
+  
   const [selectedTags, setSelectedTags] = useState<IdTitle[]>([]);
   const { openModal, closeModal } = useModalManager();
+  const { authHasBeenChecked } = useAuth();
   const observerRef = useRef<HTMLDivElement | null>(null);
+  const observerInstance = useRef<IntersectionObserver | null>(null);
 
   const handleAddRecipe = () => {
     openModal(<AddRecipeModal onClose={closeModal} />);
   };
 
-  // Load more recipes when user scrolls
-  const handleLoadMore = useCallback(() => {
-    if (!loading && hasMore) {
-      loadMoreRecipes();
-    }
-  }, [hasMore, loading, loadMoreRecipes]);
-
-  // Reset and load recipes when search term changes
+  // Reset and load recipes when search term changes OR when auth changes
   useEffect(() => {
     resetAndLoadRecipes();
-  }, [searchTerm]);
+  }, [searchTerm, authHasBeenChecked]);
 
-  // Observe the bottom of the list for infinite scroll
+  // Stable reference to avoid unnecessary effect re-runs
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && !loading && hasMore) {
+        loadMoreRecipes();
+      }
+    },
+    [loading, hasMore, loadMoreRecipes]
+  );
+
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => entry.isIntersecting && handleLoadMore(),
-      { rootMargin: "100px", threshold: 0.1 }
-    );
+    if (!observerRef.current || !hasMore || loading) return;
 
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
+    if (observerInstance.current) {
+      observerInstance.current.disconnect(); // Prevent duplicate observers
     }
-    return () => observer.disconnect();
-  }, [handleLoadMore]);
+
+    observerInstance.current = new IntersectionObserver(handleObserver, {
+      rootMargin: "100px",
+      threshold: 0.1,
+    });
+
+    observerInstance.current.observe(observerRef.current);
+
+    return () => {
+      observerInstance.current?.disconnect();
+    };
+  }, [hasMore, loading]);
 
   return (
     <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">

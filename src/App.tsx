@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@shared/utils/ProtectedRoute";
 import Navbar from "@shared/components/NavBar";
-import Tags from "./tags";
 import About from "./About";
 import ResetPassword from "./auth/ResetPassword";
 import SignIn from "./auth/SignIn";
@@ -32,7 +31,6 @@ const App = () => {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/" element={<RecipeList />} />
               <Route path="/about" element={<About />} />
-              <Route path="/tags" element={<Tags />} />
               <Route
                 path="/add-new"
                 element={

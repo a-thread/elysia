@@ -63,8 +63,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     if (isDropdownOpen && dropdownRef.current) {
       const rect = dropdownRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
-      const dropdownHeight = 200; // Estimated dropdown height
-      setOpenUpwards(spaceBelow < dropdownHeight);
+      setOpenUpwards(spaceBelow < 200);
     }
   }, [isDropdownOpen]);
 

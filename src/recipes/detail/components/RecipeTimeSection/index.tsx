@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import formatMinutes from "../../utils/formatMinutes";
 import GetCookingModal from "../GetCookingModal";
 import { FireIcon } from "@heroicons/react/24/outline";
@@ -10,6 +11,7 @@ import { Button, TagButton } from "@shared/components/Buttons";
 
 const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const { openModal } = useModalManager();
+  const navigate = useNavigate();
 
   const onCookClick = () => {
     openModal(<GetCookingModal recipe={recipe} />, ModalSize.Large);
@@ -63,6 +65,7 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
                 key={collection.id}
                 title={collection.title}
                 isReadOnly={true}
+                displayHover={false}
               />
             ))}
           </div>
@@ -78,7 +81,14 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
           </div>
           <div className="flex flex-wrap gap-2">
             {recipe.tags.map((tag) => (
-              <TagButton key={tag.id} title={tag.title} isReadOnly={true} />
+              <TagButton
+                key={tag.id}
+                title={tag.title}
+                isReadOnly={true}
+                onClick={() => {
+                  navigate("/", { state: { selectedTags: [tag] } });
+                }}
+              />
             ))}
           </div>
         </div>

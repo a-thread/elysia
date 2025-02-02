@@ -86,7 +86,6 @@ const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
 
 const removeFromRecipe = async (recipe_id: string, tags: IdTitle[]) => {
   const tagIds = tags.map((tag) => tag.id);
-console.log(tagIds)
   return await supabaseWithAbort.request(
     `removeManyFromCollection-${recipe_id}`,
     async (client) => {

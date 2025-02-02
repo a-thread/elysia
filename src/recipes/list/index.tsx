@@ -14,6 +14,9 @@ import { useAuth } from "@shared/contexts/AuthContext";
 function RecipeList() {
   const {
     recipes,
+    tags,
+    selectedTags,
+    setSelectedTags,
     loading,
     hasMore,
     searchTerm,
@@ -22,7 +25,6 @@ function RecipeList() {
     loadMoreRecipes,
   } = useFetchRecipes();
   
-  const [selectedTags, setSelectedTags] = useState<IdTitle[]>([]);
   const { openModal, closeModal } = useModalManager();
   const { authHasBeenChecked } = useAuth();
   const observerRef = useRef<HTMLDivElement | null>(null);
@@ -35,7 +37,7 @@ function RecipeList() {
   // Reset and load recipes when search term changes OR when auth changes
   useEffect(() => {
     resetAndLoadRecipes();
-  }, [searchTerm, authHasBeenChecked]);
+  }, [searchTerm, authHasBeenChecked, selectedTags]);
 
   // Stable reference to avoid unnecessary effect re-runs
   const handleObserver = useCallback(
@@ -77,7 +79,7 @@ function RecipeList() {
       />
 
       <SearchBar
-        options={[]}
+        options={tags}
         selectedOptions={selectedTags}
         setSelectedOptions={setSelectedTags}
         onSearch={setSearchTerm}

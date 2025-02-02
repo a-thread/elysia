@@ -8,6 +8,7 @@ interface TagProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const TagButton: React.FC<TagProps> = ({
   isReadOnly = false,
+  displayHover = true,
   title = "tag",
   onClick,
   btnClass = "",
@@ -20,11 +21,11 @@ const TagButton: React.FC<TagProps> = ({
     <button
       type="button"
       className={`${baseClasses} ${
-        isReadOnly ? "" : "hover:bg-leaf-green-100 dark:hover:text-leaf-green-600"
+        displayHover ? "hover:bg-leaf-green-100 dark:hover:text-leaf-green-600" : ""
       } ${btnClass}`}
-      disabled={isReadOnly || disabled}
+      disabled={disabled}
       aria-label={`${!isReadOnly && "Remove "}${title}`}
-      onClick={!isReadOnly ? onClick : undefined}
+      onClick={onClick}
       {...props}
     >
       <small>{title}</small>

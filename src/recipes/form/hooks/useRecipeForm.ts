@@ -13,7 +13,7 @@ export const useRecipeForm = () => {
   const [collectionSearch, setCollectionSearch] = useState("");
   const [collectionList, setCollectionList] = useState<any[]>([]);
   const [tagSearch, setTagSearch] = useState("");
-  const [tagList, setTagList] = useState<any[]>([]);
+  const [tagList, setTagList] = useState<IdTitle[]>([]);
   const [formData, setFormData] = useState<Recipe>({
     title: "",
     description: "",

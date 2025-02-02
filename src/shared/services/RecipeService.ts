@@ -2,12 +2,14 @@ import { Recipe } from "../models/Recipe";
 import { supabaseWithAbort } from "./SupabaseWithAbort";
 import { TableNames } from "./TableNames";
 import { StepIngredientDto } from "@shared/models/StepIngredientDto";
+import { IdTitle } from "@shared/models/Tag";
 
 const getList = async (
   currentSkip: number,
   currentPageSize: number,
   searchTerm: string = "",
-  userId?: string
+  userId?: string,
+  selectedTags: IdTitle[] = []
 ) => {
   return await supabaseWithAbort.request("fetchRecipeList", async (client) => {
     let query = client
@@ -28,6 +30,11 @@ const getList = async (
       query = query.or(
         `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%`
       );
+    }
+    if (selectedTags.length) {
+      selectedTags.forEach((tag) => {
+        query = query.or(`tags_text.ilike.%${tag.title}%`)
+      })
     }
 
     const { data, count, error } = await query.range(

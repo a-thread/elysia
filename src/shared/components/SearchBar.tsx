@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { IdTitle } from "@shared/models/Tag";
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
+import { Button, TagButton } from "./Buttons";
 
 interface SearchDropdownProps {
   options: IdTitle[];
@@ -17,11 +18,17 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
   setSelectedOptions,
   onSearch,
 }) => {
+  const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [openUpwards, setOpenUpwards] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const listboxRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setSelectedIds(selectedOptions.map((o) => o?.id || ""));
+  }, [selectedOptions]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -58,16 +65,31 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
   }, [isDropdownOpen]);
 
   const handleSelect = (option: IdTitle) => {
-    const alreadySelected = selectedOptions.find((o) => o.id === option.id);
-    setSelectedOptions(
-      alreadySelected
+    if (option.id) {
+      const updatedOptions = selectedIds.includes(option.id)
         ? selectedOptions.filter((o) => o.id !== option.id)
-        : [...selectedOptions, option]
-    );
+        : [...selectedOptions, option];
+      setSelectedOptions(updatedOptions);
+    }
   };
 
   const handleRemove = (option: IdTitle) => {
-    setSelectedOptions(selectedOptions.filter((o) => o.id !== option.id));
+    const updatedOptions = selectedOptions.filter((o) => o.id !== option.id);
+    setSelectedOptions(updatedOptions);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      e.key === "Backspace" &&
+      searchTerm === "" &&
+      selectedOptions.length > 0
+    ) {
+      handleRemove(selectedOptions[selectedOptions.length - 1]);
+    }
+    if (e.key === "ArrowDown") {
+      setIsDropdownOpen(true);
+      listboxRef.current?.focus();
+    }
   };
 
   const handleClearSearchBar = () => {
@@ -76,7 +98,7 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
   };
 
   return (
-    <div className="relative w-full pb-4" ref={dropdownRef}>
+    <div className="relative w-full mb-4" ref={dropdownRef}>
       {/* Input and Selected Tags */}
       <div
         className={`border border-gray-300 p-2 cursor-text flex flex-wrap items-center gap-2 ${
@@ -88,21 +110,14 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
       >
         <MagnifyingGlassIcon className="w-5 h-5" />
         {selectedOptions.map((option) => (
-          <span
+          <TagButton
             key={option.id}
-            className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded flex items-center"
-          >
-            {option.title}
-            <button
-              className="ml-1 text-gray-600 hover:text-gray-800"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRemove(option);
-              }}
-            >
-              ×
-            </button>
-          </span>
+            title={option.title}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              handleRemove(option);
+            }}
+          />
         ))}
         <input
           type="text"
@@ -113,37 +128,49 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.target.value)
           }
+          onKeyDown={handleKeyDown}
         />
         {(searchTerm?.length > 0 || selectedOptions?.length > 0) && (
-            <XMarkIcon
-              className="w-6 h-6 cursor-pointer"
-              title="Clear Search Bar"
-              onClick={handleClearSearchBar}
-            />
-          )}
+          <XMarkIcon
+            className="w-6 h-6 cursor-pointer"
+            title="Clear Search Bar"
+            onClick={handleClearSearchBar}
+          />
+        )}
       </div>
 
       {/* Dropdown List - Only Render If There Are Options */}
       {isDropdownOpen && options.length > 0 && (
         <div
-          className={`absolute w-full max-w-[320px] border border-gray-300 bg-white shadow-md max-h-60 overflow-y-auto z-50 ${
+          ref={listboxRef}
+          role="listbox"
+          aria-labelledby="multi-select-label"
+          className={`absolute w-full z-10 max-w-[320px] border border-gray-300 bg-white dark:bg-gray-800 shadow-md max-h-40 overflow-y-auto focus:outline-hidden ${
             openUpwards
               ? "bottom-full pb-2 rounded-t-lg"
               : "top-full pt-2 rounded-b-lg"
           }`}
         >
           {options.map((option) => (
-            <div
+            <Button
               key={option.id}
-              className={`p-2 flex justify-between items-center cursor-pointer hover:bg-gray-100 ${
-                selectedOptions.some((o) => o.id === option.id)
-                  ? "bg-blue-50"
+              btnType="dropdown"
+              className={
+                option.id && selectedIds.includes(option.id)
+                  ? "bg-leaf-green-100 dark:text-leaf-green-600"
                   : ""
-              }`}
-              onClick={() => handleSelect(option)}
+              }
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleSelect(option);
+              }}
+              role="option"
+              aria-selected={
+                option.id && selectedIds.includes(option.id) ? true : undefined
+              }
             >
-              <span>{option.title}</span>
-            </div>
+              {option.title}
+            </Button>
           ))}
         </div>
       )}

@@ -45,7 +45,6 @@ export const useRecipeActions = (
           updatedFields.tags || [],
           originalData?.tags || []
         );
-        console.log(updatedFields.tags);
         await handleCollectionChanges(
           id,
           updatedFields.collections || [],
@@ -157,7 +156,6 @@ const handleTagChanges = async (
   const tagsToRemove = originalTags.filter(
     (origTag) => !updatedTags.some((tag) => tag.id === origTag.id)
   );
-  console.log(tagsToAdd, tagsToRemove, originalTags);
   if (tagsToAdd.length > 0) {
     await TagService.addToRecipe(recipeId, tagsToAdd);
   }

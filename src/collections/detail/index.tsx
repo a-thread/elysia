@@ -10,8 +10,10 @@ import EmptyState from "@shared/components/EmptyState";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { TagButton } from "@shared/components/Buttons";
+import { useNavigate } from "react-router-dom";
 
 const CollectionDetail: React.FC = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
 
@@ -83,7 +85,9 @@ const CollectionDetail: React.FC = () => {
         {collection.tags && collection.tags.length > 0 && (
           <div className="mt-4">
             {collection.tags.map((tag) => (
-              <TagButton key={tag.id} title={tag.title} isReadOnly={true} />
+              <TagButton key={tag.id} title={tag.title} isReadOnly={true}  onClick={() => {
+                navigate("/", { state: { selectedTags: [tag] } });
+              }}/>
             ))}
           </div>
         )}

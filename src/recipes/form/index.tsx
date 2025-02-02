@@ -17,13 +17,12 @@ const RecipeForm: React.FC = () => {
     onFormChange,
     isEditing,
     id,
-    loading,
     collectionList,
     tagList,
     setCollectionSearch,
     setTagSearch,
   } = useRecipeForm();
-  const { handleSave } = useRecipeActions(
+  const { handleSave, isLoading } = useRecipeActions(
     formData,
     originalData,
     isEditing,
@@ -36,7 +35,7 @@ const RecipeForm: React.FC = () => {
         <Button btnType="dismissable" onClick={() => navigate(-1)}>
           Cancel
         </Button>
-        <Button onClick={handleSave} isLoading={loading}>
+        <Button onClick={handleSave} isLoading={isLoading}>
           {isEditing ? "Save" : "Add"}
         </Button>
       </div>

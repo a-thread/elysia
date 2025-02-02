@@ -14,7 +14,6 @@ export const useRecipeForm = () => {
   const [collectionList, setCollectionList] = useState<any[]>([]);
   const [tagSearch, setTagSearch] = useState("");
   const [tagList, setTagList] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<Recipe>({
     title: "",
     description: "",
@@ -105,8 +104,6 @@ export const useRecipeForm = () => {
     onFormChange,
     isEditing,
     id,
-    loading,
-    setLoading,
     collectionList,
     tagList,
     setCollectionSearch,

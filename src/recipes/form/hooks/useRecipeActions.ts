@@ -1,4 +1,4 @@
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import { Recipe } from "@shared/models/Recipe";
@@ -16,12 +16,13 @@ export const useRecipeActions = (
 ) => {
   const toast = useToast();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState();
 
   const navigate = useNavigate();
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       if (isEditing && id) {
         const updatedFields = FormUtils.getChangedFields(
@@ -95,10 +96,12 @@ export const useRecipeActions = (
       }
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return { handleSave };
+  return { handleSave, isLoading };
 };
 
 /**
@@ -110,7 +113,7 @@ const handleIngredientChanges = async (
 ) => {
   const ingredientsToUpsert = getStepIngredientDto(recipeId, ingredients);
   const ingredientsToRemove = ingredients
-    .filter((i) => i.isActive)
+    .filter((i) => !i.isActive)
     .map((i) => i.id);
 
   if (ingredientsToUpsert.length > 0) {
@@ -127,7 +130,7 @@ const handleIngredientChanges = async (
  */
 const handleStepChanges = async (recipeId: string, steps: any[]) => {
   const stepsToUpsert = getStepIngredientDto(recipeId, steps);
-  const stepsToRemove = steps.filter((i) => i.isActive).map((i) => i.id);
+  const stepsToRemove = steps.filter((i) => !i.isActive).map((i) => i.id);
 
   if (stepsToUpsert.length > 0) {
     await RecipeService.upsertSteps(stepsToUpsert);
@@ -152,7 +155,7 @@ const handleTagChanges = async (
   const tagsToRemove = originalTags.filter(
     (origTag) => !updatedTags.some((tag) => tag.id === origTag.id)
   );
-  console.log(tagsToAdd, tagsToRemove, originalTags)
+  console.log(tagsToAdd, tagsToRemove, originalTags);
   if (tagsToAdd.length > 0) {
     await TagService.addToRecipe(recipeId, tagsToAdd);
   }

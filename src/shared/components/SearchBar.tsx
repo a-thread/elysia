@@ -13,7 +13,7 @@ interface SearchDropdownProps {
 const SearchBar: React.FC<SearchDropdownProps> = ({
   options = [],
   selectedOptions = [],
-  placeholder = "Filter recipes...",
+  placeholder = "Search by title, description, ingredient or tag...",
   setSelectedOptions,
   onSearch,
 }) => {
@@ -108,7 +108,7 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
           type="text"
           ref={inputRef}
           placeholder={selectedOptions.length === 0 ? placeholder : ""}
-          className="flex-1 p-1 border-none outline-none bg-transparent text-gray-900"
+          className="flex-1 p-1 border-none outline-none bg-transparent text-gray-900 dark:text-white"
           value={searchTerm}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.target.value)

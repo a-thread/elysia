@@ -17,7 +17,7 @@ const getList = async (
     // Only filter by user permissions if a user is logged in
     if (userId) {
       query = query.or(
-          `is_public.eq.true,user_permissions.cs.["${userId}"],user_id.eq.${userId}`
+        `is_public.eq.true,user_permissions.cs.["${userId}"],user_id.eq.${userId}`
       );
     } else {
       // If no user, only show public recipes
@@ -39,7 +39,6 @@ const getList = async (
     return { data, count };
   });
 };
-
 
 const getListWithTags = async (
   currentSkip: number,
@@ -80,7 +79,6 @@ const getListWithTags = async (
     }
   );
 };
-
 
 const getDetail = async (
   recipeId: string | undefined,
@@ -147,9 +145,7 @@ const upsert = async (
   );
 };
 
-const deleteIngredients = async (
-  idsToDelete: string[]
-) => {
+const deleteIngredients = async (idsToDelete: string[]) => {
   return await supabaseWithAbort.request(
     `deleteIngredients`,
     async (client) => {
@@ -163,9 +159,7 @@ const deleteIngredients = async (
   );
 };
 
-const upsertIngredients = async (
-  ingredientsToUpsert: StepIngredientDto[]
-) => {
+const upsertIngredients = async (ingredientsToUpsert: StepIngredientDto[]) => {
   return await supabaseWithAbort.request(
     `upsertIngredients`,
     async (client) => {
@@ -178,35 +172,23 @@ const upsertIngredients = async (
   );
 };
 
-const deleteSteps = async (
-  idsToDelete: string[]
-) => {
-  return await supabaseWithAbort.request(
-    `deleteSteps`,
-    async (client) => {
-      const { error } = await client
-        .from(TableNames.STEPS)
-        .delete()
-        .in("id", idsToDelete);
-      if (error)
-        throw new Error(`Failed to delete steps: ${error.message}`);
-    }
-  );
+const deleteSteps = async (idsToDelete: string[]) => {
+  return await supabaseWithAbort.request(`deleteSteps`, async (client) => {
+    const { error } = await client
+      .from(TableNames.STEPS)
+      .delete()
+      .in("id", idsToDelete);
+    if (error) throw new Error(`Failed to delete steps: ${error.message}`);
+  });
 };
 
-const upsertSteps = async (
-  stepsToUpsert: StepIngredientDto[]
-) => {
-  return await supabaseWithAbort.request(
-    `upsertSteps`,
-    async (client) => {
-      const { error } = await client
-        .from(TableNames.STEPS)
-        .upsert(stepsToUpsert, { onConflict: "id" });
-      if (error)
-        throw new Error(`Failed to delete steps: ${error.message}`);
-    }
-  );
+const upsertSteps = async (stepsToUpsert: StepIngredientDto[]) => {
+  return await supabaseWithAbort.request(`upsertSteps`, async (client) => {
+    const { error } = await client
+      .from(TableNames.STEPS)
+      .upsert(stepsToUpsert, { onConflict: "id" });
+    if (error) throw new Error(`Failed to delete steps: ${error.message}`);
+  });
 };
 
 const deleteById = async (recipeId: string | undefined) => {
@@ -273,7 +255,8 @@ const removeManyFromManyCollections = async (
         .in("collection_id", collectionIds)
         .in("recipe_id", recipeIds);
 
-      if (error) throw new Error("Failed to remove recipes from collection(s).");
+      if (error)
+        throw new Error("Failed to remove recipes from collection(s).");
     }
   );
 };
@@ -367,6 +350,15 @@ const revokeAccess = async (shareId: string) => {
   );
 };
 
+const refreshRecipeSearch = async () => {
+  await supabaseWithAbort.request(`refreshSearch`, async (client) => {
+    const { error } = await client.rpc("refresh_recipe_search");
+    if (error) {
+      throw new Error("Failed to refresh search.");
+    }
+  });
+};
+
 const RecipeService = {
   getList,
   getListWithTags,
@@ -385,6 +377,7 @@ const RecipeService = {
   setIsPublic,
   shareWithUser,
   revokeAccess,
+  refreshRecipeSearch,
 };
 
 export default RecipeService;

@@ -91,6 +91,8 @@ export const useRecipeActions = (
           );
         }
 
+        await RecipeService.refreshRecipeSearch();
+
         toast.success("Recipe added successfully!");
         navigate(`/recipes/${response?.recipeId!}`);
       }

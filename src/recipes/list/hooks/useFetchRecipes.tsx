@@ -41,7 +41,8 @@ export function useFetchRecipes() {
         skip === 0 ? response.data : [...prev, ...response.data]
       );
       setCurrentSkip(skip + response.data.length);
-      setHasMore(response.data.length > 0);
+      const hasMore = (response.count - recipes.length) > 0;
+      setHasMore(hasMore);
     } catch (error) {
       console.error("Error fetching recipes:", error);
     } finally {

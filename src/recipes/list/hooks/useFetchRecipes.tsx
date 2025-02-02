@@ -20,12 +20,13 @@ export function useFetchRecipes() {
 
   useEffect(() => {
     const tagsToSet = location.state?.selectedTags as IdTitle[];
+    console.log(tagsToSet)
     if (tagsToSet) {
       setSelectedTags(tagsToSet);
       setCurrentSkip(0);
       setRecipes([]);
       isFetching.current = true;
-      fetchRecipes(currentSkip, searchTerm, selectedTags).finally(() => {
+      fetchRecipes(currentSkip, searchTerm, tagsToSet).finally(() => {
         isFetching.current = false; // Reset after API call completes
       });
     }

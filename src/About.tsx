@@ -1,12 +1,20 @@
 import React from "react";
 import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
 import { Button } from "@shared/components/Buttons";
+import { useAuth } from "@shared/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const About: React.FC = () => {
   const { openModal, closeModal } = useModalManager();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const onJourneyBegin = (): void => {
-    openModal(<AddRecipeModal onClose={closeModal} />);
+    if (isAuthenticated) {
+      openModal(<AddRecipeModal onClose={closeModal} />);
+    } else {
+      navigate('/sign-in')
+    }
   };
 
   return (
@@ -55,6 +63,6 @@ const About: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default About;

@@ -199,7 +199,7 @@ const upsertSteps = async (stepsToUpsert: StepIngredientDto[]) => {
 };
 
 const deleteById = async (recipeId: string | undefined) => {
-  return await supabaseWithAbort.request(
+  await supabaseWithAbort.request(
     `deleteRecipe-${recipeId}`,
     async (client) => {
       const { error } = await client
@@ -209,6 +209,7 @@ const deleteById = async (recipeId: string | undefined) => {
       if (error) throw new Error("Failed to delete recipe.");
     }
   );
+  return await refreshRecipeSearch();
 };
 
 const addOneToManyCollections = async (
@@ -306,7 +307,7 @@ const getIsPublic = async (recipeId: string | undefined) => {
 };
 
 const setIsPublic = async (recipeId: string | undefined, isPublic: boolean) => {
-  return await supabaseWithAbort.request(
+  await supabaseWithAbort.request(
     `togglePublicShare-${recipeId}`,
     async (client) => {
       const { error } = await client
@@ -320,6 +321,7 @@ const setIsPublic = async (recipeId: string | undefined, isPublic: boolean) => {
       return !isPublic;
     }
   );
+  return await refreshRecipeSearch();
 };
 
 const shareWithUser = async (
@@ -327,7 +329,7 @@ const shareWithUser = async (
   userId: string,
   permission: string
 ) => {
-  return await supabaseWithAbort.request(
+  await supabaseWithAbort.request(
     `shareRecipe-${recipeId}-${userId}`,
     async (client) => {
       const { error } = await client
@@ -339,10 +341,11 @@ const shareWithUser = async (
       }
     }
   );
+  return await refreshRecipeSearch();
 };
 
 const revokeAccess = async (shareId: string) => {
-  return await supabaseWithAbort.request(
+  await supabaseWithAbort.request(
     `revokeUserAccess-${shareId}`,
     async (client) => {
       const { error } = await client
@@ -355,6 +358,7 @@ const revokeAccess = async (shareId: string) => {
       }
     }
   );
+  return await refreshRecipeSearch();
 };
 
 const refreshRecipeSearch = async () => {

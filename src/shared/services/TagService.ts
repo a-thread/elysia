@@ -1,6 +1,7 @@
 import { IdTitle } from "../models/Tag";
 import { supabaseWithAbort } from "./SupabaseWithAbort";
 import { TableNames } from "./TableNames";
+import RecipeService from "./RecipeService";
 
 const getList = async (
   currentSkip: number,
@@ -68,7 +69,7 @@ const deleteById = async (tagId: string) => {
 };
 
 const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
-  return await supabaseWithAbort.request(
+  await supabaseWithAbort.request(
     `addToRecipe-${recipeId}`,
     async (client) => {
       const tagsToAdd = tags.map((tag) => ({
@@ -82,11 +83,12 @@ const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
       return { success: true };
     }
   );
+  return await RecipeService.refreshRecipeSearch();
 };
 
 const removeFromRecipe = async (recipe_id: string, tags: IdTitle[]) => {
   const tagIds = tags.map((tag) => tag.id);
-  return await supabaseWithAbort.request(
+  await supabaseWithAbort.request(
     `removeManyFromCollection-${recipe_id}`,
     async (client) => {
       const { error } = await client
@@ -98,6 +100,7 @@ const removeFromRecipe = async (recipe_id: string, tags: IdTitle[]) => {
       if (error) throw new Error("Failed to remove tags from collection.");
     }
   );
+  return await RecipeService.refreshRecipeSearch();
 };
 
 const addToCollection = async (collectionId: string, tags: IdTitle[]) => {

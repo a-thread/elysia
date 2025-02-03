@@ -2,6 +2,7 @@ import React, { useState, FormEvent, ChangeEvent } from "react";
 import { Button } from "../../Buttons";
 import { parseRecipeFromHtml } from "./scrapeRecipeForDB";
 import { useNavigate } from "react-router-dom";
+import { useModalManager } from "@shared/components/Modals";
 
 interface HtmlInputFormProps {
   onCancel: () => void;
@@ -12,6 +13,7 @@ const HtmlInputForm: React.FC<HtmlInputFormProps> = ({ onCancel }) => {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { closeModal } = useModalManager();
 
   const processRecipe = async () => {
     try {
@@ -19,6 +21,7 @@ const HtmlInputForm: React.FC<HtmlInputFormProps> = ({ onCancel }) => {
       const data = await parseRecipeFromHtml(htmlContent);
       navigate("/add-new", { state: { recipe: data } });
       onCancel();
+      closeModal();
       setError("");
     } catch (error) {
       setError("Failed to process the recipe. Please check the HTML content.");

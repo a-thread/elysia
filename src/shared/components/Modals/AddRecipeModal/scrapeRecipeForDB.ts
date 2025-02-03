@@ -55,7 +55,8 @@ export async function parseRecipeFromHtml(html, url) {
       "ol[class*='instructions'] li, ul[class*='instructions'] li",
       "div[class*='instructions'] li",
       "div[class*='instructions'] div[class*='step']",
-      "ol[class*='preparation'] li"
+      "ol[class*='preparation'] li",
+      "div[class*='steps'] ol li",
     ], stripHtml),
     original_recipe_url: url,
   };

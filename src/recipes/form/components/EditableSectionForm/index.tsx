@@ -22,7 +22,8 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
   setOriginalFormState,
   sectionName,
 }) => {
-  const [formState, setFormState] = useState<StepIngredient[]>(originalFormState);
+  const [formState, setFormState] =
+    useState<StepIngredient[]>(originalFormState);
 
   useEffect(() => {
     setFormState([...originalFormState]);
@@ -89,8 +90,10 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
         {sectionName}s
       </h2>
       {!(formState?.length > 0) && (
-                  <EmptyState message={`No ${sectionName}s added yet. Add some to get started!`} />
-                )}
+        <EmptyState
+          message={`No ${sectionName}s added yet. Add some to get started!`}
+        />
+      )}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
           items={formState.filter((v) => v.isActive).map((v) => v.id)}

@@ -16,7 +16,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   inputId = "",
   options = [],
   selectedOptions = [],
-  placeholder = '',
+  placeholder = "",
   setSelectedOptions,
   onSearch,
 }) => {
@@ -69,10 +69,12 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
   const handleSelect = (option: IdTitle) => {
     if (option.id) {
-      const updatedOptions = selectedIds.includes(option.id)
-        ? selectedOptions.filter((o) => o.id !== option.id)
-        : [...selectedOptions, option];
-      setSelectedOptions(updatedOptions);
+      if (selectedIds.includes(option.id)) {
+        setSelectedOptions(selectedOptions.filter((o) => o.id !== option.id));
+      } else {
+        setSelectedOptions([...selectedOptions, option]);
+        setSearchTerm("");
+      }
     }
   };
 
@@ -125,21 +127,19 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             }}
           />
         ))}
-          <input
-            type="text"
-            id={inputId}
-            ref={inputRef}
-            placeholder={
-              selectedOptions.length === 0 ? placeholder : ""
-            }
-            className="flex-1 p-1 border-none outline-hidden bg-transparent text-gray-900 dark:text-gray-100"
-            value={searchTerm}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setSearchTerm(e.target.value)
-            }
-            onKeyDown={handleKeyDown}
-            aria-labelledby="multi-select-label"
-          />
+        <input
+          type="text"
+          id={inputId}
+          ref={inputRef}
+          placeholder={selectedOptions.length === 0 ? placeholder : ""}
+          className="flex-1 p-1 border-none outline-hidden bg-transparent text-gray-900 dark:text-gray-100"
+          value={searchTerm}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchTerm(e.target.value)
+          }
+          onKeyDown={handleKeyDown}
+          aria-labelledby="multi-select-label"
+        />
       </div>
 
       {/* Dropdown List */}

@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useDarkMode } from "../contexts/DarkModeContext";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { AddRecipeModal, useModalManager } from "./Modals";
+import { AddRecipeModal, AddTagModal, useModalManager } from "./Modals";
 import { DropdownButton, IconButton } from "./Buttons";
 import {
   ArrowLeftEndOnRectangleIcon,
@@ -16,7 +16,6 @@ import {
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import { DropdownOption } from "./Buttons/DropdownButton";
-import AddTagModal from "@shared/components/AddTagModal";
 import { UserService } from "@shared/services/UserService";
 import { useToast } from "./Toast";
 

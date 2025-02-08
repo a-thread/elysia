@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 interface UrlInputFormProps {
   onCancel: () => void;
+  onHtmlImportClick: () => void;
 }
 
 const UrlInputForm: React.FC<UrlInputFormProps> = ({

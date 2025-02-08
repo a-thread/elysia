@@ -2,7 +2,6 @@ import { Button } from "@shared/components/Buttons";
 import { useToast } from "@shared/components/Toast";
 import { IdTitle } from "@shared/models/Tag";
 import TagService from "@shared/services/TagService";
-import RecipeService from "@shared/services/RecipeService";
 import React, { ChangeEvent, useState } from "react";
 
 interface AddTagModalProps {

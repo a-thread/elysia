@@ -16,7 +16,7 @@ export const useRecipeActions = (
 ) => {
   const toast = useToast();
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 

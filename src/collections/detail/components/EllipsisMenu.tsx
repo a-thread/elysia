@@ -8,7 +8,6 @@ import {
   ShareModal,
 } from "@shared/components/Modals";
 import CollectionService from "@shared/services/CollectionService";
-import RecipeService from "@shared/services/RecipeService";
 import { Collection } from "@shared/models/Collection";
 import DropdownButton, {
   DropdownOption,

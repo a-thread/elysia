@@ -58,7 +58,7 @@ export function useFetchRecipes() {
       if (!response) throw new Error("Something went wrong.");
       const tagResponse = await TagService.getList(0, 1000000, term);
 
-      if (tagResponse.data) {
+      if (tagResponse?.data) {
         setTags(tagResponse.data);
       }
 
@@ -66,8 +66,10 @@ export function useFetchRecipes() {
         skip === 0 ? response.data : [...prev, ...response.data]
       );
       setCurrentSkip(skip + response.data.length);
-      const hasMore = response.count - recipes.length > 0;
-      setHasMore(hasMore);
+      if (response?.count) {
+        const hasMore = response.count - recipes.length > 0;
+        setHasMore(hasMore);
+      }
     } catch (error) {
       console.error("Error fetching recipes:", error);
     } finally {

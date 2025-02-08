@@ -1,11 +1,10 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { useFetchRecipes } from "./hooks/useFetchRecipes";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import { Link } from "react-router-dom";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { Recipe } from "@shared/models/Recipe";
-import { IdTitle } from "@shared/models/Tag";
 import SearchBar from "@shared/components/SearchBar";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import { AddRecipeModal, useModalManager } from "@shared/components/Modals";

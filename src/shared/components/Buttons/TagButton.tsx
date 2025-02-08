@@ -4,6 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 interface TagProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isReadOnly?: boolean;
   btnClass?: string;
+  displayHover?: boolean;
 }
 
 const TagButton: React.FC<TagProps> = ({

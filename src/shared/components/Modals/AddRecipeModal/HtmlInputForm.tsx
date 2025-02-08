@@ -18,7 +18,7 @@ const HtmlInputForm: React.FC<HtmlInputFormProps> = ({ onCancel }) => {
   const processRecipe = async () => {
     try {
       setIsLoading(true);
-      const data = await parseRecipeFromHtml(htmlContent);
+      const data = await parseRecipeFromHtml(htmlContent, '');
       navigate("/add-new", { state: { recipe: data } });
       onCancel();
       closeModal();

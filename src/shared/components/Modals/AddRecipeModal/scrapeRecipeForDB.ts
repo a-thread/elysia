@@ -1,20 +1,22 @@
+import { Recipe } from "@shared/models/Recipe";
+import { StepIngredient } from "@shared/models/StepIngredient";
 import axios from "axios";
-import { load } from "cheerio";
+import { CheerioAPI, load } from "cheerio";
 import { v4 as uuidv4 } from "uuid";
 
 const proxyUrl = "https://proxy.corsfix.com/?";
 
-export async function scrapeRecipeForDB(url) {
+export async function scrapeRecipeForDB(url: string): Promise<Recipe | Error> {
   try {
-    const response = await axios.get(proxyUrl + encodeURIComponent(url), { validateStatus: false });
+    const response = await axios.get(proxyUrl + encodeURIComponent(url));
     return parseRecipeFromHtml(response.data, url);
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Failed to scrape recipe from ${url}:`, error.message);
     return error;
   }
 }
 
-export async function parseRecipeFromHtml(html, url) {
+export async function parseRecipeFromHtml(html: string, url: string): Promise<Recipe> {
   const $ = load(html);
 
   const img_url = extractFirstMatch($, [
@@ -31,7 +33,7 @@ export async function parseRecipeFromHtml(html, url) {
     "meta[property='og:description']",
     "meta[name='twitter:description']",
     "*[class*='recipe-summary']"
-  ], "content") || "";
+  ], "content", "") || "";
 
   const title = extractFirstText($, [
     "h1.recipe-title",
@@ -62,15 +64,15 @@ export async function parseRecipeFromHtml(html, url) {
   };
 }
 
-function extractFirstMatch($, selectors, attr1, attr2) {
+function extractFirstMatch($: CheerioAPI, selectors: string[], attr1: string, attr2: string): string {
   for (const selector of selectors) {
     const element = $(selector);
-    if (element.length) return element.attr(attr1) || element.attr(attr2);
+    if (element.length) return element.attr(attr1) || element.attr(attr2) || "";
   }
   return "";
 }
 
-function extractFirstText($, selectors) {
+function extractFirstText($: CheerioAPI, selectors: string[]): string {
   for (const selector of selectors) {
     const text = $(selector).text().trim();
     if (text) return text;
@@ -78,16 +80,16 @@ function extractFirstText($, selectors) {
   return "";
 }
 
-function extractTime($, selectors) {
-  const labelElement = $(selectors.join(", ")).filter(function () {
+function extractTime($: CheerioAPI, selectors: string[]): number {
+  const labelElement = $(selectors.join(", ")).filter(function (this: any) {
     return /\d+/.test($(this).text());
   });
   return parseTimeByClass(labelElement);
 }
 
-function extractServings($, selectors) {
+function extractServings($: CheerioAPI, selectors: string[]): number {
   for (const selector of selectors) {
-    const text = $(selector).filter(function () {
+    const text = $(selector).filter(function (this: any) {
       return /\d+/.test($(this).text());
     }).text().trim();
     if (text) return parseInt(text.match(/\d+/)?.[0] || "0");
@@ -95,12 +97,12 @@ function extractServings($, selectors) {
   return 0;
 }
 
-function getIngredients($) {
-  const ingredients = [];
+function getIngredients($: CheerioAPI): StepIngredient[] {
+  const ingredients: string[] = [];
   const selectors = ["ul[class*='ingredients'] li", "ol[class*='ingredients'] li", "div[class*='ingredients'] li"];
 
   for (const selector of selectors) {
-    $(selector).each((_, el) => {
+    $(selector).each((_: any, el: any) => {
       const content = $(el).text().trim();
       if (content) ingredients.push(parseIngredient(content));
     });
@@ -110,10 +112,10 @@ function getIngredients($) {
   return ingredients.map((value, index) => ({ id: uuidv4(), value, isActive: true, sort_number: index + 1 }));
 }
 
-function getItems($, selectors, parser) {
-  const items = [];
+function getItems($: CheerioAPI, selectors: string[], parser: (content: string) => string): StepIngredient[] {
+  const items: string[] = [];
   for (const selector of selectors) {
-    $(selector).each((_, el) => {
+    $(selector).each((_: any, el: any) => {
       const content = $(el).html();
       if (content) items.push(parser(content));
     });
@@ -121,8 +123,9 @@ function getItems($, selectors, parser) {
   }
   return items.map((value, index) => ({ id: uuidv4(), value, isActive: true, sort_number: index + 1 }));
 }
-function parseIngredient(ingredientText) {
-  const fractionMap = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅕": "1/5", "⅖": "2/5", "⅗": "3/5", "⅘": "4/5" };
+
+function parseIngredient(ingredientText: string): string {
+  const fractionMap: { [key: string]: string } = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅕": "1/5", "⅖": "2/5", "⅗": "3/5", "⅘": "4/5" };
   return ingredientText
     .replace(/(\d+)([¼½¾⅓⅔⅕⅖⅗⅘])/g, "$1 $2") // add space between whole numbers and fractions
     .replace(/[¼½¾⅓⅔⅕⅖⅗⅘]/g, match => fractionMap[match] || match) //convert fraction special characters to normalized ones
@@ -130,11 +133,11 @@ function parseIngredient(ingredientText) {
     .trim();
 }
 
-function stripHtml(text) {
+function stripHtml(text: string): string {
   return text.replace(/<[^>]*>/g, "").trim();
 }
 
-function parseTimeByClass(labelElement) {
+function parseTimeByClass(labelElement: any): number {
   if (!labelElement.length) return 0;
   const timeText = labelElement.text().trim();
   const timeValue = parseInt(timeText.match(/\d+/)?.[0] || "0");

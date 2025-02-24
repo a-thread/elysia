@@ -312,7 +312,7 @@ const setIsPublic = async (recipeId: string | undefined, isPublic: boolean) => {
     async (client) => {
       const { error } = await client
         .from(TableNames.RECIPES)
-        .update({ is_public: !isPublic })
+        .update({ is_public: isPublic })
         .eq("id", recipeId);
 
       if (error) {

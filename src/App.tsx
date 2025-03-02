@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@shared/utils/ProtectedRoute";
 import Navbar from "@shared/components/NavBar";
 import About from "./About";
@@ -13,7 +13,7 @@ import { RecipeList, RecipeDetail, RecipeForm } from "./recipes";
 const App = () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pb-6">
-      <Router basename="/elysia">
+      <Router>
         <ModalManager>
           <Navbar />
           <div className="container mx-auto px-4">

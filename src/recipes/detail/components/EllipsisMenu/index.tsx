@@ -79,8 +79,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   };
 
   const handleCopyLink = () => {
-    const publicUrl = `${window.location.origin}/recipes/${recipe.id}`;
-    navigator.clipboard.writeText(publicUrl);
+    navigator.clipboard.writeText(window.location.href);
     toast.success("Public link copied!");
   };
 

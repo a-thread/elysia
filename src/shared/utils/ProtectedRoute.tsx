@@ -9,10 +9,13 @@ interface ProtectedRouteProps {
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user } = useAuth();
 
+  const isOnSignInPage = window.location.hash === '#/sign-in';
+  console.log('isOnSignInPage', isOnSignInPage);
+  console.log('window.location.hash', window.location.hash);
   if (user) {
-    return window.location.pathname === '/elysia/sign-in' ? <Navigate to="/" /> : <>{children}</>;
+    return isOnSignInPage ? <Navigate to="/" /> : <>{children}</>;
   } else {
-    return window.location.pathname === '/elysia/sign-in' ? <>{children}</> : <Navigate to="/sign-in" />;
+    return isOnSignInPage ? <>{children}</> : <Navigate to="/sign-in" />;
   }
 }
 

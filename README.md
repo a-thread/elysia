@@ -1,50 +1,26 @@
-# React + TypeScript + Vite
+# Elysia
+![license](https://img.shields.io/github/license/a-thread/elysia)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Deployed App: [Elysia](https://a-thread.github.io/elysia/)
 
-Currently, two official plugins are available:
+### Description
+**Elysia** is platform designed to help users explore diverse recipes, develop new culinary skills, and become more self-reliant in the kitchen.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![photo of home page](/public/home-page.jpg)
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Technologies Used
+- React
+- Supabase
+- TailwindCss
+- Typescript
+- Vite
+- GH Pages
 
-- Configure the top-level `parserOptions` property like this:
+### About the Name
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Elysia is inspired by the sea slug, *Elysia chlorotica*, which can perform photosynthesis by incorporating chloroplasts from the algae it consumes. This remarkable ability to become self-sustaining mirrors inspired the app: by being mindful of what we consume, we empower ourselves to thrive.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Contact
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+*If you have any questions email [aiden.threadgoode@gmail.com](mailto:aiden.threadgoode@gmail.com).*

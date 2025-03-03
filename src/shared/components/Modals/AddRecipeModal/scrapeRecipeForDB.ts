@@ -28,12 +28,12 @@ export async function parseRecipeFromHtml(html: string, url: string): Promise<Re
     "img:first"
   ], "content", "src");
 
-  const description = extractFirstMatch($, [
+  const description = extractFirstText($, [
     "meta[name='description']",
     "meta[property='og:description']",
     "meta[name='twitter:description']",
     "*[class*='recipe-summary']"
-  ], "content", "") || "";
+  ]) || "";
 
   const title = extractFirstText($, [
     "h1.recipe-title",

@@ -13,6 +13,7 @@ import DropdownButton, {
   DropdownOption,
 } from "@shared/components/Buttons/DropdownButton";
 import { UserService } from "@shared/services/UserService";
+import generateRecipePDF from "@shared/services/PdfGenerator";
 
 const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const navigate = useNavigate();
@@ -109,10 +110,20 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     }
   };
 
+  const handleExportClick = async () => {
+    try {
+      await generateRecipePDF([recipe]);
+    } catch (error: any) {
+      console.error("Error generating PDF:", error);
+      toast.error("Failed to export recipe. Please try again.");
+    }
+  };
+
   const options: DropdownOption[] = [
     { label: "Edit", onClick: handleEditClick },
     { label: "Delete", onClick: handleDeleteClick },
     { label: "Share", onClick: handleShareClick },
+    { label: "Export", onClick: handleExportClick },
   ];
 
   return (

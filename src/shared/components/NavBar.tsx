@@ -30,7 +30,9 @@ function Navbar() {
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const navLinks = ["/", "/collections", "/about", "/profile"];
+  const navLinks = isAuthenticated
+    ? ["/", "/collections", "/about", "/profile"]
+    : ["/", "/collections", "/about"];
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);

@@ -1,11 +1,10 @@
 import React from "react";
 import { CheckIcon } from "@heroicons/react/24/solid";
-import { StepIngredient } from "@shared/models/StepIngredient";
 import { CheckedItems } from ".";
 
 interface IngredientItemProps {
   index: number;
-  ingredient: StepIngredient;
+  ingredient: string;
   isChecked: boolean;
   onCheck: (index: number) => void;
 }
@@ -42,14 +41,14 @@ const IngredientItem: React.FC<IngredientItemProps> = ({ index, ingredient, isCh
             : "text-gray-800 dark:text-gray-300"
         }`}
       >
-        {ingredient.value}
+        {ingredient}
       </span>
     </div>
   );
 };
 
 interface IngredientListProps {
-  ingredients: StepIngredient[];
+  ingredients: string[];
   checkedItems: CheckedItems;
   onCheck: (index: number) => void;
 }

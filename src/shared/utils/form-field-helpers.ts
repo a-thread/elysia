@@ -1,5 +1,3 @@
-import { StepIngredient } from "@shared/models/StepIngredient";
-
 type Primitive = string | number | boolean | null | undefined;
 type DeepObject = Record<string, unknown> | Primitive | unknown[];
 
@@ -80,16 +78,8 @@ const extractSimpleValues = <T extends Record<string, any>>(
   }, {} as Partial<T>);
 };
 
-const getStepIngredientsToDelete = (
-  stepIngredients: StepIngredient[] | undefined
-) =>
-  stepIngredients
-    ?.filter((i) => i.isActive)
-    .map((stepIngredient) => stepIngredient.id) || [];
-
 const FormUtils = {
   getChangedFields,
   extractSimpleValues,
-  getStepIngredientsToDelete
 };
 export default FormUtils;

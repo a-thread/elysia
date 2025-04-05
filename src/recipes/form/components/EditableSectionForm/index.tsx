@@ -54,22 +54,12 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
       {
         id: uuidv4(),
         value: "",
-        isActive: true,
-        sort_number: 0,
       },
     ]);
   };
 
   const onDeleteClick = (idToDelete: string) => {
-    const updatedIngredients = formState.map((existingIngredient) => {
-      if (existingIngredient.id === idToDelete) {
-        return {
-          ...existingIngredient,
-          isActive: false,
-        };
-      }
-      return existingIngredient;
-    });
+    const updatedIngredients = formState.filter((item) => item.id !== idToDelete);
     setFormState(updatedIngredients);
   };
 
@@ -96,13 +86,12 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
       )}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={formState.filter((v) => v.isActive).map((v) => v.id)}
+          items={formState.map((v) => v.id)}
           strategy={verticalListSortingStrategy}
         >
           {formState.length > 0 && (
             <ol className="list-decimal mb-6 text-gray-700 dark:text-gray-300">
               {formState
-                .filter((v) => v.isActive)
                 .map((v) => (
                   <SortableItem
                     key={v.id}

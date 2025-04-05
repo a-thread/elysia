@@ -1,10 +1,9 @@
 import { Recipe } from "../models/Recipe";
 import { supabaseWithAbort } from "./SupabaseWithAbort";
 import { TableNames } from "./TableNames";
-import { StepIngredientDto } from "@shared/models/StepIngredientDto";
 import { IdTitle } from "@shared/models/Tag";
 
-const getList = async (
+const getRecipeList = async (
   currentSkip: number,
   currentPageSize: number,
   searchTerm: string = "",
@@ -13,28 +12,28 @@ const getList = async (
 ) => {
   return await supabaseWithAbort.request("fetchRecipeList", async (client) => {
     let query = client
-      .from(TableNames.RECIPE_SEARCH)
+      .from("recipes")
       .select("*", { count: "exact" });
 
-    // Only filter by user permissions if a user is logged in
+    // 🔐 Visibility filtering
     if (userId) {
-      query = query.or(
-        `is_public.eq.true,user_permissions.cs.["${userId}"],user_id.eq.${userId}`
-      );
+      query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
     } else {
-      // If no user, only show public recipes
       query = query.eq("is_public", true);
     }
 
+    // 🔍 Full-text search
     if (searchTerm) {
       query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%`
+        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%,tags_text.ilike.%${searchTerm}%`
       );
     }
+
+    // 🏷️ Tag filtering (broad match via tags_text)
     if (selectedTags.length) {
       selectedTags.forEach((tag) => {
-        query = query.or(`tags_text.ilike.%${tag.title}%`)
-      })
+        query = query.or(`tags_text.ilike.%${tag.title}%`);
+      });
     }
 
     const { data, count, error } = await query.range(
@@ -47,45 +46,6 @@ const getList = async (
   });
 };
 
-const getListWithTags = async (
-  currentSkip: number,
-  currentPageSize: number,
-  searchTerm: string = "",
-  userId?: string // User ID is now optional
-) => {
-  return await supabaseWithAbort.request(
-    "fetchRecipeListWithTags",
-    async (client) => {
-      let query = client
-        .from(TableNames.RECIPE_SEARCH)
-        .select("*", { count: "exact" });
-
-      // Only filter by user permissions if a user is logged in
-      if (userId) {
-        query = query.or(
-          `is_public.eq.true,user_permissions.cs.[${userId}],user_id.eq.${userId}`
-        );
-      } else {
-        // If no user, only show public recipes
-        query = query.eq("is_public", true);
-      }
-
-      if (searchTerm) {
-        query = query.or(
-          `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%,tags_text.ilike.%${searchTerm}%`
-        );
-      }
-
-      const { data, count, error } = await query.range(
-        currentSkip,
-        currentSkip + currentPageSize - 1
-      );
-
-      if (error) throw new Error("Failed to fetch recipes.");
-      return { data, count };
-    }
-  );
-};
 
 const getDetail = async (
   recipeId: string | undefined,
@@ -99,8 +59,8 @@ const getDetail = async (
         .select(
           `
       id, title, description, img_url, user_id, is_public, servings, prep_time, cook_time, original_recipe_url,
-      ingredients!left(id, sort_number, value),
-      steps!left(id, sort_number, value),
+      ingredients,
+      steps,
       recipe_to_users!left(permission),
       collection_to_recipes!left(collections!inner(id, title)),
       recipe_to_tags!left(tags!inner(id, title))
@@ -134,7 +94,19 @@ const upsert = async (
       if (!recipeId) {
         const { data, error } = await client
           .from(TableNames.RECIPES)
-          .insert([{ ...updatedRecipe, user_id: userId }])
+          .insert([{
+            title: updatedRecipe.title,
+            prep_time: updatedRecipe.prep_time,
+            cook_time: updatedRecipe.cook_time,
+            servings: updatedRecipe.servings,
+            original_recipe_url: updatedRecipe.original_recipe_url,
+            ingredients: updatedRecipe.ingredients,
+            steps: updatedRecipe.steps,
+            is_public: updatedRecipe.is_public,
+            description: updatedRecipe.description,
+            img_url: updatedRecipe.img_url,
+            user_id: userId
+          }])
           .select()
           .single();
         if (error)
@@ -143,59 +115,25 @@ const upsert = async (
       } else {
         const { error } = await client
           .from(TableNames.RECIPES)
-          .update(updatedRecipe)
+          .update({
+            title: updatedRecipe.title,
+            prep_time: updatedRecipe.prep_time,
+            cook_time: updatedRecipe.cook_time,
+            servings: updatedRecipe.servings,
+            original_recipe_url: updatedRecipe.original_recipe_url,
+            ingredients: updatedRecipe.ingredients,
+            steps: updatedRecipe.steps,
+            is_public: updatedRecipe.is_public,
+            description: updatedRecipe.description,
+            img_url: updatedRecipe.img_url,
+            user_id: userId
+          })
           .eq("id", recipeId);
         if (error) throw new Error(`Failed to update recipe: ${error.message}`);
       }
       return { success: true, recipeId };
     }
   );
-};
-
-const deleteIngredients = async (idsToDelete: string[]) => {
-  return await supabaseWithAbort.request(
-    `deleteIngredients`,
-    async (client) => {
-      const { error } = await client
-        .from(TableNames.INGREDIENTS)
-        .delete()
-        .in("id", idsToDelete);
-      if (error)
-        throw new Error(`Failed to delete ingredients: ${error.message}`);
-    }
-  );
-};
-
-const upsertIngredients = async (ingredientsToUpsert: StepIngredientDto[]) => {
-  return await supabaseWithAbort.request(
-    `upsertIngredients`,
-    async (client) => {
-      const { error } = await client
-        .from(TableNames.INGREDIENTS)
-        .upsert(ingredientsToUpsert, { onConflict: "id" });
-      if (error)
-        throw new Error(`Failed to upsert ingredients: ${error.message}`);
-    }
-  );
-};
-
-const deleteSteps = async (idsToDelete: string[]) => {
-  return await supabaseWithAbort.request(`deleteSteps`, async (client) => {
-    const { error } = await client
-      .from(TableNames.STEPS)
-      .delete()
-      .in("id", idsToDelete);
-    if (error) throw new Error(`Failed to delete steps: ${error.message}`);
-  });
-};
-
-const upsertSteps = async (stepsToUpsert: StepIngredientDto[]) => {
-  return await supabaseWithAbort.request(`upsertSteps`, async (client) => {
-    const { error } = await client
-      .from(TableNames.STEPS)
-      .upsert(stepsToUpsert, { onConflict: "id" });
-    if (error) throw new Error(`Failed to delete steps: ${error.message}`);
-  });
 };
 
 const deleteById = async (recipeId: string | undefined) => {
@@ -371,14 +309,9 @@ const refreshRecipeSearch = async () => {
 };
 
 const RecipeService = {
-  getList,
-  getListWithTags,
+  getRecipeList,
   getDetail,
   upsert,
-  upsertIngredients,
-  deleteIngredients,
-  upsertSteps,
-  deleteSteps,
   deleteById,
   addOneToManyCollections,
   addManyToOneCollection,

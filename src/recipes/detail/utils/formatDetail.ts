@@ -1,5 +1,4 @@
 import { Recipe } from "@shared/models/Recipe";
-import { StepIngredient } from "@shared/models/StepIngredient";
 
 export const formatDetail = (data: any) => {
   const formattedData: Recipe = {
@@ -13,18 +12,8 @@ export const formatDetail = (data: any) => {
     servings: data?.servings || 1,
     is_public: data?.is_public || false,
     total_time: data?.prep_time + data?.cook_time || 0,
-    steps: (data?.steps || []).sort(
-      (a: StepIngredient, b: StepIngredient) => a.sort_number - b.sort_number
-    ).map((a: StepIngredient) => ({
-      ...a,
-      isActive: true
-    })),
-    ingredients: (data?.ingredients || []).sort(
-      (a: StepIngredient, b: StepIngredient) => a.sort_number - b.sort_number
-    ).map((a: StepIngredient) => ({
-      ...a,
-      isActive: true
-    })),
+    steps: data?.steps || [],
+    ingredients: data?.ingredients || [],
     collections: (data?.collection_to_recipes || []).flatMap(
       (item: any) => item.collections
     ),

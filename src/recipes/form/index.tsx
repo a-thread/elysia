@@ -13,7 +13,6 @@ const RecipeForm: React.FC = () => {
   const navigate = useNavigate();
   const {
     formData,
-    originalData,
     onFormChange,
     isEditing,
     id,
@@ -24,7 +23,6 @@ const RecipeForm: React.FC = () => {
   } = useRecipeForm();
   const { handleSave, isLoading } = useRecipeActions(
     formData,
-    originalData,
     isEditing,
     id
   );

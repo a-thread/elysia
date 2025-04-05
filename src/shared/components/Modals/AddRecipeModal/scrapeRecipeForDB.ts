@@ -109,7 +109,7 @@ function getIngredients($: CheerioAPI): StepIngredient[] {
     if (ingredients.length) break;
   }
   
-  return ingredients.map((value, index) => ({ id: uuidv4(), value, isActive: true, sort_number: index + 1 }));
+  return ingredients.map((value) => ({ id: uuidv4(), value }));
 }
 
 function getItems($: CheerioAPI, selectors: string[], parser: (content: string) => string): StepIngredient[] {
@@ -121,7 +121,7 @@ function getItems($: CheerioAPI, selectors: string[], parser: (content: string) 
     });
     if (items.length) break;
   }
-  return items.map((value, index) => ({ id: uuidv4(), value, isActive: true, sort_number: index + 1 }));
+  return items.map((value) => ({ id: uuidv4(), value}));
 }
 
 function parseIngredient(ingredientText: string): string {

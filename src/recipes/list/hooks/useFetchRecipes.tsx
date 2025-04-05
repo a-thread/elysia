@@ -26,7 +26,7 @@ export function useFetchRecipes() {
     async (skip: number, term: string, selected: IdTitle[]) => {
       setLoading(true);
       try {
-        const response = await RecipeService.getList(skip, 10, term, user?.id, selected);
+        const response = await RecipeService.getRecipeList(skip, 10, term, user?.id, selected);
         if (!response) throw new Error("Something went wrong.");
 
         // Fetch and update tags.

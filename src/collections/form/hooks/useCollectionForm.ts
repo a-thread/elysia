@@ -47,7 +47,7 @@ export const useCollectionForm = () => {
   // Fetch Recipes
   const fetchRecipes = useCallback(async () => {
     try {
-      const response = await RecipeService.getList(0, 25, recipeSearch);
+      const response = await RecipeService.getRecipeList(0, 25, recipeSearch);
       if (response?.data) {
         setRecipeList(response.data);
       }

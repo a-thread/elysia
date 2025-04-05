@@ -30,7 +30,7 @@ function Navbar() {
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const navLinks = ["/", "/collections", "/about"];
+  const navLinks = ["/", "/collections", "/about", "/profile"];
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -87,9 +87,8 @@ function Navbar() {
 
   return (
     <nav
-      className={`bg-white border-gray-200 dark:bg-gray-900 ${
-        isModalOpen ? "opacity-50 pointer-events-none" : ""
-      }`}
+      className={`bg-white border-gray-200 dark:bg-gray-900 ${isModalOpen ? "opacity-50 pointer-events-none" : ""
+        }`}
       ref={menuRef}
     >
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
@@ -108,11 +107,10 @@ function Navbar() {
             <Link
               key={path}
               to={path}
-              className={`py-2 px-3 rounded-md transition duration-200 ${
-                location.pathname === path
+              className={`py-2 px-3 rounded-md transition duration-200 ${location.pathname === path
                   ? "dark:text-leaf-green-300 text-leaf-green-500"
                   : "hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:text-leaf-green-300"
-              }`}
+                }`}
             >
               {path === "/"
                 ? "Recipes"
@@ -180,7 +178,7 @@ function Navbar() {
                 {path === "/"
                   ? "Recipes"
                   : path.replace("/", "").charAt(0).toUpperCase() +
-                    path.slice(2)}
+                  path.slice(2)}
               </Link>
             ))}
           </div>

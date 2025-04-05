@@ -25,7 +25,7 @@ const CollectionDetail: React.FC = () => {
     const loadCollection = async () => {
       setLoading(true);
       try {
-        if (!id || !user?.id) {
+        if (!id) {
           throw new Error("no id found");
         }
         const collectionData = await CollectionService.getDetail(id, user?.id);
@@ -39,7 +39,7 @@ const CollectionDetail: React.FC = () => {
     };
 
     loadCollection();
-  }, [id, user?.id]);
+  }, [id, user]);
 
   if (loading) {
     return <Loading className="mt-40" />;

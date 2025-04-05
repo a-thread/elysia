@@ -25,7 +25,7 @@ const getList = async (
   });
 };
 
-const getDetail = async (collectionId: string, userId: string) => {
+const getDetail = async (collectionId: string, userId: string | undefined) => {
   return await supabaseWithAbort.request(
     `getDetail-${collectionId}`,
     async (client) => {

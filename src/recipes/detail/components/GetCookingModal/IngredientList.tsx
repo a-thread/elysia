@@ -1,6 +1,7 @@
 import React from "react";
 import { CheckIcon } from "@heroicons/react/24/solid";
 import { CheckedItems } from ".";
+import { StepIngredient } from "@shared/models/StepIngredient";
 
 interface IngredientItemProps {
   index: number;
@@ -48,7 +49,7 @@ const IngredientItem: React.FC<IngredientItemProps> = ({ index, ingredient, isCh
 };
 
 interface IngredientListProps {
-  ingredients: string[];
+  ingredients: StepIngredient[];
   checkedItems: CheckedItems;
   onCheck: (index: number) => void;
 }
@@ -58,8 +59,8 @@ const IngredientList: React.FC<IngredientListProps> = ({ ingredients, checkedIte
     <div className="flex flex-col space-y-4">
       {ingredients.map((ingredient, index) => (
         <IngredientItem
-          key={index}
-          ingredient={ingredient}
+          key={ingredient.id}
+          ingredient={ingredient.value}
           index={index}
           onCheck={onCheck}
           isChecked={!!checkedItems[index] || false}

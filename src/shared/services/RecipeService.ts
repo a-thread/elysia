@@ -137,7 +137,7 @@ const upsert = async (
 };
 
 const deleteById = async (recipeId: string | undefined) => {
-  await supabaseWithAbort.request(
+  return await supabaseWithAbort.request(
     `deleteRecipe-${recipeId}`,
     async (client) => {
       const { error } = await client
@@ -147,7 +147,6 @@ const deleteById = async (recipeId: string | undefined) => {
       if (error) throw new Error("Failed to delete recipe.");
     }
   );
-  return await refreshRecipeSearch();
 };
 
 const addOneToManyCollections = async (
@@ -245,7 +244,7 @@ const getIsPublic = async (recipeId: string | undefined) => {
 };
 
 const setIsPublic = async (recipeId: string | undefined, isPublic: boolean) => {
-  await supabaseWithAbort.request(
+  return await supabaseWithAbort.request(
     `togglePublicShare-${recipeId}`,
     async (client) => {
       const { error } = await client
@@ -259,7 +258,6 @@ const setIsPublic = async (recipeId: string | undefined, isPublic: boolean) => {
       return !isPublic;
     }
   );
-  return await refreshRecipeSearch();
 };
 
 const shareWithUser = async (
@@ -267,7 +265,7 @@ const shareWithUser = async (
   userId: string,
   permission: string
 ) => {
-  await supabaseWithAbort.request(
+  return await supabaseWithAbort.request(
     `shareRecipe-${recipeId}-${userId}`,
     async (client) => {
       const { error } = await client
@@ -279,11 +277,10 @@ const shareWithUser = async (
       }
     }
   );
-  return await refreshRecipeSearch();
 };
 
 const revokeAccess = async (shareId: string) => {
-  await supabaseWithAbort.request(
+  return await supabaseWithAbort.request(
     `revokeUserAccess-${shareId}`,
     async (client) => {
       const { error } = await client
@@ -296,17 +293,8 @@ const revokeAccess = async (shareId: string) => {
       }
     }
   );
-  return await refreshRecipeSearch();
 };
 
-const refreshRecipeSearch = async () => {
-  await supabaseWithAbort.request(`refreshSearch`, async (client) => {
-    const { error } = await client.rpc("refresh_recipe_search");
-    if (error) {
-      throw new Error("Failed to refresh search.");
-    }
-  });
-};
 
 const RecipeService = {
   getRecipeList,
@@ -321,7 +309,6 @@ const RecipeService = {
   setIsPublic,
   shareWithUser,
   revokeAccess,
-  refreshRecipeSearch,
 };
 
 export default RecipeService;

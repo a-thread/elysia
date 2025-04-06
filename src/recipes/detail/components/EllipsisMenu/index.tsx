@@ -14,17 +14,27 @@ import DropdownButton, {
 } from "@shared/components/Buttons/DropdownButton";
 import { UserService } from "@shared/services/UserService";
 import generateRecipePDF from "@shared/services/PdfGenerator";
+import { useAuth } from "@shared/contexts/AuthContext";
 
 const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { isAuthenticated } = useAuth();
   const { openModal, closeModal } = useModalManager();
-  let isPublic = recipe.is_public!;
   const [sharedUsers, setSharedUsers] = useState<any[]>([]);
+  const [isPublic, setIsPublic] = useState(recipe.is_public!);
 
-  const handleEditClick = () => {
-    navigate(`/recipes/${recipe.id}/edit`, { state: { recipe } });
+  const updateSharedUsers = async () => {
+    try {
+      const users = await RecipeService.getSharedUsers(recipe.id);
+      setSharedUsers(users || []);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
+
+  const handleEditClick = () =>
+    navigate(`/recipes/${recipe.id}/edit`, { state: { recipe } });
 
   const handleDeleteClick = () =>
     openModal(
@@ -35,16 +45,11 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       />
     );
 
-  // useEffect(() => {
-  //   const fetchData = async () =>
-  //     setSharedUsers(await ShareService.fetchSharedUsers(recipe.id));
-  //   fetchData();
-  // }, [recipe.id]);
-
   const handleTogglePublicShare = async () => {
-    isPublic = !isPublic
     try {
-      await RecipeService.setIsPublic(recipe.id, isPublic);
+      const newStatus = !isPublic;
+      await RecipeService.setIsPublic(recipe.id, newStatus);
+      setIsPublic(newStatus);
       toast.success(`Recipe is now ${isPublic ? "public" : "private"}!`);
     } catch (error: any) {
       toast.error(error.message);
@@ -56,13 +61,12 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
     try {
       const user = await UserService.findByEmail(email);
-      if (!user) throw Error("user not found");
-      await RecipeService.shareWithUser(recipe.id, user?.id!, permission);
+      if (!user) throw new Error("User not found");
+      await RecipeService.shareWithUser(recipe.id, user.id!, permission);
       toast.success(
         `Recipe shared with ${user.display_name} as ${permission}.`
       );
-      const sharedUsers = await RecipeService.getSharedUsers(recipe.id);
-      setSharedUsers(sharedUsers!);
+      updateSharedUsers();
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -72,8 +76,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     try {
       await RecipeService.revokeAccess(shareId);
       toast.success("Access revoked.");
-      const sharedUsers = await RecipeService.getSharedUsers(recipe.id);
-      setSharedUsers(sharedUsers!);
+      updateSharedUsers();
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -84,7 +87,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     toast.success("Public link copied!");
   };
 
-  const handleShareClick = () => {
+  const handleShareClick = () =>
     openModal(
       <ShareModal
         typeOfShare="Recipe"
@@ -97,7 +100,6 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
         onClose={closeModal}
       />
     );
-  };
 
   const deleteRecipe = async () => {
     try {
@@ -120,9 +122,13 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   };
 
   const options: DropdownOption[] = [
-    { label: "Edit", onClick: handleEditClick },
-    { label: "Delete", onClick: handleDeleteClick },
-    { label: "Share", onClick: handleShareClick },
+    ...(isAuthenticated
+      ? [
+          { label: "Edit", onClick: handleEditClick },
+          { label: "Delete", onClick: handleDeleteClick },
+          { label: "Share", onClick: handleShareClick },
+        ]
+      : []),
     { label: "Export", onClick: handleExportClick },
   ];
 

@@ -66,17 +66,17 @@ const Header: React.FC<{
         <p>Recipes</p>
       </div>
     </Link>
-    {user?.id && (
-      <div className="flex gap-2">
+    <div className="flex gap-2">
+      {user?.id && (
         <DropdownButton
           options={options}
           icon={
             <PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
           }
         />
-        <EllipsisMenu recipe={recipe} />
-      </div>
-    )}
+      )}
+      <EllipsisMenu recipe={recipe} />
+    </div>
   </div>
 );
 
@@ -91,9 +91,8 @@ const Content: React.FC<{ recipe: any }> = ({ recipe }) => (
         />
       )}
       <div
-        className={`bg-white dark:bg-gray-900 p-6 ${
-          !recipe.img_url && "rounded-lg"
-        }`}
+        className={`bg-white dark:bg-gray-900 p-6 ${!recipe.img_url && "rounded-lg"
+          }`}
       >
         <TitleDescHeader
           title={recipe.title}

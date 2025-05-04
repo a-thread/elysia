@@ -1,26 +1,37 @@
-import React, { useState, FormEvent, ChangeEvent } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import { Button } from "@shared/components/Buttons";
 import { UserService } from "@shared/services/UserService";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { BiArrowBack } from "react-icons/bi";
+import { useForm } from "react-hook-form";
+
+interface FormInputs {
+  email: string;
+  password: string;
+}
 
 const SignIn: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
-  const [isRegistering, setIsRegistering] = useState<boolean>(false);
-  const [isOAuthLoading, setIsOAuthLoading] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormInputs>({
+    mode: "onChange",
+  });
+
+  const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false);
+  const [isRegistering, setIsRegistering] = React.useState<boolean>(false);
+  const [isOAuthLoading, setIsOAuthLoading] = React.useState<string | null>(null);
 
   const toast = useToast();
   const navigate = useNavigate();
 
-  const handleSignIn = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSignIn = async (data: FormInputs) => {
     try {
       setIsLoggingIn(true);
-      await UserService.signIn(email, password);
+      await UserService.signIn(data.email, data.password);
       navigate("/");
     } catch (error: any) {
       toast.error(error.message);
@@ -29,21 +40,20 @@ const SignIn: React.FC = () => {
     }
   };
 
-  const handleRegister = async (e: FormEvent) => {
-      e.preventDefault();
-      try {
-        setIsRegistering(true);
-        await UserService.signUp(email, password);
-        toast.success(
-          "Registration successful! A confirmation link has been sent to your email."
-        );
-        navigate("/");
-      } catch (error: any) {
-        toast.error(error.message);
-      } finally {
-        setIsRegistering(false);
-      }
-    };
+  const handleRegister = async (data: FormInputs) => {
+    try {
+      setIsRegistering(true);
+      await UserService.signUp(data.email, data.password);
+      toast.success(
+        "Registration successful! A confirmation link has been sent to your email."
+      );
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsRegistering(false);
+    }
+  };
 
   const handleOAuthLogin = async (provider: "google" | "github") => {
     try {
@@ -51,6 +61,7 @@ const SignIn: React.FC = () => {
       await UserService.signInWithProvider(provider);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
       setIsOAuthLoading(null);
     }
   };
@@ -71,17 +82,14 @@ const SignIn: React.FC = () => {
         <h2 className="text-xl font-bold text-leaf-green-600 dark:text-white mb-4 text-center">
           Sign In
         </h2>
-        <form onSubmit={handleSignIn}>
+        <form onSubmit={handleSubmit(handleSignIn)}>
           <div className="relative z-0 w-full mb-5 group">
             <input
               type="email"
-              name="email"
+              {...register("email", { required: "Email is required" })}
               id="email"
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              value={email}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-              required
             />
             <label
               htmlFor="email"
@@ -89,17 +97,15 @@ const SignIn: React.FC = () => {
             >
               Email
             </label>
+            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </div>
           <div className="relative z-0 w-full mb-5 group">
             <input
               type="password"
-              name="password"
+              {...register("password", { required: "Password is required" })}
               id="password"
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              value={password}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-              required
             />
             <label
               htmlFor="password"
@@ -107,15 +113,22 @@ const SignIn: React.FC = () => {
             >
               Password
             </label>
+            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           </div>
           <div className="mb-2 text-right">
             <Link to="/forgot-password">Forgot password?</Link>
           </div>
           <div className="flex flex-col gap-2">
-            <Button type="submit" isLoading={isLoggingIn} className="w-full">
+            <Button type="submit" isLoading={isLoggingIn} className="w-full" disabled={isLoggingIn || !isValid}>
               Sign In
             </Button>
-            <Button btnType="secondary" isLoading={isRegistering} className="w-full" onClick={handleRegister}>
+            <Button
+              btnType="secondary"
+              isLoading={isRegistering}
+              className="w-full"
+              disabled={isRegistering || !isValid}
+              onClick={handleSubmit(handleRegister)}
+            >
               Register
             </Button>
           </div>

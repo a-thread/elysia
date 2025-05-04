@@ -33,7 +33,7 @@ const Button: FC<ButtonProps> = ({
   };
 
   const buttonClasses = `${baseClasses} ${buttonTypes[btnType] || ""} ${
-    disabled || isLoading ? "opacity-50 cursor-not-allowed" : ""
+    disabled || isLoading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
   } ${className}`;
 
   return (

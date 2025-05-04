@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import IconButton from "./IconButton";
-import { TrashIcon as TrashSolid } from "@heroicons/react/20/solid";
-import { TrashIcon as TrashOutline } from "@heroicons/react/24/outline";
+import { FaTrashAlt as TrashSolid } from "react-icons/fa";
+import { FiTrash as TrashOutline } from "react-icons/fi";
 
 
 // Define ShareModal Props

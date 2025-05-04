@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ChevronLeftIcon } from "@heroicons/react/20/solid";
+import { FaChevronLeft } from "react-icons/fa";
 import EllipsisMenu from "./components/EllipsisMenu";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { Collection as CollectionData } from "@shared/models/Collection";
@@ -54,7 +54,7 @@ const CollectionDetail: React.FC = () => {
       <div className="w-full flex justify-between items-center mb-4">
         <Link to="/collections">
           <div className="flex justify-center items-center font-medium text-center text-leaf-green-600 dark:text-leaf-green-100">
-            <ChevronLeftIcon aria-hidden="true" className="size-6" />
+            <FaChevronLeft aria-hidden="true" className="size-6" />
             <p>Collections</p>
           </div>
         </Link>

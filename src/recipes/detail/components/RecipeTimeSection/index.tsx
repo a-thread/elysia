@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import formatMinutes from "../../utils/formatMinutes";
 import GetCookingModal from "../GetCookingModal";
-import { FireIcon } from "@heroicons/react/24/outline";
+import { FaFire } from "react-icons/fa";
 import TimeLabelValue from "./TimeLabelValue";
 import { Recipe } from "@shared/models/Recipe";
 import { useModalManager } from "@shared/components/Modals";
@@ -25,7 +25,7 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
         onClick={onCookClick}
       >
         Get Cookin
-        <FireIcon className="h-5 w-5" />
+        <FaFire className="h-5 w-5" />
       </Button>
 
       <div className="py-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">

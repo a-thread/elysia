@@ -2,7 +2,8 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import IngredientsSection from "./components/IngredientsSection";
 import StepsSection from "./components/StepsSection";
-import { ChevronLeftIcon, PlusIcon } from "@heroicons/react/20/solid";
+import { FaChevronLeft } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
 import RecipeTimeSection from "./components/RecipeTimeSection";
 import EllipsisMenu from "./components/EllipsisMenu";
 import { useRecipeDetails } from "./hooks/useRecipeDetails";
@@ -62,7 +63,7 @@ const Header: React.FC<{
   <div className="w-full flex justify-between items-center mb-4">
     <Link to="/">
       <div className="flex items-center font-medium text-leaf-green-600 dark:text-leaf-green-100">
-        <ChevronLeftIcon className="size-6" />
+        <FaChevronLeft className="size-6" />
         <p>Recipes</p>
       </div>
     </Link>
@@ -71,7 +72,7 @@ const Header: React.FC<{
         <DropdownButton
           options={options}
           icon={
-            <PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
+            <FaPlus className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
           }
         />
       )}

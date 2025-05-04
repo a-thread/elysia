@@ -71,8 +71,22 @@ const signOut = async () => {
   });
 };
 
+const signInWithProvider = async (
+  provider: "google" | "github",
+) => {
+  return await supabaseWithAbort.request(`signInWith${provider}`, async (client) => {
+    const { data, error } = await client.auth.signInWithOAuth({
+      provider,
+    });
+    if (error) throw new Error(`OAuth error (${provider}): ${error.message}`);
+    return data;
+  });
+};
+
+
 export const UserService = {
   signIn,
+  signInWithProvider,
   signUp,
   signOut,
   resetPassword,

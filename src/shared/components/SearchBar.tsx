@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { FaSearch, FaTimes } from "react-icons/fa";
 import { IdTitle } from "@shared/models/Tag";
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import { Button, TagButton } from "./Buttons";
@@ -108,7 +108,7 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
         }`}
         onClick={() => options.length > 0 && setIsDropdownOpen(true)}
       >
-        <MagnifyingGlassIcon className="w-5 h-5" />
+        <FaSearch className="w-5 h-5" />
         {selectedOptions.map((option) => (
           <TagButton
             key={option.id}
@@ -131,7 +131,7 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
           onKeyDown={handleKeyDown}
         />
         {(searchTerm?.length > 0 || selectedOptions?.length > 0) && (
-          <XMarkIcon
+          <FaTimes
             className="w-6 h-6 cursor-pointer"
             title="Clear Search Bar"
             onClick={handleClearSearchBar}

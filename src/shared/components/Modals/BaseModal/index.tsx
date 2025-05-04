@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { FaTimes } from "react-icons/fa";
 import { ModalSize } from "./ModalSize";
 import { BaseModalProps } from "./BaseModalProps";
 
@@ -43,7 +43,7 @@ const Modal: React.FC<BaseModalProps> = ({
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
         >
-          <XMarkIcon className="w-6 h-6" title="Close Modal" />
+          <FaTimes className="w-6 h-6" title="Close Modal" />
         </button>
         {children}
       </div>

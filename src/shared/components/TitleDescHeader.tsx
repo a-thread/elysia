@@ -2,7 +2,7 @@ import React from "react";
 import { TitleDescriptionImgUrl } from "../models/TitleDescriptionImgUrl";
 import { IconButton } from "./Buttons";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { PlusIcon } from "@heroicons/react/20/solid";
+import { FaPlus } from "react-icons/fa6";
 
 interface TitleDescHeaderProps extends TitleDescriptionImgUrl {
   classes?: string;
@@ -33,7 +33,7 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
             title={actionName}
             onClick={onAction}
             icon={
-              <PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
+              <FaPlus className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
             }
           />
         )}

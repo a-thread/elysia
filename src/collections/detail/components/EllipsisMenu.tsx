@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import { FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import {
@@ -132,7 +132,7 @@ const EllipsisMenu: React.FC<{ collection: Collection }> = ({ collection }) => {
     <DropdownButton
       options={options}
       icon={
-        <EllipsisVerticalIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+        <FaEllipsisV className="w-6 h-6 text-gray-600 dark:text-gray-300" />
       }
     />
   );

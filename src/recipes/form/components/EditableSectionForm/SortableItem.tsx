@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { HandRaisedIcon } from "@heroicons/react/24/outline";
+import { FaHandPaper } from "react-icons/fa";
 import AutoResizeTextarea from "./AutoResizeTextbox";
 import { IconButton, TrashButton } from "@shared/components/Buttons";
 import { StepIngredient } from "@shared/models/StepIngredient";
@@ -44,7 +44,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
       {/* Drag Handle */}
       <IconButton
         icon={
-          <HandRaisedIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+          <FaHandPaper className="w-6 h-6 text-gray-500 dark:text-gray-400" />
         }
         title="Drag Step"
         attributes={attributes}

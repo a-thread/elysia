@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckIcon } from "@heroicons/react/24/solid";
+import { FaCheck } from "react-icons/fa";
 import { CheckedItems } from ".";
 import { StepIngredient } from "@shared/models/StepIngredient";
 
@@ -28,7 +28,7 @@ const IngredientItem: React.FC<IngredientItemProps> = ({ index, ingredient, isCh
             peer-checked:bg-leaf-green-500 peer-checked:border-leaf-green-500 
             dark:border-gray-600 dark:peer-checked:bg-leaf-green-400 dark:peer-checked:border-leaf-green-400"
       >
-        <CheckIcon
+        <FaCheck
           className={`w-4 h-4 text-white peer-checked:block ${
             !isChecked && "hidden"
           }`}

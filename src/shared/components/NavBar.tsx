@@ -1,20 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  SunIcon,
-  MoonIcon,
-  Bars4Icon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { GoSun } from "react-icons/go";
+import { FaMoon, FaBars, FaTimes } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
+import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { useDarkMode } from "../contexts/DarkModeContext";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { AddRecipeModal, AddTagModal, useModalManager } from "./Modals";
 import { DropdownButton, IconButton } from "./Buttons";
-import {
-  ArrowLeftEndOnRectangleIcon,
-  ArrowRightEndOnRectangleIcon,
-  PlusIcon,
-} from "@heroicons/react/20/solid";
 import { DropdownOption } from "./Buttons/DropdownButton";
 import { UserService } from "@shared/services/UserService";
 import { useToast } from "./Toast";
@@ -125,7 +118,7 @@ function Navbar() {
             <DropdownButton
               options={options}
               icon={
-                <PlusIcon className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
+                <FaPlus className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
               }
             />
           )}
@@ -134,9 +127,9 @@ function Navbar() {
             title="Toggle Dark Mode"
             icon={
               isDarkMode ? (
-                <SunIcon className="w-6 h-6 text-yellow-400" />
+                <GoSun className="w-6 h-6 text-yellow-400" />
               ) : (
-                <MoonIcon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
+                <FaMoon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
               )
             }
           />
@@ -145,9 +138,9 @@ function Navbar() {
             title={isAuthenticated ? "Logout" : "Login"}
             icon={
               isAuthenticated ? (
-                <ArrowRightEndOnRectangleIcon className="w-6 h-6 text-red-500" />
+                <FiLogOut className="w-6 h-6 text-red-500" />
               ) : (
-                <ArrowLeftEndOnRectangleIcon className="w-6 h-6 text-green-500" />
+                <FiLogIn className="w-6 h-6 text-green-500" />
               )
             }
           />
@@ -156,7 +149,7 @@ function Navbar() {
             className="text-gray-500 rounded-lg md:hidden focus:ring-gray-200 dark:text-gray-400"
             title="Open main menu"
             icon={
-              <Bars4Icon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
+              <FaBars className="w-6 h-6 text-gray-800 dark:text-gray-200" />
             }
           />
         </div>
@@ -168,7 +161,7 @@ function Navbar() {
               onClick={toggleMenu}
               className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
             >
-              <XMarkIcon className="w-6 h-6" title="Close Menu" />
+              <FaTimes className="w-6 h-6" title="Close Menu" />
             </button>
             {navLinks.filter(Boolean).map((path) => (
               <Link

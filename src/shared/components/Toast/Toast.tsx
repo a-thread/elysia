@@ -1,11 +1,11 @@
 import React, { JSX } from "react";
-import { XMarkIcon } from "@heroicons/react/20/solid";
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  XCircleIcon,
-  InformationCircleIcon,
-} from "@heroicons/react/24/outline";
+import { FaTimes } from "react-icons/fa";
+import { 
+  FaCheckCircle, 
+  FaExclamationCircle, 
+  FaTimesCircle, 
+  FaInfoCircle 
+} from "react-icons/fa";
 
 // Define Toast types
 type ToastType = "success" | "error" | "info" | "warning";
@@ -20,10 +20,10 @@ interface ToastProps {
 
 // Define icon mappings with proper typing
 const icons: { [key in ToastType]: JSX.Element } = {
-  success: <CheckCircleIcon className="w-6 h-6 text-green-500" />,
-  error: <XCircleIcon className="w-6 h-6 text-red-500" />,
-  info: <InformationCircleIcon className="w-6 h-6 text-blue-500" />,
-  warning: <ExclamationCircleIcon className="w-6 h-6 text-yellow-500" />,
+  success: <FaCheckCircle className="w-6 h-6 text-green-500" />,
+  error: <FaTimesCircle className="w-6 h-6 text-red-500" />,
+  info: <FaInfoCircle className="w-6 h-6 text-blue-500" />,
+  warning: <FaExclamationCircle className="w-6 h-6 text-yellow-500" />,
 };
 
 const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
@@ -45,7 +45,7 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
       {icons[type]}
       <span>{message}</span>
       <button onClick={() => onClose(id)} className="ml-auto">
-        <XMarkIcon className="w-5 h-5 dark:text-gray-400 dark:hover:text-gray-200 text-gray-500 hover:text-gray-700" />
+        <FaTimes className="w-5 h-5 dark:text-gray-400 dark:hover:text-gray-200 text-gray-500 hover:text-gray-700" />
       </button>
     </div>
   );

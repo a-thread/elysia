@@ -1,5 +1,5 @@
 import React from "react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { FaTimes } from "react-icons/fa";
 
 interface TagProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isReadOnly?: boolean;
@@ -30,7 +30,7 @@ const TagButton: React.FC<TagProps> = ({
       {...props}
     >
       <small>{title}</small>
-      {!isReadOnly && <XMarkIcon className="w-3 h-3" />}
+      {!isReadOnly && <FaTimes className="w-3 h-3" />}
     </button>
   );
 };

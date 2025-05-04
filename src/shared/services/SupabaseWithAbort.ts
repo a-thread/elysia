@@ -16,7 +16,7 @@ if (!API_KEY) {
 }
 
 // Create Supabase client
-const supabase: SupabaseClient = createClient(API_URL, API_KEY);
+export const supabase: SupabaseClient = createClient(API_URL, API_KEY);
 
 // Add request cancellation logic
 class SupabaseClientWithAbort {

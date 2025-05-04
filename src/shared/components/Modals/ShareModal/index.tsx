@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, TrashButton } from "../../Buttons";
 import ShareWithUser from "./ShareWithUser";
-import { CheckIcon } from "@heroicons/react/20/solid";
+import { FaCheck } from "react-icons/fa";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
 
 // Define permission type
@@ -67,7 +67,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
           peer-checked:bg-blue-500 peer-checked:border-blue-500 
           dark:border-gray-600 dark:peer-checked:bg-blue-400 dark:peer-checked:border-blue-400"
         >
-          <CheckIcon
+          <FaCheck
             className={`w-4 h-4 text-white ${isPublicLocal ? "block" : "hidden"}`}
           />
         </label>

@@ -4,7 +4,6 @@ import Navbar from "@shared/components/NavBar";
 import About from "./About";
 import ResetPassword from "./auth/ResetPassword";
 import SignIn from "./auth/SignIn";
-import Register from "./auth/Register";
 import { CollectionList, CollectionDetail, CollectionForm } from "./collections";
 import { ModalManager } from "@shared/components/Modals";
 import { ForgotPassword } from "./auth";
@@ -27,7 +26,6 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/" element={<RecipeList />} />

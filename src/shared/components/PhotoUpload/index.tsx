@@ -1,5 +1,5 @@
 import React, { useRef, useState, ChangeEvent, DragEvent } from 'react';
-import { TrashIcon } from "@heroicons/react/20/solid";
+import { FaTrash } from "react-icons/fa";
 import PhotoService from './photoService';
 import { useToast } from '@shared/components/Toast';
 import { Button } from '@shared/components/Buttons';
@@ -107,7 +107,7 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({ imgUrl, onImgUrlChange }) => 
                 onClick={handleRemoveImage}
                 className="text-white text-2xl hover:text-red-500"
               >
-                <TrashIcon
+                <FaTrash
                   className="w-11 h-11 text-red-500 dark:text-red-600"
                   title="Delete Image"
                 />

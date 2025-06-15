@@ -72,9 +72,8 @@ const signOut = async () => {
 };
 
 const getRedirectURL = () => {
-  // For Vite/React/GitHub Pages deployments, use the public URL from vite config or fallback to origin.
   let url =
-    import.meta.env.VITE_PUBLIC_SITE_URL ||
+    import.meta.env.DEPLOY_URL ||
     window.location.origin + '/';
   // Ensure trailing slash
   url = url.endsWith('/') ? url : `${url}/`;

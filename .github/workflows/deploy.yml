@@ -25,6 +25,7 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.page_url }}
         run: npm run build
 
       - name: Deploy to GitHub Pages

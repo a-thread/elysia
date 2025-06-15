@@ -73,7 +73,7 @@ const signOut = async () => {
 
 const getRedirectURL = () => {
   let url =
-    import.meta.env.DEPLOY_URL ||
+    import.meta.env.VITE_DEPLOY_URL ||
     window.location.origin + '/';
   // Ensure trailing slash
   url = url.endsWith('/') ? url : `${url}/`;

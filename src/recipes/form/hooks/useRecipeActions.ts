@@ -25,10 +25,12 @@ export const useRecipeActions = (
         await RecipeService.upsert(id, formData);
 
         if (formData.tags?.length) {
+          await TagService.removeAllFromRecipe(id);
           await TagService.addToRecipe(id, formData.tags);
         }
 
         if (formData.collections?.length) {
+          await RecipeService.removeFromAllCollections(id);
           await RecipeService.addOneToManyCollections(
             id,
             formData.collections.map((i) => i.id)

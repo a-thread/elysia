@@ -187,6 +187,23 @@ const addManyToOneCollection = async (
   );
 };
 
+const removeFromAllCollections = async (
+  recipeId: string
+) => {
+  return await supabaseWithAbort.request(
+    `removeFromAllCollections`,
+    async (client) => {
+      const { error } = await client
+        .from(TableNames.COLLECTION_TO_RECIPES)
+        .delete()
+        .eq("recipe_id", recipeId);
+
+      if (error)
+        throw new Error("Failed to remove collection(s) from recipe.");
+    }
+  );
+};
+
 const removeManyFromManyCollections = async (
   collectionIds: string[],
   recipeIds: string[]
@@ -304,6 +321,7 @@ const RecipeService = {
   addOneToManyCollections,
   addManyToOneCollection,
   removeManyFromManyCollections,
+  removeFromAllCollections,
   getSharedUsers,
   getIsPublic,
   setIsPublic,

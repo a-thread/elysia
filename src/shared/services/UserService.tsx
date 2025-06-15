@@ -83,13 +83,11 @@ const getRedirectURL = () => {
 const signInWithProvider = async (
   provider: "google" | "github",
 ) => {
-  const redirectTo = getRedirectURL();
-  console.log(`OAuth redirect URL: ${redirectTo}`);
   return await supabaseWithAbort.request(`signInWith${provider}`, async (client) => {
     const { data, error } = await client.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo,
+        redirectTo: getRedirectURL(),
       },
     });
     if (error) throw new Error(`OAuth error (${provider}): ${error.message}`);

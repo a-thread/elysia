@@ -26,6 +26,7 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
           VITE_DEPLOY_URL: ${{ secrets.VITE_DEPLOY_URL }}
+          VITE_RECIPE_SCRAPER_API: ${{ secrets.VITE_RECIPE_SCRAPER_API }}
         run: npm run build
 
       - name: Deploy to GitHub Pages

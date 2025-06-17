@@ -1,7 +1,8 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { Button } from "../../Buttons";
-import { scrapeRecipeForDB } from "./scrapeRecipeForDB";
+import { getRecipeFromScraper } from "./scrapeRecipeForDB";
 import { useNavigate } from "react-router-dom";
+import { useModalManager } from "../ModalManager";
 
 interface UrlInputFormProps {
   onCancel: () => void;
@@ -16,12 +17,14 @@ const UrlInputForm: React.FC<UrlInputFormProps> = ({
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { closeModal } = useModalManager();
 
   const fetchRecipe = async (recipeUrl: string) => {
     try {
       setIsLoading(true);
-      const data = await scrapeRecipeForDB(recipeUrl);
+      const data = await getRecipeFromScraper(recipeUrl);
       navigate("/add-new", { state: { recipe: data } });
+      closeModal();
       onCancel();
       setError(""); // Clear any previous error
     } catch (error) {

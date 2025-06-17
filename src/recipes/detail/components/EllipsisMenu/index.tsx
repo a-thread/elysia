@@ -50,7 +50,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       const newStatus = !isPublic;
       await RecipeService.setIsPublic(recipe.id, newStatus);
       setIsPublic(newStatus);
-      toast.success(`Recipe is now ${isPublic ? "public" : "private"}!`);
+      toast.success(`Recipe is now ${newStatus ? "public" : "private"}!`);
     } catch (error: any) {
       toast.error(error.message);
     }

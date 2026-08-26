@@ -71,6 +71,8 @@ const App = () => {
                 path="/collections/:id/edit"
                 element={<CollectionForm />}
               />
+              <Route path="/__debug-collection-form" element={<CollectionForm />} />
+              <Route path="/__debug-profile" element={<ProfilePage />} />
             </Routes>
           </div>
         </ModalManager>

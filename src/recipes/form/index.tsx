@@ -2,12 +2,14 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import PhotoUpload from "../../shared/components/PhotoUpload";
 import EditableSectionForm from "./components/EditableSectionForm";
-import { Button } from "@shared/components/Buttons";
 import TitleDescriptionForm from "@shared/components/TitleDescriptionForm";
 import RecipeDetailsForm from "@shared/components/RecipeDetailsForm";
 import { useRecipeForm } from "./hooks/useRecipeForm";
 import { useRecipeActions } from "./hooks/useRecipeActions";
 import MultiSelect from "@shared/components/MultiSelect";
+import Card from "@shared/components/Card";
+import { FieldLabel } from "@shared/components/FormField";
+import FormActionBar from "@shared/components/FormActionBar";
 
 const RecipeForm: React.FC = () => {
   const navigate = useNavigate();
@@ -29,23 +31,17 @@ const RecipeForm: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto mt-4">
-      <div className="w-full flex justify-end items-center mb-4 gap-4">
-        <Button btnType="dismissable" onClick={() => navigate(-1)}>
-          Cancel
-        </Button>
-        <Button onClick={handleSave} isLoading={isLoading}>
-          {isEditing ? "Save" : "Add"}
-        </Button>
-      </div>
+      <FormActionBar
+        isEditing={isEditing}
+        isLoading={isLoading}
+        onCancel={() => navigate(-1)}
+        onSave={handleSave}
+      />
       <PhotoUpload
         imgUrl={formData.img_url}
         onImgUrlChange={(url) => onFormChange("img_url", url)}
       />
-      <div
-        className={`bg-white dark:bg-gray-900 p-6 rounded-b-xl shadow-md ${
-          !formData.img_url?.length && "rounded-t-xl"
-        }`}
-      >
+      <Card hasImageAbove={!!formData.img_url?.length}>
         <TitleDescriptionForm
           title={formData.title}
           description={formData.description!}
@@ -67,12 +63,7 @@ const RecipeForm: React.FC = () => {
         />
 
         <div className="mb-4">
-          <label
-            htmlFor="Tags"
-            className="block text-xs font-semibold text-leaf-green-700 dark:text-leaf-green-300 mb-1.5"
-          >
-            Tags
-          </label>
+          <FieldLabel htmlFor="Tags">Tags</FieldLabel>
           <MultiSelect
             placeholder="Search for tags..."
             inputId="Tags"
@@ -86,12 +77,7 @@ const RecipeForm: React.FC = () => {
         </div>
 
         <div className="mb-2">
-          <label
-            htmlFor="Collections"
-            className="block text-xs font-semibold text-leaf-green-700 dark:text-leaf-green-300 mb-1.5"
-          >
-            Collections
-          </label>
+          <FieldLabel htmlFor="Collections">Collections</FieldLabel>
           <MultiSelect
             placeholder="Search for collections..."
             inputId="Collections"
@@ -103,7 +89,7 @@ const RecipeForm: React.FC = () => {
             onSearch={setCollectionSearch}
           />
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

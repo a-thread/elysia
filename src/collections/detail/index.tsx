@@ -11,6 +11,7 @@ import TitleDescHeader from "@shared/components/TitleDescHeader";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { TagButton } from "@shared/components/Buttons";
 import { useNavigate } from "react-router-dom";
+import Card from "@shared/components/Card";
 
 const CollectionDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -72,11 +73,7 @@ const CollectionDetail: React.FC = () => {
           />
         </div>
       )}
-      <div
-        className={`bg-white dark:bg-gray-900 shadow-md rounded-b-xl p-6 ${
-          !collection?.img_url && "rounded-t-xl"
-        }`}
-      >
+      <Card hasImageAbove={!!collection?.img_url}>
         <TitleDescHeader
           title={collection.title}
           description={collection.description}
@@ -91,7 +88,7 @@ const CollectionDetail: React.FC = () => {
             ))}
           </div>
         )}
-      </div>
+      </Card>
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
         {collection.recipes &&
           collection.recipes.map((recipe) => (

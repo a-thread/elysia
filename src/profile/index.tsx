@@ -1,6 +1,7 @@
 import React from 'react';
 import ResetPasswordForm from "../shared/components/ResetPasswordForm";
 import TitleDescHeader from '@shared/components/TitleDescHeader';
+import Card from '@shared/components/Card';
 
 const ProfilePage: React.FC = () => {
     return (
@@ -10,12 +11,12 @@ const ProfilePage: React.FC = () => {
                 title="Profile"
             />
 
-            <section className="bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
+            <Card>
                 <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-100 mb-3">
                     Reset Password
                 </h2>
                 <ResetPasswordForm />
-            </section>
+            </Card>
         </div>
     );
 };

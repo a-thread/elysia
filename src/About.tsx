@@ -3,6 +3,7 @@ import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
 import { Button } from "@shared/components/Buttons";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Card from "@shared/components/Card";
 
 const About: React.FC = () => {
   const { openModal, closeModal } = useModalManager();
@@ -13,13 +14,15 @@ const About: React.FC = () => {
     if (isAuthenticated) {
       openModal(<AddRecipeModal onClose={closeModal} />);
     } else {
-      navigate('/sign-in')
+      navigate("/sign-in");
     }
   };
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white">About Elysia</h1>
+      <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+        About Elysia
+      </h1>
 
       <div className="flex flex-row justify-center m-4">
         <img
@@ -29,7 +32,7 @@ const About: React.FC = () => {
         />
       </div>
 
-      <div className="bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
+      <Card>
         <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-100 mb-3">
           The Slug That Inspired It All
         </h2>
@@ -41,21 +44,23 @@ const About: React.FC = () => {
           less food to survive. This incredible ability mirrors our own journey
           - by being mindful of what we consume, we empower ourselves to thrive.
         </p>
-      </div>
+      </Card>
 
-      <div className="mt-6 bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
-        <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-100 mb-3">
-          The Vision Behind Elysia
-        </h2>
-        <p className="text-gray-700 dark:text-gray-300">
-          Cooking is more than just a necessity—it's a way to nourish both body
-          and mind. Our vision is to build a platform where people can explore
-          diverse recipes, develop new skills, and gradually become more
-          self-reliant in the kitchen. Just like Elysia chlorotica adapts and
-          grows by integrating the best of what it consumes, this app allows
-          food lovers to nurture, discover, and evolve their culinary
-          environment.
-        </p>
+      <div className="mt-6">
+        <Card>
+          <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-100 mb-3">
+            The Vision Behind Elysia
+          </h2>
+          <p className="text-gray-700 dark:text-gray-300">
+            Cooking is more than just a necessity—it&apos;s a way to nourish
+            both body and mind. Our vision is to build a platform where people
+            can explore diverse recipes, develop new skills, and gradually
+            become more self-reliant in the kitchen. Just like Elysia chlorotica
+            adapts and grows by integrating the best of what it consumes, this
+            app allows food lovers to nurture, discover, and evolve their
+            culinary environment.
+          </p>
+        </Card>
       </div>
 
       <div className="flex flex-col align-items-center mt-10">

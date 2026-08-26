@@ -16,6 +16,7 @@ import { useModalManager } from "@shared/components/Modals";
 import AddRecipeToCollectionsModal from "./components/AddRecipeToCollections";
 import { DropdownOption } from "@shared/components/Buttons/DropdownButton";
 import AddTagsToRecipeModal from "./components/AddTagsToRecipeModal";
+import Card from "@shared/components/Card";
 
 const Recipe: React.FC = () => {
   const { id } = useParams();
@@ -91,10 +92,7 @@ const Content: React.FC<{ recipe: any }> = ({ recipe }) => (
           className="w-full h-64 object-cover rounded-t-xl"
         />
       )}
-      <div
-        className={`bg-white dark:bg-gray-900 shadow-md rounded-b-xl p-6 ${!recipe.img_url && "rounded-t-xl"
-          }`}
-      >
+      <Card hasImageAbove={!!recipe.img_url}>
         <TitleDescHeader
           title={recipe.title}
           description={recipe.description}
@@ -104,7 +102,7 @@ const Content: React.FC<{ recipe: any }> = ({ recipe }) => (
         {recipe.original_recipe_url && (
           <SourceLink url={recipe.original_recipe_url} />
         )}
-      </div>
+      </Card>
     </div>
     <div className="w-full md:w-1/4 md:sticky md:top-20 md:self-start">
       <RecipeTimeSection recipe={recipe} />

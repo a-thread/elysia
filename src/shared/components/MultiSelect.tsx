@@ -106,9 +106,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
       {/* Selection and Input Container */}
       <div
-        className={`border border-gray-300 p-2 cursor-text flex flex-wrap items-center gap-2 ${
+        className={`border border-gray-300 dark:border-gray-600 bg-transparent p-2.5 cursor-text flex flex-wrap items-center gap-2 transition-shadow ${
           isDropdownOpen
-            ? `rounded-${openUpwards ? "b" : "t"}-lg`
+            ? `ring-2 ring-leaf-green-200 dark:ring-leaf-green-800 border-leaf-green-500 rounded-${openUpwards ? "b" : "t"}-lg`
             : "rounded-lg"
         }`}
         onClick={() => setIsDropdownOpen(true)}

@@ -61,7 +61,7 @@ const Header: React.FC<{
   recipe: any;
 }> = ({ user, options, recipe }) => (
   <div className="w-full flex justify-between items-center mb-4">
-    <Link to="/">
+    <Link to="/recipes">
       <div className="flex items-center font-medium text-leaf-green-600 dark:text-leaf-green-100">
         <FaChevronLeft className="size-6" />
         <p>Recipes</p>
@@ -88,11 +88,11 @@ const Content: React.FC<{ recipe: any }> = ({ recipe }) => (
         <img
           src={recipe.img_url}
           alt={recipe.title}
-          className="w-full h-64 object-cover rounded-t-lg"
+          className="w-full h-64 object-cover rounded-t-xl"
         />
       )}
       <div
-        className={`bg-white dark:bg-gray-900 p-6 ${!recipe.img_url && "rounded-lg"
+        className={`bg-white dark:bg-gray-900 shadow-md rounded-b-xl p-6 ${!recipe.img_url && "rounded-t-xl"
           }`}
       >
         <TitleDescHeader
@@ -106,7 +106,7 @@ const Content: React.FC<{ recipe: any }> = ({ recipe }) => (
         )}
       </div>
     </div>
-    <div className="w-full md:w-1/4">
+    <div className="w-full md:w-1/4 md:sticky md:top-20 md:self-start">
       <RecipeTimeSection recipe={recipe} />
     </div>
   </div>

@@ -106,7 +106,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       await RecipeService.deleteById(recipe.id);
       toast.success("Recipe deleted successfully!");
       closeModal();
-      navigate("/");
+      navigate("/recipes");
     } catch (error: any) {
       toast.error("Failed to delete recipe. Please try again.");
     }

@@ -33,22 +33,22 @@ const SortableItem: React.FC<SortableItemProps> = ({
     <li
       ref={setNodeRef}
       style={style}
-      className="text-gray-700 dark:text-gray-300 flex items-center justify-between mb-2"
+      className="text-gray-700 dark:text-gray-300 flex items-center gap-2 border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 mb-2"
     >
-      <AutoResizeTextarea
-        onChange={onInputChange}
-        value={formValue.value}
-        placeholder=" "
-      />
-
       {/* Drag Handle */}
       <IconButton
         icon={
-          <FaHandPaper className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+          <FaHandPaper className="w-5 h-5 text-gray-400 dark:text-gray-500" />
         }
         title="Drag Step"
         attributes={attributes}
         listeners={listeners}
+      />
+
+      <AutoResizeTextarea
+        onChange={onInputChange}
+        value={formValue.value}
+        placeholder=" "
       />
 
       {/* Delete Button */}

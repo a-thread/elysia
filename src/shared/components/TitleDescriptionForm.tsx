@@ -9,46 +9,37 @@ interface TitleDescriptionFormProps {
 
 const TitleDescriptionForm: React.FC<TitleDescriptionFormProps> = ({ title, description, onFormChange }) => {
   return (
-    <form className="w-full">
-      {/* Title Input */}
-      <div className="relative z-0 w-full mb-5 group">
+    <div className="w-full">
+      <div className="mb-4">
+        <label htmlFor="title" className="block text-xs font-semibold text-leaf-green-700 dark:text-leaf-green-300 mb-1.5">
+          Title
+        </label>
         <input
           type="text"
           name="title"
           id="title"
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-          placeholder=" "
+          className="block w-full text-sm text-gray-900 dark:text-white bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2.5 focus:outline-hidden focus:ring-2 focus:ring-leaf-green-200 dark:focus:ring-leaf-green-800 focus:border-leaf-green-500"
           value={title}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onFormChange("title", e.target.value)}
           required
         />
-        <label
-          htmlFor="title"
-          className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:rtl:translate-x-1/4 peer-focus:rtl:left-auto peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-        >
-          Title
-        </label>
       </div>
 
-      {/* Description Input */}
-      <div className="relative z-0 w-full mb-5 group">
+      <div className="mb-4">
+        <label htmlFor="description" className="block text-xs font-semibold text-leaf-green-700 dark:text-leaf-green-300 mb-1.5">
+          Description
+        </label>
         <textarea
           name="description"
           id="description"
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-          placeholder=" "
+          rows={2}
+          className="block w-full text-sm text-gray-900 dark:text-white bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2.5 focus:outline-hidden focus:ring-2 focus:ring-leaf-green-200 dark:focus:ring-leaf-green-800 focus:border-leaf-green-500 resize-none"
           value={description}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onFormChange("description", e.target.value)}
           required
         ></textarea>
-        <label
-          htmlFor="description"
-          className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:rtl:translate-x-1/4 peer-focus:rtl:left-auto peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-        >
-          Description
-        </label>
       </div>
-    </form>
+    </div>
   );
 };
 

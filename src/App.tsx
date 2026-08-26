@@ -9,10 +9,11 @@ import { ModalManager } from "@shared/components/Modals";
 import { ForgotPassword } from "./auth";
 import { RecipeList, RecipeDetail, RecipeForm } from "./recipes";
 import ProfilePage from "./profile";
+import Home from "./home";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pb-6">
+    <div className="min-h-screen bg-cream dark:bg-gray-900 text-gray-900 dark:text-gray-100 pb-6">
       <Router>
         <ModalManager>
           <Navbar />
@@ -28,7 +29,8 @@ const App = () => {
               />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/" element={<RecipeList />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/recipes" element={<RecipeList />} />
               <Route path="/about" element={<About />} />
               <Route
                 path="/profile"

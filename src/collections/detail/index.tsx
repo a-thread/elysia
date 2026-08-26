@@ -68,13 +68,13 @@ const CollectionDetail: React.FC = () => {
           <img
             src={collection.img_url}
             alt={collection.title}
-            className="w-full h-64 object-cover rounded-t-lg"
+            className="w-full h-64 object-cover rounded-t-xl"
           />
         </div>
       )}
       <div
-        className={`bg-white dark:bg-gray-900 rounded-b-lg p-6 ${
-          !collection?.img_url && "rounded-t-lg"
+        className={`bg-white dark:bg-gray-900 shadow-md rounded-b-xl p-6 ${
+          !collection?.img_url && "rounded-t-xl"
         }`}
       >
         <TitleDescHeader
@@ -86,7 +86,7 @@ const CollectionDetail: React.FC = () => {
           <div className="mt-4">
             {collection.tags.map((tag) => (
               <TagButton key={tag.id} title={tag.title} isReadOnly={true}  onClick={() => {
-                navigate("/", { state: { selectedTags: [tag] } });
+                navigate("/recipes", { state: { selectedTags: [tag] } });
               }}/>
             ))}
           </div>

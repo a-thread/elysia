@@ -15,12 +15,32 @@ interface EditableSectionFormProps {
   originalFormState: StepIngredient[];
   setOriginalFormState: (formState: StepIngredient[]) => void;
   sectionName: string;
+  enableGrouping?: boolean;
 }
+
+interface GroupChunk {
+  group?: string;
+  items: StepIngredient[];
+}
+
+const chunkByGroup = (items: StepIngredient[]): GroupChunk[] => {
+  const chunks: GroupChunk[] = [];
+  items.forEach((item) => {
+    const last = chunks[chunks.length - 1];
+    if (last && (last.group || "") === (item.group || "")) {
+      last.items.push(item);
+    } else {
+      chunks.push({ group: item.group, items: [item] });
+    }
+  });
+  return chunks;
+};
 
 const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
   originalFormState,
   setOriginalFormState,
   sectionName,
+  enableGrouping = false,
 }) => {
   const [formState, setFormState] =
     useState<StepIngredient[]>(originalFormState);
@@ -58,6 +78,25 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
     ]);
   };
 
+  const onAddGroupClick = () => {
+    setFormState((prevState) => [
+      ...prevState,
+      {
+        id: uuidv4(),
+        value: "",
+        group: "New Group",
+      },
+    ]);
+  };
+
+  const onRenameGroup = (itemIds: string[], newGroupName: string) => {
+    setFormState((prevState) =>
+      prevState.map((item) =>
+        itemIds.includes(item.id) ? { ...item, group: newGroupName } : item
+      )
+    );
+  };
+
   const onDeleteClick = (idToDelete: string) => {
     const updatedIngredients = formState.filter((item) => item.id !== idToDelete);
     setFormState(updatedIngredients);
@@ -71,8 +110,23 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
     const oldIndex = formState.findIndex((v) => v.id === active.id);
     const newIndex = formState.findIndex((v) => v.id === over.id);
 
-    setFormState(arrayMove(formState, oldIndex, newIndex));
+    let newFormState = arrayMove(formState, oldIndex, newIndex);
+
+    if (enableGrouping) {
+      // The moved item inherits the group of whichever item now sits directly
+      // before it (i.e. the item it was dropped after); dropping at the very
+      // top ungroups it.
+      const movedIndex = newFormState.findIndex((v) => v.id === active.id);
+      const precedingItem = newFormState[movedIndex - 1];
+      newFormState = newFormState.map((item, idx) =>
+        idx === movedIndex ? { ...item, group: precedingItem?.group } : item
+      );
+    }
+
+    setFormState(newFormState);
   };
+
+  const chunks = enableGrouping ? chunkByGroup(formState) : null;
 
   return (
     <div className="mb-4">
@@ -89,7 +143,45 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
           items={formState.map((v) => v.id)}
           strategy={verticalListSortingStrategy}
         >
-          {formState.length > 0 && (
+          {formState.length > 0 && chunks && (
+            <div className="mb-6">
+              {chunks.map((chunk, chunkIndex) => (
+                <div key={chunkIndex} className="mb-2">
+                  {!!chunk.group && (
+                    <input
+                      type="text"
+                      value={chunk.group}
+                      onChange={(e) =>
+                        onRenameGroup(
+                          chunk.items.map((item) => item.id),
+                          e.target.value
+                        )
+                      }
+                      className="block text-xs font-bold uppercase tracking-wide text-leaf-green-700 dark:text-leaf-green-300 bg-transparent border-0 border-b border-leaf-green-300 dark:border-leaf-green-700 focus:outline-hidden focus:border-leaf-green-500 px-0.5 py-1 mb-1"
+                    />
+                  )}
+                  <ol
+                    className={
+                      chunk.group
+                        ? "border-l-2 border-leaf-green-100 dark:border-leaf-green-800 pl-3 ml-0.5"
+                        : ""
+                    }
+                  >
+                    {chunk.items.map((v) => (
+                      <SortableItem
+                        key={v.id}
+                        id={v.id}
+                        formValue={v}
+                        onEditFormValue={onEditFormValue}
+                        onDeleteClick={onDeleteClick}
+                      />
+                    ))}
+                  </ol>
+                </div>
+              ))}
+            </div>
+          )}
+          {formState.length > 0 && !chunks && (
             <ol className="list-decimal mb-6 text-gray-700 dark:text-gray-300">
               {formState
                 .map((v) => (
@@ -105,9 +197,16 @@ const EditableSectionForm: React.FC<EditableSectionFormProps> = ({
           )}
         </SortableContext>
       </DndContext>
-      <Button type="button" onClick={onAddClick}>
-        Add {sectionName}
-      </Button>
+      <div className="flex gap-2">
+        <Button type="button" onClick={onAddClick}>
+          Add {sectionName}
+        </Button>
+        {enableGrouping && (
+          <Button type="button" btnType="secondary" onClick={onAddGroupClick}>
+            Add Group
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

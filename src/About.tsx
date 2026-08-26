@@ -18,8 +18,8 @@ const About: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center">About Elysia</h1>
+    <div className="max-w-3xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white">About Elysia</h1>
 
       <div className="flex flex-row justify-center m-4">
         <img
@@ -29,11 +29,11 @@ const About: React.FC = () => {
         />
       </div>
 
-      <div className="bg-leaf-green-100 p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold text-leaf-green-800 mb-3">
+      <div className="bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
+        <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-100 mb-3">
           The Slug That Inspired It All
         </h2>
-        <p className="text-gray-800">
+        <p className="text-gray-700 dark:text-gray-300">
           Elysia chlorotica is a unique species of sea slug that can perform{" "}
           <strong>photosynthesis</strong>, absorbing energy from the sun like a
           plant. By incorporating chloroplasts from the algae it eats into its
@@ -43,11 +43,11 @@ const About: React.FC = () => {
         </p>
       </div>
 
-      <div className="mt-8 p-6 rounded-lg border border-4 border-dashed border-leaf-green-100 dark:leaf-green-200">
-        <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-300 mb-3">
+      <div className="mt-6 bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
+        <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-100 mb-3">
           The Vision Behind Elysia
         </h2>
-        <p className="text-gray-800 dark:text-white">
+        <p className="text-gray-700 dark:text-gray-300">
           Cooking is more than just a necessity—it's a way to nourish both body
           and mind. Our vision is to build a platform where people can explore
           diverse recipes, develop new skills, and gradually become more

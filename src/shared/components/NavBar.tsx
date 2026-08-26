@@ -23,9 +23,20 @@ function Navbar() {
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const navLinks = isAuthenticated
-    ? ["/", "/collections", "/about", "/profile"]
-    : ["/", "/collections", "/about"];
+  const navLinks: { path: string; label: string }[] = isAuthenticated
+    ? [
+        { path: "/", label: "Home" },
+        { path: "/recipes", label: "Recipes" },
+        { path: "/collections", label: "Collections" },
+        { path: "/about", label: "About" },
+        { path: "/profile", label: "Profile" },
+      ]
+    : [
+        { path: "/", label: "Home" },
+        { path: "/recipes", label: "Recipes" },
+        { path: "/collections", label: "Collections" },
+        { path: "/about", label: "About" },
+      ];
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -82,7 +93,7 @@ function Navbar() {
 
   return (
     <nav
-      className={`bg-white border-gray-200 dark:bg-gray-900 ${isModalOpen ? "opacity-50 pointer-events-none" : ""
+      className={`sticky top-0 z-40 bg-white border-b border-gray-200 shadow-xs dark:bg-gray-900 dark:border-gray-800 ${isModalOpen ? "opacity-50 pointer-events-none" : ""
         }`}
       ref={menuRef}
     >
@@ -98,7 +109,7 @@ function Navbar() {
           </span>
         </Link>
         <div className="hidden md:flex space-x-8">
-          {navLinks.map((path) => (
+          {navLinks.map(({ path, label }) => (
             <Link
               key={path}
               to={path}
@@ -107,9 +118,7 @@ function Navbar() {
                   : "hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:text-leaf-green-300"
                 }`}
             >
-              {path === "/"
-                ? "Recipes"
-                : path.replace("/", "").charAt(0).toUpperCase() + path.slice(2)}
+              {label}
             </Link>
           ))}
         </div>
@@ -140,7 +149,7 @@ function Navbar() {
               isAuthenticated ? (
                 <FiLogOut className="w-6 h-6 text-red-500" />
               ) : (
-                <FiLogIn className="w-6 h-6 text-green-500" />
+                <FiLogIn className="w-6 h-6 text-leaf-green-500" />
               )
             }
           />
@@ -163,17 +172,14 @@ function Navbar() {
             >
               <FaTimes className="w-6 h-6" title="Close Menu" />
             </button>
-            {navLinks.filter(Boolean).map((path) => (
+            {navLinks.map(({ path, label }) => (
               <Link
                 key={path}
                 to={path}
                 className="py-2 px-3 block rounded-md text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
                 onClick={toggleMenu}
               >
-                {path === "/"
-                  ? "Recipes"
-                  : path.replace("/", "").charAt(0).toUpperCase() +
-                  path.slice(2)}
+                {label}
               </Link>
             ))}
           </div>

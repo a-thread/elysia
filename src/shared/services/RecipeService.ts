@@ -36,10 +36,9 @@ const getRecipeList = async (
       });
     }
 
-    const { data, count, error } = await query.range(
-      currentSkip,
-      currentSkip + currentPageSize - 1
-    );
+    const { data, count, error } = await query
+      .order("created_at", { ascending: false })
+      .range(currentSkip, currentSkip + currentPageSize - 1);
 
     if (error) throw new Error("Failed to fetch recipes.");
     return { data, count };

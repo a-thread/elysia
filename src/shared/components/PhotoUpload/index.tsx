@@ -88,7 +88,7 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({ imgUrl, onImgUrlChange }) => 
 
   return (
     <div
-      className={`relative w-full max-h-64 rounded-t-lg overflow-hidden ${!imgUrl?.length && 'rounded-b-lg'}`}
+      className={`relative w-full max-h-64 rounded-t-xl overflow-hidden ${!imgUrl?.length && 'rounded-b-xl'}`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -117,8 +117,8 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({ imgUrl, onImgUrlChange }) => 
         </>
       ) : (
         <div
-          className={`border-2 ${dragging ? 'border-blue-500 bg-leaf-green-50' : 'border-dashed border-gray-300'
-            } rounded-t-lg p-6 flex flex-col items-center justify-center ${imgUrl ? 'max-h-64' : 'rounded-b-lg mb-4'}`}
+          className={`border-2 ${dragging ? 'border-leaf-green-500 bg-leaf-green-50' : 'border-dashed border-gray-300'
+            } rounded-t-xl p-6 flex flex-col items-center justify-center ${imgUrl ? 'max-h-64' : 'rounded-b-xl mb-4'}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}

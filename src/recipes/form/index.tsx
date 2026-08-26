@@ -42,8 +42,8 @@ const RecipeForm: React.FC = () => {
         onImgUrlChange={(url) => onFormChange("img_url", url)}
       />
       <div
-        className={`bg-white dark:bg-gray-900 p-6 rounded-b-lg shadow-md ${
-          !formData.img_url?.length && "rounded-t-lg"
+        className={`bg-white dark:bg-gray-900 p-6 rounded-b-xl shadow-md ${
+          !formData.img_url?.length && "rounded-t-xl"
         }`}
       >
         <TitleDescriptionForm
@@ -57,6 +57,7 @@ const RecipeForm: React.FC = () => {
           originalFormState={formData.ingredients}
           setOriginalFormState={(e) => onFormChange("ingredients", e)}
           sectionName="Ingredient"
+          enableGrouping
         />
 
         <EditableSectionForm
@@ -65,10 +66,10 @@ const RecipeForm: React.FC = () => {
           sectionName="Step"
         />
 
-        <div className="mb-2">
+        <div className="mb-4">
           <label
             htmlFor="Tags"
-            className="peer-focus:font-medium text-sm text-gray-500 dark:text-gray-400 mb-2"
+            className="block text-xs font-semibold text-leaf-green-700 dark:text-leaf-green-300 mb-1.5"
           >
             Tags
           </label>
@@ -87,7 +88,7 @@ const RecipeForm: React.FC = () => {
         <div className="mb-2">
           <label
             htmlFor="Collections"
-            className="peer-focus:font-medium text-sm text-gray-500 dark:text-gray-400 mb-2"
+            className="block text-xs font-semibold text-leaf-green-700 dark:text-leaf-green-300 mb-1.5"
           >
             Collections
           </label>

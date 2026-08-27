@@ -55,7 +55,7 @@ const CollectionDetail: React.FC = () => {
       <div className="w-full flex justify-between items-center mb-4">
         <Link to="/collections">
           <div className="flex justify-center items-center font-medium text-center text-leaf-green-600 dark:text-leaf-green-100">
-            <FaChevronLeft aria-hidden="true" className="size-6" />
+            <FaChevronLeft aria-hidden="true" className="w-4 h-4" />
             <p>Collections</p>
           </div>
         </Link>

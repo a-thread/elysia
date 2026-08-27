@@ -132,7 +132,7 @@ const EllipsisMenu: React.FC<{ collection: Collection }> = ({ collection }) => {
     <DropdownButton
       options={options}
       icon={
-        <FaEllipsisV className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+        <FaEllipsisV className="w-5 h-5 text-gray-600 dark:text-gray-300" />
       }
     />
   );

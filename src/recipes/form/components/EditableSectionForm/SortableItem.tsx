@@ -38,7 +38,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
       {/* Drag Handle */}
       <IconButton
         icon={
-          <FaHandPaper className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+          <FaHandPaper className="w-4 h-4 text-gray-400 dark:text-gray-500" />
         }
         title="Drag Step"
         attributes={attributes}

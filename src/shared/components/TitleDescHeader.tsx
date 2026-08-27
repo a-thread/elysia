@@ -33,7 +33,7 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
             title={actionName}
             onClick={onAction}
             icon={
-              <FaPlus className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
+              <FaPlus className="w-5 h-5 dark:text-leaf-green-300 text-leaf-green-500" />
             }
           />
         )}

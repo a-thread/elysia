@@ -64,7 +64,7 @@ const Header: React.FC<{
   <div className="w-full flex justify-between items-center mb-4">
     <Link to="/recipes">
       <div className="flex items-center font-medium text-leaf-green-600 dark:text-leaf-green-100">
-        <FaChevronLeft className="size-6" />
+        <FaChevronLeft className="w-4 h-4" />
         <p>Recipes</p>
       </div>
     </Link>
@@ -73,7 +73,7 @@ const Header: React.FC<{
         <DropdownButton
           options={options}
           icon={
-            <FaPlus className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
+            <FaPlus className="w-5 h-5 dark:text-leaf-green-300 text-leaf-green-500" />
           }
         />
       )}

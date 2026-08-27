@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GoSun } from "react-icons/go";
-import { FaMoon, FaBars, FaTimes } from "react-icons/fa";
+import { FaMoon } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { useDarkMode } from "../contexts/DarkModeContext";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { AddRecipeModal, AddTagModal, useModalManager } from "./Modals";
-import { DropdownButton, IconButton } from "./Buttons";
+import { DropdownButton, IconButton, HamburgerButton } from "./Buttons";
 import { DropdownOption } from "./Buttons/DropdownButton";
 import { UserService } from "@shared/services/UserService";
 import { useToast } from "./Toast";
@@ -127,7 +127,7 @@ function Navbar() {
             <DropdownButton
               options={options}
               icon={
-                <FaPlus className="w-6 h-6 dark:text-leaf-green-300 text-leaf-green-500" />
+                <FaPlus className="w-5 h-5 dark:text-leaf-green-300 text-leaf-green-500" />
               }
             />
           )}
@@ -136,9 +136,9 @@ function Navbar() {
             title="Toggle Dark Mode"
             icon={
               isDarkMode ? (
-                <GoSun className="w-6 h-6 text-yellow-400" />
+                <GoSun className="w-5 h-5 text-yellow-400" />
               ) : (
-                <FaMoon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
+                <FaMoon className="w-5 h-5 text-gray-800 dark:text-gray-200" />
               )
             }
           />
@@ -147,31 +147,25 @@ function Navbar() {
             title={isAuthenticated ? "Logout" : "Login"}
             icon={
               isAuthenticated ? (
-                <FiLogOut className="w-6 h-6 text-red-500" />
+                <FiLogOut className="w-5 h-5 text-red-500" />
               ) : (
-                <FiLogIn className="w-6 h-6 text-leaf-green-500" />
+                <FiLogIn className="w-5 h-5 text-leaf-green-500" />
               )
             }
           />
-          <IconButton
-            onClick={toggleMenu}
-            className="text-gray-500 rounded-lg md:hidden focus:ring-gray-200 dark:text-gray-400"
-            title="Open main menu"
-            icon={
-              <FaBars className="w-6 h-6 text-gray-800 dark:text-gray-200" />
-            }
-          />
+          <div className="md:hidden flex items-center">
+            <HamburgerButton
+              toggled={menuOpen}
+              onClick={toggleMenu}
+              size={22}
+              color={isDarkMode ? "#e5e7eb" : "#1f2937"}
+            />
+          </div>
         </div>
       </div>
       {menuOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end md:hidden">
-          <div className="w-3/4 sm:w-[350px] h-full bg-white dark:bg-gray-900 shadow-lg p-6 pt-10 flex flex-col">
-            <button
-              onClick={toggleMenu}
-              className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-            >
-              <FaTimes className="w-6 h-6" title="Close Menu" />
-            </button>
+        <div className="fixed top-[73px] inset-x-0 bottom-0 z-30 flex justify-end md:hidden">
+          <div className="w-3/4 sm:w-[350px] h-full bg-white dark:bg-gray-900 shadow-lg p-6 flex flex-col">
             {navLinks.map(({ path, label }) => (
               <Link
                 key={path}

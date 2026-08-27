@@ -132,7 +132,7 @@ const SearchBar: React.FC<SearchDropdownProps> = ({
         />
         {(searchTerm?.length > 0 || selectedOptions?.length > 0) && (
           <FaTimes
-            className="w-6 h-6 cursor-pointer"
+            className="w-5 h-5 cursor-pointer"
             title="Clear Search Bar"
             onClick={handleClearSearchBar}
           />

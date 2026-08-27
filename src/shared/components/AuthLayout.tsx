@@ -11,7 +11,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ title, children }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-cream dark:bg-gray-900">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl w-full max-w-md">
         <div className="flex items-center font-medium text-leaf-green-600 dark:text-leaf-green-100">
-          <BiArrowBack className="size-6 cursor-pointer" title="back" onClick={() => window.history.back()} />
+          <BiArrowBack className="w-5 h-5 cursor-pointer" title="back" onClick={() => window.history.back()} />
         </div>
         <div className="flex flex-row justify-center m-2">
           <img

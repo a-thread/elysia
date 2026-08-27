@@ -3,3 +3,4 @@ export { default as IconButton } from './IconButton';
 export { default as TrashButton } from './TrashButton';
 export { default as TagButton } from './TagButton';
 export { default as DropdownButton } from './DropdownButton';
+export { default as HamburgerButton } from './HamburgerButton';

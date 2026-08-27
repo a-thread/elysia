@@ -19,9 +19,9 @@ const TrashButton: React.FC<TrashButtonProps> = ({ onClick }) => {
       title="Delete"
       icon={
         hovered ? (
-          <TrashSolid className="w-6 h-6 text-red-500" />
+          <TrashSolid className="w-4 h-4 text-red-500" />
         ) : (
-          <TrashOutline className="w-6 h-6 text-gray-500" />
+          <TrashOutline className="w-4 h-4 text-gray-500" />
         )
       }
     />

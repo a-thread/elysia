@@ -5,9 +5,16 @@ import UrlInputForm from "./UrlInputForm";
 import HtmlInputForm from "./HtmlInputForm";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
 
-const AddRecipeModal: React.FC<BaseModalProps> = ({ onClose }) => {
+interface AddRecipeModalProps extends BaseModalProps {
+  initialMode?: "url" | "manual" | "html" | null;
+}
+
+const AddRecipeModal: React.FC<AddRecipeModalProps> = ({
+  onClose,
+  initialMode = null,
+}) => {
   const [inputMode, setInputMode] = useState<"url" | "manual" | "html" | null>(
-    null
+    initialMode
   );
   const navigate = useNavigate();
 

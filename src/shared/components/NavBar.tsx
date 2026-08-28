@@ -2,20 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GoSun } from "react-icons/go";
 import { FaMoon } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa6";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { useDarkMode } from "../contexts/DarkModeContext";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { AddRecipeModal, AddTagModal, useModalManager } from "./Modals";
-import { DropdownButton, IconButton, HamburgerButton } from "./Buttons";
-import { DropdownOption } from "./Buttons/DropdownButton";
+import { useModalManager } from "./Modals";
+import { IconButton, HamburgerButton } from "./Buttons";
 import { UserService } from "@shared/services/UserService";
 import { useToast } from "./Toast";
 
 function Navbar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const { isAuthenticated } = useAuth();
-  const { isModalOpen, openModal, closeModal } = useModalManager();
+  const { isModalOpen } = useModalManager();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -41,28 +39,6 @@ function Navbar() {
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
-
-  const onCloseModal = () => {
-    closeModal();
-    setMenuOpen(false);
-  };
-
-  const handleAddRecipeClick = () => {
-    openModal(<AddRecipeModal onClose={onCloseModal} />);
-  };
-
-  const handleAddTagClick = () => {
-    openModal(<AddTagModal onCancel={onCloseModal} onAddTag={onCloseModal} />);
-  };
-
-  const options: DropdownOption[] = [
-    { label: "Add Recipe", onClick: handleAddRecipeClick },
-    {
-      label: "Add Collection",
-      onClick: () => navigate("/collections/add-new"),
-    },
-    { label: "Add Tag", onClick: handleAddTagClick },
-  ];
 
   const handleLogin = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -123,14 +99,6 @@ function Navbar() {
           ))}
         </div>
         <div className="flex space-x-3">
-          {isAuthenticated && (
-            <DropdownButton
-              options={options}
-              icon={
-                <FaPlus className="w-5 h-5 dark:text-leaf-green-300 text-leaf-green-500" />
-              }
-            />
-          )}
           <IconButton
             onClick={toggleDarkMode}
             title="Toggle Dark Mode"
@@ -142,17 +110,19 @@ function Navbar() {
               )
             }
           />
-          <IconButton
-            onClick={isAuthenticated ? handleLogout : handleLogin}
-            title={isAuthenticated ? "Logout" : "Login"}
-            icon={
-              isAuthenticated ? (
-                <FiLogOut className="w-5 h-5 text-red-500" />
-              ) : (
-                <FiLogIn className="w-5 h-5 text-leaf-green-500" />
-              )
-            }
-          />
+          <div className="hidden md:block">
+            <IconButton
+              onClick={isAuthenticated ? handleLogout : handleLogin}
+              title={isAuthenticated ? "Logout" : "Login"}
+              icon={
+                isAuthenticated ? (
+                  <FiLogOut className="w-5 h-5 text-red-500" />
+                ) : (
+                  <FiLogIn className="w-5 h-5 text-leaf-green-500" />
+                )
+              }
+            />
+          </div>
           <div className="md:hidden flex items-center">
             <HamburgerButton
               toggled={menuOpen}
@@ -176,6 +146,23 @@ function Navbar() {
                 {label}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={(e) => {
+                (isAuthenticated ? handleLogout : handleLogin)(e);
+                setMenuOpen(false);
+              }}
+              className={`mt-auto flex items-center gap-2 py-2 px-3 rounded-md text-left hover:bg-gray-200 dark:hover:bg-gray-700 ${
+                isAuthenticated ? "text-red-500" : "text-leaf-green-500"
+              }`}
+            >
+              {isAuthenticated ? (
+                <FiLogOut className="w-5 h-5" aria-hidden="true" />
+              ) : (
+                <FiLogIn className="w-5 h-5" aria-hidden="true" />
+              )}
+              {isAuthenticated ? "Logout" : "Login"}
+            </button>
           </div>
         </div>
       )}

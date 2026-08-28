@@ -15,7 +15,7 @@ interface MobileViewProps {
 
 const MobileView: React.FC<MobileViewProps> = ({ activeTab, recipe, checkedItems, onCheck }) => {
   return (
-    <div className="block md:hidden h-full w-full overflow-y-auto px-4 sm:pt-4">
+    <div className="block md:hidden h-full w-full overflow-y-auto scrollable-container px-4 sm:pt-4">
       {activeTab === "ingredients" ? (
         <IngredientList
           ingredients={recipe.ingredients}

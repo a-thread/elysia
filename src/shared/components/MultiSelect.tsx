@@ -100,22 +100,18 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   return (
     <div className="relative w-full" ref={dropdownRef}>
       {/* Label for Accessibility */}
-      <label id="multi-select-label" className="sr-only">
-        Select options
+      <label id={`${inputId}-label`} htmlFor={inputId} className="sr-only">
+        {placeholder || "Select options"}
       </label>
 
       {/* Selection and Input Container */}
       <div
-        className={`border border-gray-300 dark:border-gray-600 bg-transparent p-2.5 cursor-text flex flex-wrap items-center gap-2 transition-shadow ${
+        className={`border border-gray-300 dark:border-gray-600 bg-transparent min-h-9 px-3 py-1 cursor-text flex flex-wrap items-center gap-2 transition-shadow ${
           isDropdownOpen
             ? `ring-2 ring-leaf-green-200 dark:ring-leaf-green-800 border-leaf-green-500 rounded-${openUpwards ? "b" : "t"}-lg`
             : "rounded-lg"
         }`}
         onClick={() => setIsDropdownOpen(true)}
-        aria-haspopup="listbox"
-        aria-expanded={isDropdownOpen}
-        role="combobox"
-        aria-controls="multi-select-listbox"
       >
         {selectedOptions.map((option) => (
           <TagButton
@@ -132,23 +128,28 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
           id={inputId}
           ref={inputRef}
           placeholder={selectedOptions.length === 0 ? placeholder : ""}
-          className="flex-1 p-1 border-none outline-hidden bg-transparent text-gray-900 dark:text-gray-100"
+          className="flex-1 min-w-0 border-none outline-hidden bg-transparent text-sm text-gray-900 dark:text-gray-100"
           value={searchTerm}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.target.value)
           }
           onKeyDown={handleKeyDown}
-          aria-labelledby="multi-select-label"
+          role="combobox"
+          aria-labelledby={`${inputId}-label`}
+          aria-haspopup="listbox"
+          aria-expanded={isDropdownOpen}
+          aria-controls={`${inputId}-listbox`}
+          aria-autocomplete="list"
         />
       </div>
 
       {/* Dropdown List */}
       {isDropdownOpen && (
         <div
+          id={`${inputId}-listbox`}
           ref={listboxRef}
           role="listbox"
-          tabIndex={0}
-          aria-labelledby="multi-select-label"
+          aria-labelledby={`${inputId}-label`}
           className={`absolute w-full z-10 border border-gray-300 bg-white dark:bg-gray-800 shadow-md max-h-40 overflow-y-auto focus:outline-hidden ${
             openUpwards
               ? "bottom-full pb-2 rounded-t-lg"

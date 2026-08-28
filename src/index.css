@@ -52,6 +52,17 @@ code {
     monospace;
 }
 
+:root {
+  --scrollbar-track-color: transparent;
+  --scrollbar-thumb-color: #d1d5db;
+  --scrollbar-thumb-hover-color: #9ca3af;
+}
+
+.dark {
+  --scrollbar-thumb-color: #4b5563;
+  --scrollbar-thumb-hover-color: #6b7280;
+}
+
 .scrollable-container {
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color); /* Firefox */

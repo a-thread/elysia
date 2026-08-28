@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaEllipsisV } from "react-icons/fa";
+import { FaEllipsisV, FaLayerGroup, FaTags } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import {
@@ -15,8 +15,16 @@ import DropdownButton, {
 import { UserService } from "@shared/services/UserService";
 import generateRecipePDF from "@shared/services/PdfGenerator";
 import { useAuth } from "@shared/contexts/AuthContext";
+import AddTagsToRecipeModal from "../AddTagsToRecipeModal";
+import AddRecipeToCollectionsModal from "../AddRecipeToCollections";
 
-const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
+interface EllipsisMenuProps {
+  recipe: Recipe;
+  /** Called after tags or collections are added, so the caller can refetch the recipe. */
+  onRecipeUpdated?: () => void;
+}
+
+const EllipsisMenu: React.FC<EllipsisMenuProps> = ({ recipe, onRecipeUpdated }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const { isAuthenticated } = useAuth();
@@ -35,6 +43,22 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
   const handleEditClick = () =>
     navigate(`/recipes/${recipe.id}/edit`, { state: { recipe } });
+
+  const handleAddTagsClick = () =>
+    openModal(
+      <AddTagsToRecipeModal
+        recipeId={recipe.id}
+        tagAdded={() => onRecipeUpdated?.()}
+      />
+    );
+
+  const handleAddToCollectionClick = () =>
+    openModal(
+      <AddRecipeToCollectionsModal
+        recipeId={recipe.id}
+        collectionAdded={() => onRecipeUpdated?.()}
+      />
+    );
 
   const handleDeleteClick = () =>
     openModal(
@@ -127,9 +151,20 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
           { label: "Edit", onClick: handleEditClick },
           { label: "Delete", onClick: handleDeleteClick },
           { label: "Share", onClick: handleShareClick },
+          {
+            label: "Add Tags",
+            icon: <FaTags aria-hidden="true" />,
+            dividerBefore: true,
+            onClick: handleAddTagsClick,
+          },
+          {
+            label: "Add to Collection",
+            icon: <FaLayerGroup aria-hidden="true" />,
+            onClick: handleAddToCollectionClick,
+          },
         ]
       : []),
-    { label: "Export", onClick: handleExportClick },
+    { label: "Export", onClick: handleExportClick, dividerBefore: isAuthenticated },
   ];
 
   return (

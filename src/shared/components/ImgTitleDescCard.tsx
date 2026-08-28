@@ -3,6 +3,7 @@ import { TitleDescriptionImgUrl } from "../models/TitleDescriptionImgUrl";
 
 interface ImgTitleDescCardProps extends TitleDescriptionImgUrl {
   prep_time?: number;
+  cook_time?: number;
   servings?: number;
 }
 
@@ -10,9 +11,11 @@ const ImgTitleDescription: React.FC<ImgTitleDescCardProps> = ({
   title,
   img_url,
   prep_time,
+  cook_time,
   servings,
 }) => {
-  const hasStats = !!prep_time || !!servings;
+  const totalTime = (prep_time || 0) + (cook_time || 0);
+  const hasStats = !!totalTime || !!servings;
 
   return (
     <>
@@ -47,8 +50,8 @@ const ImgTitleDescription: React.FC<ImgTitleDescCardProps> = ({
               <circle cx="12" cy="12" r="9" />
               <path d="M12 7v5l3 3" />
             </svg>
-            {prep_time ? <span>{prep_time} min</span> : null}
-            {prep_time && servings ? <span>&middot;</span> : null}
+            {totalTime ? <span>{totalTime} min</span> : null}
+            {totalTime && servings ? <span>&middot;</span> : null}
             {servings ? <span>{servings} servings</span> : null}
           </div>
         )}

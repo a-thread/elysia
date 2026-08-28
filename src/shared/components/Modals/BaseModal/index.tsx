@@ -10,13 +10,23 @@ const Modal: React.FC<BaseModalProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
-  // Determine modal size classes
+  // Determine modal size classes. The Large variant is used by content
+  // (GetCookingModal) that itself switches to a single-column mobile layout
+  // at the `md` breakpoint, so it stays full-screen until `md` too instead
+  // of the `sm` breakpoint the other sizes use — otherwise there's a gap
+  // between `sm` and `md` where the modal shrinks but the content is still
+  // rendering its mobile layout.
   const modalSize =
     size === ModalSize.Large
-      ? "max-w-5xl sm:max-w-[1200px] sm:w-[calc(100%-64px)] sm:max-h-[calc(100%-64px)]"
+      ? "max-w-5xl md:max-w-[1200px] md:w-[calc(100%-64px)] md:max-h-[calc(100%-64px)]"
       : "sm:max-w-md sm:w-auto sm:h-auto";
 
-  const modalClasses = `relative bg-white dark:bg-gray-800 text-black/90 shadow-lg sm:shadow-xl transition-shadow-xs duration-300 ease-in-out rounded-none sm:rounded-lg flex flex-col h-screen w-screen ${modalSize} p-6`;
+  const roundedAndShadow =
+    size === ModalSize.Large
+      ? "rounded-none md:rounded-lg shadow-lg md:shadow-xl"
+      : "rounded-none sm:rounded-lg shadow-lg sm:shadow-xl";
+
+  const modalClasses = `relative bg-white dark:bg-gray-800 text-black/90 ${roundedAndShadow} transition-shadow-xs duration-300 ease-in-out flex flex-col h-screen w-screen ${modalSize} p-6`;
 
   const handleOutsideClick = () => {
     if (modalRef.current) {

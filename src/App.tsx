@@ -8,7 +8,6 @@ import { CollectionList, CollectionDetail, CollectionForm } from "./collections"
 import { ModalManager } from "@shared/components/Modals";
 import { ForgotPassword } from "./auth";
 import { RecipeList, RecipeDetail, RecipeForm } from "./recipes";
-import ProfilePage from "./profile";
 import Home from "./home";
 
 const App = () => {
@@ -32,14 +31,6 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/recipes" element={<RecipeList />} />
               <Route path="/about" element={<About />} />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
               <Route
                 path="/add-new"
                 element={

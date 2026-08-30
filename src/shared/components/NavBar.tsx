@@ -21,20 +21,12 @@ function Navbar() {
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const navLinks: { path: string; label: string }[] = isAuthenticated
-    ? [
-        { path: "/", label: "Home" },
-        { path: "/recipes", label: "Recipes" },
-        { path: "/collections", label: "Collections" },
-        { path: "/about", label: "About" },
-        { path: "/profile", label: "Profile" },
-      ]
-    : [
-        { path: "/", label: "Home" },
-        { path: "/recipes", label: "Recipes" },
-        { path: "/collections", label: "Collections" },
-        { path: "/about", label: "About" },
-      ];
+  const navLinks: { path: string; label: string }[] = [
+    { path: "/", label: "Home" },
+    { path: "/recipes", label: "Recipes" },
+    { path: "/collections", label: "Collections" },
+    { path: "/about", label: "About" },
+  ];
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);

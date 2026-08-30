@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Collection } from "@shared/models/Collection";
 import CollectionService from "@shared/services/CollectionService";
 
@@ -11,8 +11,14 @@ export function useFetchCollections() {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
+  // Ref to prevent duplicate fetches: `loading` state alone doesn't guard against
+  // two synchronous calls (e.g. React StrictMode's double-invoked mount effect),
+  // since a setState update isn't visible to the second call's closure yet.
+  const isFetching = useRef(false);
+
   const loadMoreCollections = async () => {
-    if (loading || !hasMore) return;
+    if (isFetching.current || loading || !hasMore) return;
+    isFetching.current = true;
     setLoading(true);
     try {
       const response =
@@ -29,11 +35,11 @@ export function useFetchCollections() {
         setCurrentSkip((prevSkip) => prevSkip + response.data.length);
         setTotalCount(response.count || 0);
       }
-      setLoading(false);
     } catch (error: any) {
       console.error("Error fetching collections:", error.message);
     } finally {
       setLoading(false);
+      isFetching.current = false;
     }
   };
 

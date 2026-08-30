@@ -41,7 +41,7 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
             </Button>
           ) : (
             <IconButton
-              className="hover:bg-white dar:hover:bg-white/50"
+              className="hover:bg-white dark:hover:bg-white/50"
               title={actionName}
               onClick={onAction}
               icon={

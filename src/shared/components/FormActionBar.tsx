@@ -6,12 +6,14 @@ interface FormActionBarProps {
   isLoading?: boolean;
   onCancel: MouseEventHandler<HTMLButtonElement>;
   onSave: MouseEventHandler<HTMLButtonElement>;
+  /** The noun shown in the heading, e.g. "Recipe" -> "Edit Recipe" / "Add Recipe". */
+  resourceName: string;
 }
 
-const FormActionBar: React.FC<FormActionBarProps> = ({ isEditing, isLoading, onCancel, onSave }) => (
+const FormActionBar: React.FC<FormActionBarProps> = ({ isEditing, isLoading, onCancel, onSave, resourceName }) => (
   <div className="w-full flex justify-between items-center mb-5 gap-4">
     <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
-      {isEditing ? "Edit Recipe" : "Add Recipe"}
+      {isEditing ? `Edit ${resourceName}` : `Add ${resourceName}`}
     </h1>
     <div className="flex items-center gap-2.5">
       <Button btnType="dismissable" onClick={onCancel}>

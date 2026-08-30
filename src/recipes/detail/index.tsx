@@ -1,8 +1,7 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import IngredientsSection from "./components/IngredientsSection";
 import StepsSection from "./components/StepsSection";
-import { FaArrowLeft } from "react-icons/fa";
 import RecipeTimeSection from "./components/RecipeTimeSection";
 import EllipsisMenu from "./components/EllipsisMenu";
 import { useRecipeDetails } from "./hooks/useRecipeDetails";
@@ -11,6 +10,7 @@ import EmptyState from "@shared/components/EmptyState";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import { useAuth } from "@shared/contexts/AuthContext";
 import Card from "@shared/components/Card";
+import BackLink from "@shared/components/BackLink";
 
 const Recipe: React.FC = () => {
   const { id } = useParams();
@@ -34,13 +34,7 @@ const Header: React.FC<{
   onRecipeUpdated: () => void;
 }> = ({ recipe, onRecipeUpdated }) => (
   <div className="w-full flex justify-between items-center mb-4">
-    <Link
-      to="/recipes"
-      className="inline-flex items-center gap-1.5 text-sm font-semibold text-leaf-green-700 dark:text-leaf-green-300 transition-opacity hover:opacity-70"
-    >
-      <FaArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-      Recipes
-    </Link>
+    <BackLink to="/recipes">Recipes</BackLink>
     <EllipsisMenu recipe={recipe} onRecipeUpdated={onRecipeUpdated} />
   </div>
 );

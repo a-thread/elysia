@@ -13,12 +13,12 @@ interface IngredientItemProps {
 const IngredientItem: React.FC<IngredientItemProps> = ({ index, ingredient, isChecked, onCheck }) => {
   return (
     <div className="flex items-start gap-3" onClick={() => onCheck(index)}>
-      {/* Hidden Checkbox Input */}
+      {/* Checkbox Input, visually hidden but keyboard/screen-reader reachable */}
       <input
         type="checkbox"
         checked={isChecked}
         onChange={() => onCheck(index)}
-        className="peer hidden"
+        className="peer sr-only"
         id={`checkbox-${index}`}
       />
       {/* Styled Label acting as Checkbox */}
@@ -26,7 +26,8 @@ const IngredientItem: React.FC<IngredientItemProps> = ({ index, ingredient, isCh
         htmlFor={`checkbox-${index}`}
         className="shrink-0 w-5 h-5 mt-0.5 flex items-center justify-center border-2 border-gray-300 rounded-sm cursor-pointer transition-all
             peer-checked:bg-leaf-green-500 peer-checked:border-leaf-green-500
-            dark:border-gray-600 dark:peer-checked:bg-leaf-green-400 dark:peer-checked:border-leaf-green-400"
+            dark:border-gray-600 dark:peer-checked:bg-leaf-green-400 dark:peer-checked:border-leaf-green-400
+            peer-focus-visible:ring-2 peer-focus-visible:ring-leaf-green-300 peer-focus-visible:ring-offset-1"
       >
         <FaCheck
           className={`w-3 h-3 text-white peer-checked:block ${

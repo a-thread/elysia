@@ -1,7 +1,10 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { FaTimes } from "react-icons/fa";
 import { ModalSize } from "./ModalSize";
 import { BaseModalProps } from "./BaseModalProps";
+
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 const Modal: React.FC<BaseModalProps> = ({
   size = ModalSize.Medium,
@@ -9,6 +12,44 @@ const Modal: React.FC<BaseModalProps> = ({
   children,
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
+
+  // Move focus into the modal on open, trap Tab within it, close on Escape,
+  // and return focus to whatever triggered the modal on close.
+  useEffect(() => {
+    const modalEl = modalRef.current;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const firstFocusable = modalEl?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+    (firstFocusable ?? modalEl)?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab" || !modalEl) return;
+
+      const focusableEls = Array.from(
+        modalEl.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+      );
+      if (focusableEls.length === 0) return;
+      const first = focusableEls[0];
+      const last = focusableEls[focusableEls.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocused?.focus();
+    };
+  }, [onClose]);
 
   // Determine modal size classes. The Large variant is used by content
   // (GetCookingModal) that itself switches to a single-column mobile layout
@@ -28,32 +69,25 @@ const Modal: React.FC<BaseModalProps> = ({
 
   const modalClasses = `relative bg-white dark:bg-gray-800 text-black/90 ${roundedAndShadow} transition-shadow-xs duration-300 ease-in-out flex flex-col h-screen w-screen ${modalSize} p-6`;
 
-  const handleOutsideClick = () => {
-    if (modalRef.current) {
-      const inputs = modalRef.current.querySelectorAll(
-        "input, textarea, select"
-      );
-      if (inputs.length === 0) {
-        onClose();
-      }
-    }
-  };
-
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/50 z-50"
-      onClick={handleOutsideClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/50"
+      onClick={onClose}
     >
       <div
         ref={modalRef}
         className={modalClasses}
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+          aria-label="Close"
+          className="absolute top-4 right-4 p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-leaf-green-300"
         >
-          <FaTimes className="w-6 h-6" title="Close Modal" />
+          <FaTimes className="w-6 h-6" aria-hidden="true" />
         </button>
         {children}
       </div>

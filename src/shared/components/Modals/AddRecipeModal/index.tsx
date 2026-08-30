@@ -53,12 +53,14 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ onClose }) => {
           </p>
           <div className="flex flex-col space-y-4">
             <Button
+              className="w-full"
               onClick={() => setInputMode("url")}
               aria-label="Import recipe from URL"
             >
               Import from URL
             </Button>
             <Button
+              className="w-full"
               onClick={() => setInputMode("html")}
               aria-label="Paste HTML content"
             >

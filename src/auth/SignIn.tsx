@@ -6,6 +6,7 @@ import { UserService } from "@shared/services/UserService";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import AuthLayout from "@shared/components/AuthLayout";
+import { FieldLabel, fieldClasses } from "@shared/components/FormField";
 
 interface FormInputs {
   email: string;
@@ -69,37 +70,25 @@ const SignIn: React.FC = () => {
   return (
     <AuthLayout title="Sign In">
         <form onSubmit={handleSubmit(handleSignIn)}>
-          <div className="relative z-0 w-full mb-5 group">
+          <div className="mb-4">
+            <FieldLabel htmlFor="email">Email</FieldLabel>
             <input
               type="email"
               {...register("email", { required: "Email is required" })}
               id="email"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
+              className={fieldClasses}
             />
-            <label
-              htmlFor="email"
-              className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Email
-            </label>
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
           </div>
-          <div className="relative z-0 w-full mb-5 group">
+          <div className="mb-4">
+            <FieldLabel htmlFor="password">Password</FieldLabel>
             <input
               type="password"
               {...register("password", { required: "Password is required" })}
               id="password"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
+              className={fieldClasses}
             />
-            <label
-              htmlFor="password"
-              className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Password
-            </label>
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
           </div>
           <div className="mb-2 text-right">
             <Link to="/forgot-password">Forgot password?</Link>

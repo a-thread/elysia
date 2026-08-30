@@ -20,7 +20,7 @@ const About: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+      <h1 className="text-3xl font-bold text-center text-leaf-green-900 dark:text-leaf-green-100">
         About Elysia
       </h1>
 
@@ -63,7 +63,7 @@ const About: React.FC = () => {
         </Card>
       </div>
 
-      <div className="flex flex-col align-items-center mt-10">
+      <div className="flex flex-col items-center mt-10">
         <Button onClick={onJourneyBegin}>Start Your Journey</Button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFetchCollections } from "./useFetchCollections";
 import Loading from "@shared/components/Loading";
@@ -16,7 +16,12 @@ const CollectionList: React.FC = () => {
   const { collections, loading, hasMore, loadMoreCollections } =
     useFetchCollections();
 
-  loadMoreCollections();
+  useEffect(() => {
+    loadMoreCollections();
+    // Mount-only fetch of the first page; loadMoreCollections isn't memoized
+    // and guards against re-entrancy itself via its loading/hasMore checks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleInfiniteScroll = useCallback(() => {
     if (!loading && hasMore) {

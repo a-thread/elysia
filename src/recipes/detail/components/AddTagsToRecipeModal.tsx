@@ -47,8 +47,9 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId, t
         setTags((prev) => [...prev, created]);
       }
       return created;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating tag:", error);
+      toast.error(error.message || "Failed to create tag. Please try again.");
       return null;
     }
   };
@@ -60,8 +61,9 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId, t
         tagAdded();
         toast.success("Tags have been added to recipe!");
         closeModal();
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error associating tags:", error);
+        toast.error(error.message || "Failed to add tags to recipe. Please try again.");
       }
     }
   };

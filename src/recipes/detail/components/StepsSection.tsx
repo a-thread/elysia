@@ -15,7 +15,7 @@ const StepsSection: React.FC<{ steps: StepIngredient[] }> = ({ steps }) => {
             <span className="shrink-0 w-6 h-6 rounded-full bg-leaf-green-700 dark:bg-leaf-green-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
               {index + 1}
             </span>
-            <span className="text-leaf-green-800 dark:text-gray-200 max-w-full break-word whitespace-pre-wrap">
+            <span className="text-leaf-green-800 dark:text-gray-200 max-w-full break-words whitespace-pre-wrap">
               {step.value}
             </span>
           </li>

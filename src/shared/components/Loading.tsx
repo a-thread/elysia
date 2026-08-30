@@ -10,7 +10,7 @@ const Loading: React.FC<LoadingProps> = ({ message = '', isLarge = true, classNa
   return (
     <div className={`flex items-center justify-center space-x-2 ${className}`}>
       <svg
-        className={`animate-spin text-blue-500 ${isLarge ? "h-10 w-10" : "h-5 w-5"}`}
+        className={`animate-spin text-leaf-green-500 ${isLarge ? "h-10 w-10" : "h-5 w-5"}`}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"

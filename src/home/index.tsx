@@ -39,7 +39,13 @@ const Home: React.FC = () => {
   if (!recipes.length) {
     return (
       <div className="max-w-5xl mx-auto p-6">
-        <EmptyState message="No recipes yet. Add one to get started!" />
+        <EmptyState
+          message={
+            user
+              ? "No recipes yet. Add one to get started!"
+              : "No recipes yet. Sign in to add the first one!"
+          }
+        />
       </div>
     );
   }

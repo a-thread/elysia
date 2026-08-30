@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FaChevronLeft } from "react-icons/fa";
 import EllipsisMenu from "./components/EllipsisMenu";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { Collection as CollectionData } from "@shared/models/Collection";
@@ -12,6 +11,7 @@ import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { TagButton } from "@shared/components/Buttons";
 import { useNavigate } from "react-router-dom";
 import Card from "@shared/components/Card";
+import BackLink from "@shared/components/BackLink";
 
 const CollectionDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -53,12 +53,7 @@ const CollectionDetail: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto mt-4">
       <div className="w-full flex justify-between items-center mb-4">
-        <Link to="/collections">
-          <div className="flex justify-center items-center font-medium text-center text-leaf-green-600 dark:text-leaf-green-100">
-            <FaChevronLeft aria-hidden="true" className="w-4 h-4" />
-            <p>Collections</p>
-          </div>
-        </Link>
+        <BackLink to="/collections">Collections</BackLink>
         <div className="flex justify-end flex-wrap gap-2">
           {!!user?.id && <EllipsisMenu collection={collection} />}
         </div>
@@ -80,7 +75,7 @@ const CollectionDetail: React.FC = () => {
         />
 
         {collection.tags && collection.tags.length > 0 && (
-          <div className="mt-4">
+          <div className="mt-4 flex flex-wrap gap-2">
             {collection.tags.map((tag) => (
               <TagButton key={tag.id} title={tag.title} isReadOnly={true}  onClick={() => {
                 navigate("/recipes", { state: { selectedTags: [tag] } });

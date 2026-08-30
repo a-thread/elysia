@@ -37,6 +37,7 @@ const RecipeForm: React.FC = () => {
         isLoading={isLoading}
         onCancel={() => navigate(-1)}
         onSave={handleSave}
+        resourceName="Recipe"
       />
       <PhotoUpload
         imgUrl={formData.img_url}

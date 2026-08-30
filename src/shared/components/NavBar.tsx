@@ -132,7 +132,11 @@ function Navbar() {
               <Link
                 key={path}
                 to={path}
-                className="py-2 px-3 block rounded-md text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
+                className={`py-2 px-3 block rounded-md transition duration-200 ${
+                  location.pathname === path
+                    ? "bg-leaf-green-100 text-leaf-green-700 dark:bg-leaf-green-900/40 dark:text-leaf-green-300"
+                    : "text-gray-900 dark:text-white hover:bg-leaf-green-50 dark:hover:bg-leaf-green-900/30 hover:text-leaf-green-700 dark:hover:text-leaf-green-300"
+                }`}
                 onClick={toggleMenu}
               >
                 {label}
@@ -144,7 +148,7 @@ function Navbar() {
                 (isAuthenticated ? handleLogout : handleLogin)(e);
                 setMenuOpen(false);
               }}
-              className={`mt-auto flex items-center gap-2 py-2 px-3 rounded-md text-left hover:bg-gray-200 dark:hover:bg-gray-700 ${
+              className={`mt-auto flex items-center gap-2 py-2 px-3 rounded-md text-left hover:bg-leaf-green-50 dark:hover:bg-leaf-green-900/30 ${
                 isAuthenticated ? "text-red-500" : "text-leaf-green-500"
               }`}
             >

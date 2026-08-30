@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaEllipsisV } from "react-icons/fa";
+import { FaEllipsisV, FaPen, FaShareAlt, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import {
@@ -47,10 +47,11 @@ const EllipsisMenu: React.FC<{ collection: Collection }> = ({ collection }) => {
   }, [collection.id]);
 
   const handleTogglePublicShare = async () => {
-    setIsPublic(!isPublic);
     try {
-      await CollectionService.setIsPublic(collection.id, isPublic);
-      toast.success(`Collection is now ${isPublic ? "public" : "private"}!`);
+      const newStatus = !isPublic;
+      await CollectionService.setIsPublic(collection.id, newStatus);
+      setIsPublic(newStatus);
+      toast.success(`Collection is now ${newStatus ? "public" : "private"}!`);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -123,9 +124,14 @@ const EllipsisMenu: React.FC<{ collection: Collection }> = ({ collection }) => {
   };
 
   const options: DropdownOption[] = [
-    { label: "Edit", onClick: handleEditClick },
-    { label: "Delete", onClick: handleDeleteClick },
-    { label: "Share", onClick: handleShareClick },
+    { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: handleEditClick },
+    {
+      label: "Delete",
+      icon: <FaTrash aria-hidden="true" />,
+      destructive: true,
+      onClick: handleDeleteClick,
+    },
+    { label: "Share", icon: <FaShareAlt aria-hidden="true" />, onClick: handleShareClick },
   ];
 
   return (

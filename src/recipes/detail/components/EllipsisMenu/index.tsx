@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { FaEllipsisV, FaLayerGroup, FaTags } from "react-icons/fa";
+import {
+  FaDownload,
+  FaEllipsisV,
+  FaLayerGroup,
+  FaPen,
+  FaShareAlt,
+  FaTags,
+  FaTrash,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import {
@@ -148,9 +156,14 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({ recipe, onRecipeUpdated }) 
   const options: DropdownOption[] = [
     ...(isAuthenticated
       ? [
-          { label: "Edit", onClick: handleEditClick },
-          { label: "Delete", onClick: handleDeleteClick },
-          { label: "Share", onClick: handleShareClick },
+          { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: handleEditClick },
+          {
+            label: "Delete",
+            icon: <FaTrash aria-hidden="true" />,
+            destructive: true,
+            onClick: handleDeleteClick,
+          },
+          { label: "Share", icon: <FaShareAlt aria-hidden="true" />, onClick: handleShareClick },
           {
             label: "Add Tags",
             icon: <FaTags aria-hidden="true" />,
@@ -164,7 +177,12 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({ recipe, onRecipeUpdated }) 
           },
         ]
       : []),
-    { label: "Export", onClick: handleExportClick, dividerBefore: isAuthenticated },
+    {
+      label: "Export",
+      icon: <FaDownload aria-hidden="true" />,
+      onClick: handleExportClick,
+      dividerBefore: isAuthenticated,
+    },
   ];
 
   return (

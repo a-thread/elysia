@@ -3,6 +3,7 @@ import { useToast } from "@shared/components/Toast";
 import { Button } from "@shared/components/Buttons";
 import { UserService } from "@shared/services/UserService";
 import AuthLayout from "@shared/components/AuthLayout";
+import { FieldLabel, fieldClasses } from "@shared/components/FormField";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -32,25 +33,19 @@ const ForgotPassword: React.FC = () => {
   return (
     <AuthLayout title="Reset Password">
       <form onSubmit={handlePasswordReset}>
-        <div className="relative z-0 w-full mb-5 group">
+        <div className="mb-4">
+          <FieldLabel htmlFor="email">Email</FieldLabel>
           <input
             type="email"
             name="email"
             id="email"
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
+            className={fieldClasses}
             value={email}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setEmail(e.target.value)
             }
             required
           />
-          <label
-            htmlFor="email"
-            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:rtl:translate-x-1/4 peer-focus:rtl:left-auto peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Email
-          </label>
         </div>
         <div className="flex flex-col gap-2">
           <Button type="submit" isLoading={isResetting} className="w-full">

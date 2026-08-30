@@ -4,6 +4,7 @@ import { Button } from "@shared/components/Buttons";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import { UserService } from "@shared/services/UserService";
+import { FieldLabel, fieldClasses } from "@shared/components/FormField";
 
 interface FormInputs {
     newPassword: string;
@@ -39,12 +40,12 @@ const ResetPasswordForm: React.FC = () => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             {/* New Password Input */}
-            <div className="relative z-0 w-full mb-5 group mt-2">
+            <div className="mb-4 mt-2">
+                <FieldLabel htmlFor="new-password">New Password</FieldLabel>
                 <input
                     type="password"
                     id="new-password"
-                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" "
+                    className={fieldClasses}
                     {...register("newPassword", {
                         required: "New password is required.",
                         minLength: {
@@ -53,36 +54,24 @@ const ResetPasswordForm: React.FC = () => {
                         },
                     })}
                 />
-                <label
-                    htmlFor="new-password"
-                    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:rtl:translate-x-1/4 peer-focus:rtl:left-auto peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                    New Password
-                </label>
                 {errors.newPassword && (
                     <p className="text-red-500 text-sm mt-1">{errors.newPassword.message}</p>
                 )}
             </div>
 
             {/* Confirm Password Input */}
-            <div className="relative z-0 w-full mb-5 group">
+            <div className="mb-4">
+                <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
                 <input
                     type="password"
                     id="confirm-password"
-                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" "
+                    className={fieldClasses}
                     {...register("confirmPassword", {
                         required: "Please confirm your password.",
                         validate: (value) =>
                             value === newPassword || "Passwords do not match.",
                     })}
                 />
-                <label
-                    htmlFor="confirm-password"
-                    className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:rtl:translate-x-1/4 peer-focus:rtl:left-auto peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                    Confirm Password
-                </label>
                 {errors.confirmPassword && (
                     <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
                 )}

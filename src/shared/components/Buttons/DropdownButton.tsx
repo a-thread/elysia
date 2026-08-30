@@ -13,6 +13,8 @@ export interface DropdownOption {
   /** Presence of this field renders the item as a checkable radio-style option. */
   selected?: boolean;
   disabled?: boolean;
+  /** Styles this item in red to signal a destructive/irreversible action, e.g. "Delete". */
+  destructive?: boolean;
 }
 
 interface DropdownProps {
@@ -112,23 +114,24 @@ const DropdownButton: React.FC<DropdownProps> = ({
                   aria-checked={option.selected !== undefined ? option.selected : undefined}
                   disabled={option.disabled}
                   className={`flex items-center gap-3 w-full text-left px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-leaf-green-400 disabled:opacity-50 disabled:pointer-events-none ${
-                    option.selected
-                      ? "text-leaf-green-600 dark:text-leaf-green-400 font-medium"
-                      : "text-gray-700 dark:text-gray-200"
-                  } hover:bg-gray-100 dark:hover:bg-gray-700`}
+                    option.destructive
+                      ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      : option.selected
+                      ? "text-leaf-green-600 dark:text-leaf-green-400 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"
+                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  }`}
                   onClick={() => {
                     option.onClick();
                     setIsOpen(false);
                   }}
                 >
-                  {option.icon && (
-                    <span
-                      className="shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500"
-                      aria-hidden="true"
-                    >
-                      {option.icon}
-                    </span>
-                  )}
+                  {/* Slot is always reserved, even without an icon, so labels stay aligned across items. */}
+                  <span
+                    className={`shrink-0 w-4 h-4 ${option.destructive ? "text-red-500" : "text-gray-400 dark:text-gray-500"}`}
+                    aria-hidden="true"
+                  >
+                    {option.icon}
+                  </span>
                   <span className="flex-1">{option.label}</span>
                   {option.selected && (
                     <FaCheck

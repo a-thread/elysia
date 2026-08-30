@@ -33,12 +33,13 @@ const CollectionForm: React.FC = () => {
   );
 
   return (
-    <div className="max-w-2xl mx-auto mt-4">
+    <div className="max-w-3xl mx-auto mt-6 mb-16 px-4">
       <FormActionBar
         isEditing={isEditing}
         isLoading={loading}
         onCancel={() => navigate(-1)}
         onSave={handleSave}
+        resourceName="Collection"
       />
 
       {/* Photo Upload */}
@@ -47,7 +48,7 @@ const CollectionForm: React.FC = () => {
         onImgUrlChange={(url) => onFormChange("img_url", url)}
       />
 
-      <Card hasImageAbove={!!formData.img_url?.length}>
+      <Card hasImageAbove={!!formData.img_url?.length} className="p-7">
         <TitleDescriptionForm
           title={formData.title!}
           description={formData.description!}

@@ -65,7 +65,9 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
                 key={collection.id}
                 title={collection.title}
                 isReadOnly={true}
-                displayHover={false}
+                onClick={() => {
+                  navigate(`/collections/${collection.id}`);
+                }}
               />
             ))}
           </div>

@@ -25,7 +25,7 @@ const TagButton: React.FC<TagProps> = ({
         displayHover ? "hover:opacity-80" : ""
       } ${btnClass}`}
       disabled={disabled}
-      aria-label={`${!isReadOnly && "Remove "}${title}`}
+      aria-label={isReadOnly ? title : `Remove ${title}`}
       onClick={onClick}
       {...props}
     >

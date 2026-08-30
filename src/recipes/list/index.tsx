@@ -14,13 +14,7 @@ import InfiniteScroll from "@shared/components/InfiniteScroll";
 import DropdownButton, {
   DropdownOption,
 } from "@shared/components/Buttons/DropdownButton";
-import {
-  FaDownload,
-  FaEllipsisV,
-  FaFileImport,
-  FaFilter,
-  FaSearch,
-} from "react-icons/fa";
+import { FaDownload, FaEllipsisV, FaFilter, FaSearch } from "react-icons/fa";
 import { RecipeSort, RECIPE_SORT_LABELS } from "@shared/models/RecipeSort";
 
 const iconButtonClasses = (active: boolean) =>
@@ -59,10 +53,6 @@ const RecipeList: React.FC = () => {
     openModal(<AddRecipeModal onClose={closeModal} />);
   };
 
-  const handleImportRecipe = () => {
-    openModal(<AddRecipeModal onClose={closeModal} initialMode="url" />);
-  };
-
   const actionOptions: DropdownOption[] = [
     ...Object.values(RecipeSort).map((value, index) => ({
       label: RECIPE_SORT_LABELS[value],
@@ -71,14 +61,9 @@ const RecipeList: React.FC = () => {
       ...(index === 0 ? { sectionLabel: "Sort by" } : {}),
     })),
     {
-      label: "Import from URL",
-      icon: <FaFileImport aria-hidden="true" />,
-      dividerBefore: true,
-      onClick: handleImportRecipe,
-    },
-    {
       label: isExporting ? "Exporting..." : "Export All",
       icon: <FaDownload aria-hidden="true" />,
+      dividerBefore: true,
       disabled: !recipes.length || isExporting,
       onClick: exportAll,
     },

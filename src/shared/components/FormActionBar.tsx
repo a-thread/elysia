@@ -9,13 +9,18 @@ interface FormActionBarProps {
 }
 
 const FormActionBar: React.FC<FormActionBarProps> = ({ isEditing, isLoading, onCancel, onSave }) => (
-  <div className="w-full flex justify-end items-center mb-4 gap-4">
-    <Button btnType="dismissable" onClick={onCancel}>
-      Cancel
-    </Button>
-    <Button onClick={onSave} isLoading={isLoading}>
-      {isEditing ? "Save" : "Add"}
-    </Button>
+  <div className="w-full flex justify-between items-center mb-5 gap-4">
+    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+      {isEditing ? "Edit Recipe" : "Add Recipe"}
+    </h1>
+    <div className="flex items-center gap-2.5">
+      <Button btnType="dismissable" onClick={onCancel}>
+        Cancel
+      </Button>
+      <Button onClick={onSave} isLoading={isLoading}>
+        {isEditing ? "Save" : "Add"}
+      </Button>
+    </div>
   </div>
 );
 

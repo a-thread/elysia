@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, TrashButton } from "../../Buttons";
+import { Button, RemoveButton } from "../../Buttons";
 import ShareWithUser from "./ShareWithUser";
 import { FaCheck } from "react-icons/fa";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
@@ -97,7 +97,10 @@ const ShareModal: React.FC<ShareModalProps> = ({
             <span className="text-gray-700 dark:text-gray-200 text-sm">
               {user.users.email} - {user.permission}
             </span>
-            <TrashButton onClick={() => onRevokeAccess(user.id)} />
+            <RemoveButton
+              onClick={() => onRevokeAccess(user.id)}
+              label={`Revoke access for ${user.users.email}`}
+            />
           </li>
         ))}
       </ul>

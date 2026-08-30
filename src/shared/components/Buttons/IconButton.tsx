@@ -14,6 +14,7 @@ const IconButton: FC<IconButtonProps> = ({
   title = '',
   attributes = {},
   listeners = {},
+  'aria-label': ariaLabel,
   ...props
 }) => {
   return (
@@ -26,6 +27,7 @@ const IconButton: FC<IconButtonProps> = ({
       className={`inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition focus:outline-hidden focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 ${className}`}
       disabled={disabled}
       title={title}
+      aria-label={ariaLabel || title || undefined}
       {...attributes}
       {...listeners}
       {...props}

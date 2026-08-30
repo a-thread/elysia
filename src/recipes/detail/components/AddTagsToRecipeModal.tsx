@@ -40,6 +40,20 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId, t
     fetchData();
   }, [searchTerm]);
 
+  const handleCreateTag = async (title: string): Promise<IdTitle | null> => {
+    try {
+      const created = await TagService.create(title);
+      if (created) {
+        setTags((prev) => [...prev, created]);
+      }
+      return created;
+    } catch (error: any) {
+      console.error("Error creating tag:", error);
+      toast.error(error.message || "Failed to create tag. Please try again.");
+      return null;
+    }
+  };
+
   const handleSave = async () => {
     if (recipeId) {
       try {
@@ -47,8 +61,9 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId, t
         tagAdded();
         toast.success("Tags have been added to recipe!");
         closeModal();
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error associating tags:", error);
+        toast.error(error.message || "Failed to add tags to recipe. Please try again.");
       }
     }
   };
@@ -60,9 +75,11 @@ const AddTagsToRecipeModal: React.FC<AddTagsToRecipeModalProps> = ({ recipeId, t
         inputId="tags"
         options={tags}
         selectedOptions={selectedOptions}
-        placeholder="Select tags"
+        placeholder="Search or create a tag..."
         setSelectedOptions={(o) => setSelectedOptions(o)}
         onSearch={handleSearch}
+        allowCreate
+        onCreateOption={handleCreateTag}
       />
       <div className="flex justify-end mt-4">
         <Button btnType="secondary" onClick={closeModal}>

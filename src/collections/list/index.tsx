@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFetchCollections } from "./useFetchCollections";
 import Loading from "@shared/components/Loading";
@@ -7,13 +7,21 @@ import { Collection } from "@shared/models/Collection";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import InfiniteScroll from "@shared/components/InfiniteScroll";
+import { useAuth } from "@shared/contexts/AuthContext";
+import { FaPlus } from "react-icons/fa6";
 
 const CollectionList: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const { collections, loading, hasMore, loadMoreCollections } =
     useFetchCollections();
 
-  loadMoreCollections();
+  useEffect(() => {
+    loadMoreCollections();
+    // Mount-only fetch of the first page; loadMoreCollections isn't memoized
+    // and guards against re-entrancy itself via its loading/hasMore checks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleInfiniteScroll = useCallback(() => {
     if (!loading && hasMore) {
@@ -26,7 +34,8 @@ const CollectionList: React.FC = () => {
       <div className="w-full">
         <TitleDescHeader
           title="Collections"
-          actionName="+ New Collection"
+          actionName="New Collection"
+          actionVariant="solid"
           classes="mb-2"
           onAction={() => navigate("add-new")}
         />
@@ -39,12 +48,12 @@ const CollectionList: React.FC = () => {
 
       {loading && <Loading className="mt-6" />}
 
-      {!loading && collections.length === 0 && (
+      {!loading && collections.length === 0 && !isAuthenticated && (
         <EmptyState message="You don't have any collections yet. Create one now!" />
       )}
 
-      {collections.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-6">
+      {!loading && (collections.length > 0 || isAuthenticated) && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full mt-6">
           {collections.map((collection: Collection) => (
             <Link key={collection.id} to={`${collection.id}`}>
               <ImgTitleDescription
@@ -54,6 +63,17 @@ const CollectionList: React.FC = () => {
               />
             </Link>
           ))}
+
+          {isAuthenticated && (
+            <button
+              type="button"
+              onClick={() => navigate("add-new")}
+              className="flex flex-col items-center justify-center gap-2 min-h-[172px] p-6 rounded-2xl border-[1.5px] border-dashed border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 transition-colors hover:border-leaf-green-300 hover:bg-leaf-green-50 dark:hover:border-leaf-green-700 dark:hover:bg-leaf-green-900/20 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-leaf-green-400"
+            >
+              <FaPlus className="w-6 h-6 text-leaf-green-300" aria-hidden="true" />
+              <span className="text-sm font-semibold">New Collection</span>
+            </button>
+          )}
         </div>
       )}
 

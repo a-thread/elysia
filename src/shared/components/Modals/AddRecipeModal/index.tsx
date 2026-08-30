@@ -5,7 +5,9 @@ import UrlInputForm from "./UrlInputForm";
 import HtmlInputForm from "./HtmlInputForm";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
 
-const AddRecipeModal: React.FC<BaseModalProps> = ({ onClose }) => {
+type AddRecipeModalProps = BaseModalProps;
+
+const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ onClose }) => {
   const [inputMode, setInputMode] = useState<"url" | "manual" | "html" | null>(
     null
   );
@@ -51,12 +53,14 @@ const AddRecipeModal: React.FC<BaseModalProps> = ({ onClose }) => {
           </p>
           <div className="flex flex-col space-y-4">
             <Button
+              className="w-full"
               onClick={() => setInputMode("url")}
               aria-label="Import recipe from URL"
             >
               Import from URL
             </Button>
             <Button
+              className="w-full"
               onClick={() => setInputMode("html")}
               aria-label="Paste HTML content"
             >

@@ -4,12 +4,14 @@ interface AutoResizeTextareaProps {
   placeholder?: string;
   onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   value: string;
+  ariaLabel?: string;
 }
 
 const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = ({
   placeholder,
   onChange,
   value,
+  ariaLabel,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -22,11 +24,12 @@ const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = ({
 
   return (
     <textarea
-      className="border rounded-xs px-2 py-1 w-full mr-3 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 resize-none overflow-hidden"
+      className="border-0 bg-transparent px-1 py-2 w-full text-sm text-gray-900 dark:text-gray-300 focus:outline-hidden resize-none overflow-hidden"
       ref={textareaRef}
       onChange={onChange}
       placeholder={placeholder}
       value={value}
+      aria-label={ariaLabel}
     />
   );
 };

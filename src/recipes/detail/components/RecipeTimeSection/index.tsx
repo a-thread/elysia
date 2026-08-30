@@ -8,6 +8,7 @@ import { Recipe } from "@shared/models/Recipe";
 import { useModalManager } from "@shared/components/Modals";
 import { ModalSize } from "@shared/components/Modals/BaseModal/ModalSize";
 import { Button, TagButton } from "@shared/components/Buttons";
+import Card from "@shared/components/Card";
 
 const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const { openModal } = useModalManager();
@@ -20,15 +21,14 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   return (
     <div className="flex flex-col gap-4">
       <Button
-        className="w-full bg-white dark:bg-gray-900"
-        btnType="secondary"
+        className="w-full shadow-md"
         onClick={onCookClick}
       >
         Get Cookin
         <FaFire className="h-5 w-5" />
       </Button>
 
-      <div className="py-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">
+      <Card className="py-4 px-5">
         {recipe.servings > 0 && (
           <div className="mb-2">
             <TimeLabelValue label="servings" value={recipe.servings} />
@@ -50,10 +50,10 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
             />
           </div>
         )}
-      </div>
+      </Card>
 
       {recipe.collections && recipe.collections.length > 0 && (
-        <div className="pt-2 pb-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">
+        <Card className="pt-2 pb-4 px-5">
           <div className="mb-1">
             <small className="text-leaf-green-800 dark:text-leaf-green-100">
               collections
@@ -69,11 +69,11 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
               />
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {recipe.tags && recipe.tags.length > 0 && (
-        <div className="pt-2 pb-4 px-5 bg-white dark:bg-gray-900 rounded-lg dark:border dark:border-dashed dark:border-2 dark:border-leaf-green-100">
+        <Card className="pt-2 pb-4 px-5">
           <div className="mb-1">
             <small className="text-leaf-green-800 dark:text-leaf-green-100">
               tags
@@ -86,12 +86,12 @@ const RecipeTimeSection: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
                 title={tag.title}
                 isReadOnly={true}
                 onClick={() => {
-                  navigate("/", { state: { selectedTags: [tag] } });
+                  navigate("/recipes", { state: { selectedTags: [tag] } });
                 }}
               />
             ))}
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );

@@ -1,8 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { FaHandPaper } from "react-icons/fa";
+import { MdDragIndicator } from "react-icons/md";
 import AutoResizeTextarea from "./AutoResizeTextbox";
-import { IconButton, TrashButton } from "@shared/components/Buttons";
+import { IconButton, RemoveButton } from "@shared/components/Buttons";
 import { StepIngredient } from "@shared/models/StepIngredient";
 
 interface SortableItemProps {
@@ -10,6 +10,8 @@ interface SortableItemProps {
   formValue: StepIngredient;
   onEditFormValue: (value: StepIngredient) => void;
   onDeleteClick: (id: string) => void;
+  /** When set, renders a numbered badge (e.g. for Steps) instead of a plain row. */
+  number?: number;
 }
 
 const SortableItem: React.FC<SortableItemProps> = ({
@@ -17,6 +19,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
   formValue,
   onEditFormValue,
   onDeleteClick,
+  number,
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -33,26 +36,42 @@ const SortableItem: React.FC<SortableItemProps> = ({
     <li
       ref={setNodeRef}
       style={style}
-      className="text-gray-700 dark:text-gray-300 flex items-center justify-between mb-2"
+      className="row-item text-gray-700 dark:text-gray-300 flex items-center gap-1.5 border border-gray-200 dark:border-gray-600 hover:border-leaf-green-200 dark:hover:border-leaf-green-700 transition-colors rounded-lg pl-1 pr-2 py-1 mb-2"
     >
-      <AutoResizeTextarea
-        onChange={onInputChange}
-        value={formValue.value}
-        placeholder=" "
-      />
-
       {/* Drag Handle */}
       <IconButton
         icon={
-          <FaHandPaper className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+          <MdDragIndicator className="w-4 h-4 text-gray-400 dark:text-gray-500" />
         }
-        title="Drag Step"
+        title="Drag to reorder"
+        className="w-8 h-8 shrink-0 cursor-grab"
         attributes={attributes}
         listeners={listeners}
       />
 
+      {number !== undefined && (
+        <div
+          aria-hidden="true"
+          className="shrink-0 w-[22px] h-[22px] rounded-full bg-leaf-green-50 dark:bg-leaf-green-900 text-leaf-green-700 dark:text-leaf-green-300 text-[11px] font-bold flex items-center justify-center"
+        >
+          {number}
+        </div>
+      )}
+
+      <AutoResizeTextarea
+        onChange={onInputChange}
+        value={formValue.value}
+        placeholder=" "
+        ariaLabel={number !== undefined ? `Step ${number}` : "Ingredient"}
+      />
+
       {/* Delete Button */}
-      <TrashButton onClick={() => onDeleteClick(formValue.id)} />
+      <RemoveButton
+        onClick={() => onDeleteClick(formValue.id)}
+        label={
+          number !== undefined ? `Delete step ${number}` : "Delete ingredient"
+        }
+      />
     </li>
   );
 };

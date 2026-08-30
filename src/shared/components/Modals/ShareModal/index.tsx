@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, TrashButton } from "../../Buttons";
+import { Button, RemoveButton } from "../../Buttons";
 import ShareWithUser from "./ShareWithUser";
 import { FaCheck } from "react-icons/fa";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
@@ -58,14 +58,15 @@ const ShareModal: React.FC<ShareModalProps> = ({
           type="checkbox"
           checked={isPublicLocal}
           onChange={handleTogglePublicShare}
-          className="peer hidden"
+          className="peer sr-only"
           id="custom-checkbox"
         />
         <label
           htmlFor="custom-checkbox"
-          className="w-5 h-5 flex items-center justify-center border-2 border-gray-400 rounded-md cursor-pointer transition-all 
-          peer-checked:bg-blue-500 peer-checked:border-blue-500 
-          dark:border-gray-600 dark:peer-checked:bg-blue-400 dark:peer-checked:border-blue-400"
+          className="w-5 h-5 flex items-center justify-center border-2 border-gray-400 rounded-md cursor-pointer transition-all
+          peer-checked:bg-leaf-green-600 peer-checked:border-leaf-green-600
+          dark:border-gray-600 dark:peer-checked:bg-leaf-green-500 dark:peer-checked:border-leaf-green-500
+          peer-focus-visible:ring-2 peer-focus-visible:ring-leaf-green-300 peer-focus-visible:ring-offset-1"
         >
           <FaCheck
             className={`w-4 h-4 text-white ${isPublicLocal ? "block" : "hidden"}`}
@@ -97,7 +98,10 @@ const ShareModal: React.FC<ShareModalProps> = ({
             <span className="text-gray-700 dark:text-gray-200 text-sm">
               {user.users.email} - {user.permission}
             </span>
-            <TrashButton onClick={() => onRevokeAccess(user.id)} />
+            <RemoveButton
+              onClick={() => onRevokeAccess(user.id)}
+              label={`Revoke access for ${user.users.email}`}
+            />
           </li>
         ))}
       </ul>

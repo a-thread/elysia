@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
+import { FaPlus } from "react-icons/fa";
 import { Button, TagButton } from "./Buttons";
 import { IdTitle } from "@shared/models/Tag";
 
@@ -10,6 +11,9 @@ interface MultiSelectProps {
   placeholder: string;
   setSelectedOptions: (options: IdTitle[]) => void;
   onSearch: (searchTerm: string) => void;
+  /** When set, lets the user create a new option from their search text if nothing matches it exactly. */
+  allowCreate?: boolean;
+  onCreateOption?: (title: string) => Promise<IdTitle | null>;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -19,11 +23,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   placeholder = "",
   setSelectedOptions,
   onSearch,
+  allowCreate = false,
+  onCreateOption,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [openUpwards, setOpenUpwards] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -83,6 +90,27 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     setSelectedOptions(updatedOptions);
   };
 
+  const trimmedSearch = searchTerm.trim();
+  const hasExactMatch = [...options, ...selectedOptions].some(
+    (o) => o.title.trim().toLowerCase() === trimmedSearch.toLowerCase()
+  );
+  const showCreateOption =
+    allowCreate && !!onCreateOption && trimmedSearch.length > 0 && !hasExactMatch;
+
+  const handleCreateOption = async () => {
+    if (!onCreateOption || isCreating) return;
+    setIsCreating(true);
+    try {
+      const created = await onCreateOption(trimmedSearch);
+      if (created) {
+        setSelectedOptions([...selectedOptions, created]);
+        setSearchTerm("");
+      }
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (
       e.key === "Backspace" &&
@@ -100,22 +128,18 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   return (
     <div className="relative w-full" ref={dropdownRef}>
       {/* Label for Accessibility */}
-      <label id="multi-select-label" className="sr-only">
-        Select options
+      <label id={`${inputId}-label`} htmlFor={inputId} className="sr-only">
+        {placeholder || "Select options"}
       </label>
 
       {/* Selection and Input Container */}
       <div
-        className={`border border-gray-300 p-2 cursor-text flex flex-wrap items-center gap-2 ${
+        className={`border border-gray-300 dark:border-gray-600 bg-transparent min-h-9 px-3 py-1 cursor-text flex flex-wrap items-center gap-2 transition-shadow ${
           isDropdownOpen
-            ? `rounded-${openUpwards ? "b" : "t"}-lg`
+            ? `ring-2 ring-leaf-green-200 dark:ring-leaf-green-800 border-leaf-green-500 rounded-${openUpwards ? "b" : "t"}-lg`
             : "rounded-lg"
         }`}
         onClick={() => setIsDropdownOpen(true)}
-        aria-haspopup="listbox"
-        aria-expanded={isDropdownOpen}
-        role="combobox"
-        aria-controls="multi-select-listbox"
       >
         {selectedOptions.map((option) => (
           <TagButton
@@ -132,29 +156,49 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
           id={inputId}
           ref={inputRef}
           placeholder={selectedOptions.length === 0 ? placeholder : ""}
-          className="flex-1 p-1 border-none outline-hidden bg-transparent text-gray-900 dark:text-gray-100"
+          className="flex-1 min-w-0 border-none outline-hidden bg-transparent text-sm text-gray-900 dark:text-gray-100"
           value={searchTerm}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.target.value)
           }
           onKeyDown={handleKeyDown}
-          aria-labelledby="multi-select-label"
+          role="combobox"
+          aria-labelledby={`${inputId}-label`}
+          aria-haspopup="listbox"
+          aria-expanded={isDropdownOpen}
+          aria-controls={`${inputId}-listbox`}
+          aria-autocomplete="list"
         />
       </div>
 
       {/* Dropdown List */}
       {isDropdownOpen && (
         <div
+          id={`${inputId}-listbox`}
           ref={listboxRef}
           role="listbox"
-          tabIndex={0}
-          aria-labelledby="multi-select-label"
+          aria-labelledby={`${inputId}-label`}
           className={`absolute w-full z-10 border border-gray-300 bg-white dark:bg-gray-800 shadow-md max-h-40 overflow-y-auto focus:outline-hidden ${
             openUpwards
               ? "bottom-full pb-2 rounded-t-lg"
               : "top-full pt-2 rounded-b-lg"
           }`}
         >
+          {showCreateOption && (
+            <button
+              type="button"
+              disabled={isCreating}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleCreateOption();
+              }}
+              className="w-full flex items-center gap-2 px-4 py-2 text-left text-sm font-semibold text-leaf-green-700 dark:text-leaf-green-300 hover:bg-leaf-green-50 dark:hover:bg-leaf-green-900/30 transition disabled:opacity-50 disabled:pointer-events-none"
+            >
+              <FaPlus className="w-3 h-3 shrink-0" />
+              {isCreating ? `Creating "${trimmedSearch}"…` : `Create "${trimmedSearch}"`}
+            </button>
+          )}
+
           {options.length > 0 ? (
             options.map((option) => (
               <Button
@@ -180,9 +224,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               </Button>
             ))
           ) : (
-            <div className="p-2 text-gray-500 dark:text-gray-400" role="status">
-              No results found
-            </div>
+            !showCreateOption && (
+              <div className="p-2 text-gray-500 dark:text-gray-400" role="status">
+                No results found
+              </div>
+            )
           )}
 
           {/* Footer for limited results message */}

@@ -99,6 +99,19 @@ export const useRecipeForm = () => {
     fetchTags();
   }, [fetchTags]);
 
+  const createTag = async (title: string): Promise<IdTitle | null> => {
+    try {
+      const created = await TagService.create(title);
+      if (created) {
+        setTagList((prev) => [...prev, created]);
+      }
+      return created;
+    } catch (error) {
+      console.error("Error creating tag:", error);
+      return null;
+    }
+  };
+
   return {
     formData,
     originalData,
@@ -109,5 +122,6 @@ export const useRecipeForm = () => {
     tagList,
     setCollectionSearch,
     setTagSearch,
+    createTag,
   };
 };

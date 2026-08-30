@@ -35,7 +35,7 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
           setCollections(response.data);
         }
       } catch (error) {
-        console.error("Error fetching tags:", error);
+        console.error("Error fetching collections:", error);
       }
     };
     fetchData();
@@ -49,8 +49,9 @@ const AddRecipeToCollectionsModal: React.FC<AddRecipeToCollectionsModalProps> = 
         collectionAdded();
         toast.success("Recipe has been added to selected collection(s)!");
         closeModal();
-      } catch (error) {
-        console.error("Error fetching tags:", error);
+      } catch (error: any) {
+        console.error("Error adding recipe to collections:", error);
+        toast.error(error.message || "Failed to add recipe to collections. Please try again.");
       }
     }
   };

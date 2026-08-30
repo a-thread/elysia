@@ -3,6 +3,7 @@ import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
 import { Button } from "@shared/components/Buttons";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Card from "@shared/components/Card";
 
 const About: React.FC = () => {
   const { openModal, closeModal } = useModalManager();
@@ -13,13 +14,15 @@ const About: React.FC = () => {
     if (isAuthenticated) {
       openModal(<AddRecipeModal onClose={closeModal} />);
     } else {
-      navigate('/sign-in')
+      navigate("/sign-in");
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center">About Elysia</h1>
+    <div className="max-w-3xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-center text-leaf-green-900 dark:text-leaf-green-100">
+        About Elysia
+      </h1>
 
       <div className="flex flex-row justify-center m-4">
         <img
@@ -29,11 +32,11 @@ const About: React.FC = () => {
         />
       </div>
 
-      <div className="bg-leaf-green-100 p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold text-leaf-green-800 mb-3">
+      <Card>
+        <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-100 mb-3">
           The Slug That Inspired It All
         </h2>
-        <p className="text-gray-800">
+        <p className="text-gray-700 dark:text-gray-300">
           Elysia chlorotica is a unique species of sea slug that can perform{" "}
           <strong>photosynthesis</strong>, absorbing energy from the sun like a
           plant. By incorporating chloroplasts from the algae it eats into its
@@ -41,24 +44,26 @@ const About: React.FC = () => {
           less food to survive. This incredible ability mirrors our own journey
           - by being mindful of what we consume, we empower ourselves to thrive.
         </p>
+      </Card>
+
+      <div className="mt-6">
+        <Card>
+          <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-100 mb-3">
+            The Vision Behind Elysia
+          </h2>
+          <p className="text-gray-700 dark:text-gray-300">
+            Cooking is more than just a necessity—it&apos;s a way to nourish
+            both body and mind. Our vision is to build a platform where people
+            can explore diverse recipes, develop new skills, and gradually
+            become more self-reliant in the kitchen. Just like Elysia chlorotica
+            adapts and grows by integrating the best of what it consumes, this
+            app allows food lovers to nurture, discover, and evolve their
+            culinary environment.
+          </p>
+        </Card>
       </div>
 
-      <div className="mt-8 p-6 rounded-lg border border-4 border-dashed border-leaf-green-100 dark:leaf-green-200">
-        <h2 className="text-xl font-semibold text-leaf-green-800 dark:text-leaf-green-300 mb-3">
-          The Vision Behind Elysia
-        </h2>
-        <p className="text-gray-800 dark:text-white">
-          Cooking is more than just a necessity—it's a way to nourish both body
-          and mind. Our vision is to build a platform where people can explore
-          diverse recipes, develop new skills, and gradually become more
-          self-reliant in the kitchen. Just like Elysia chlorotica adapts and
-          grows by integrating the best of what it consumes, this app allows
-          food lovers to nurture, discover, and evolve their culinary
-          environment.
-        </p>
-      </div>
-
-      <div className="flex flex-col align-items-center mt-10">
+      <div className="flex flex-col items-center mt-10">
         <Button onClick={onJourneyBegin}>Start Your Journey</Button>
       </div>
     </div>

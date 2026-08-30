@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { FaEllipsisV } from "react-icons/fa";
+import {
+  FaDownload,
+  FaEllipsisV,
+  FaLayerGroup,
+  FaPen,
+  FaShareAlt,
+  FaTags,
+  FaTrash,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import {
@@ -15,8 +23,16 @@ import DropdownButton, {
 import { UserService } from "@shared/services/UserService";
 import generateRecipePDF from "@shared/services/PdfGenerator";
 import { useAuth } from "@shared/contexts/AuthContext";
+import AddTagsToRecipeModal from "../AddTagsToRecipeModal";
+import AddRecipeToCollectionsModal from "../AddRecipeToCollections";
 
-const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
+interface EllipsisMenuProps {
+  recipe: Recipe;
+  /** Called after tags or collections are added, so the caller can refetch the recipe. */
+  onRecipeUpdated?: () => void;
+}
+
+const EllipsisMenu: React.FC<EllipsisMenuProps> = ({ recipe, onRecipeUpdated }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const { isAuthenticated } = useAuth();
@@ -35,6 +51,22 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
   const handleEditClick = () =>
     navigate(`/recipes/${recipe.id}/edit`, { state: { recipe } });
+
+  const handleAddTagsClick = () =>
+    openModal(
+      <AddTagsToRecipeModal
+        recipeId={recipe.id}
+        tagAdded={() => onRecipeUpdated?.()}
+      />
+    );
+
+  const handleAddToCollectionClick = () =>
+    openModal(
+      <AddRecipeToCollectionsModal
+        recipeId={recipe.id}
+        collectionAdded={() => onRecipeUpdated?.()}
+      />
+    );
 
   const handleDeleteClick = () =>
     openModal(
@@ -106,7 +138,7 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       await RecipeService.deleteById(recipe.id);
       toast.success("Recipe deleted successfully!");
       closeModal();
-      navigate("/");
+      navigate("/recipes");
     } catch (error: any) {
       toast.error("Failed to delete recipe. Please try again.");
     }
@@ -124,19 +156,40 @@ const EllipsisMenu: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const options: DropdownOption[] = [
     ...(isAuthenticated
       ? [
-          { label: "Edit", onClick: handleEditClick },
-          { label: "Delete", onClick: handleDeleteClick },
-          { label: "Share", onClick: handleShareClick },
+          { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: handleEditClick },
+          {
+            label: "Delete",
+            icon: <FaTrash aria-hidden="true" />,
+            destructive: true,
+            onClick: handleDeleteClick,
+          },
+          { label: "Share", icon: <FaShareAlt aria-hidden="true" />, onClick: handleShareClick },
+          {
+            label: "Add Tags",
+            icon: <FaTags aria-hidden="true" />,
+            dividerBefore: true,
+            onClick: handleAddTagsClick,
+          },
+          {
+            label: "Add to Collection",
+            icon: <FaLayerGroup aria-hidden="true" />,
+            onClick: handleAddToCollectionClick,
+          },
         ]
       : []),
-    { label: "Export", onClick: handleExportClick },
+    {
+      label: "Export",
+      icon: <FaDownload aria-hidden="true" />,
+      onClick: handleExportClick,
+      dividerBefore: isAuthenticated,
+    },
   ];
 
   return (
     <DropdownButton
       options={options}
       icon={
-        <FaEllipsisV className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+        <FaEllipsisV className="w-5 h-5 text-gray-600 dark:text-gray-300" />
       }
     />
   );

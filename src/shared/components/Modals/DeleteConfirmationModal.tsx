@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Loading from "../Loading";
+import { Button } from "../Buttons";
+import { useToast } from "../Toast";
 
 interface DeleteConfirmationModalProps {
   label: string;
@@ -13,13 +14,15 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   onDelete,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const toast = useToast();
 
   const handleDelete = async () => {
     setLoading(true);
     try {
       await onDelete();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Delete failed:", error);
+      toast.error(error.message || `Failed to delete ${label}. Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -31,25 +34,12 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         Are you sure you want to delete this {label}?
       </h2>
       <div className="flex justify-center space-x-4 pt-2">
-        <button
-          onClick={onCancelDelete}
-          className="px-4 py-2 border border-gray-300 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-          disabled={loading}
-        >
+        <Button btnType="dismissable" onClick={onCancelDelete} disabled={loading}>
           Cancel
-        </button>
-        <button
-          onClick={handleDelete}
-          disabled={loading}
-          className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg transition ${
-            loading
-              ? "bg-red-400 cursor-not-allowed"
-              : "bg-red-500 text-white hover:bg-red-600"
-          }`}
-        >
-          {loading && <Loading isLarge={false} />}
+        </Button>
+        <Button btnType="delete" onClick={handleDelete} isLoading={loading}>
           Delete
-        </button>
+        </Button>
       </div>
     </div>
   );

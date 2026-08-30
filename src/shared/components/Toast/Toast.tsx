@@ -20,7 +20,7 @@ interface ToastProps {
 
 // Define icon mappings with proper typing
 const icons: { [key in ToastType]: JSX.Element } = {
-  success: <FaCheckCircle className="w-6 h-6 text-green-500" />,
+  success: <FaCheckCircle className="w-6 h-6 text-leaf-green-500" />,
   error: <FaTimesCircle className="w-6 h-6 text-red-500" />,
   info: <FaInfoCircle className="w-6 h-6 text-blue-500" />,
   warning: <FaExclamationCircle className="w-6 h-6 text-yellow-500" />,
@@ -34,7 +34,7 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
                 dark:bg-gray-800 dark:text-gray-200 bg-white text-gray-800
                 ${
                   {
-                    success: "border-green-500",
+                    success: "border-leaf-green-500",
                     error: "border-red-500",
                     info: "border-blue-500",
                     warning: "border-yellow-500",
@@ -44,8 +44,15 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
     >
       {icons[type]}
       <span>{message}</span>
-      <button onClick={() => onClose(id)} className="ml-auto">
-        <FaTimes className="w-5 h-5 dark:text-gray-400 dark:hover:text-gray-200 text-gray-500 hover:text-gray-700" />
+      <button
+        onClick={() => onClose(id)}
+        aria-label="Dismiss notification"
+        className="ml-auto focus:outline-hidden focus-visible:ring-2 focus-visible:ring-leaf-green-300 rounded-full"
+      >
+        <FaTimes
+          className="w-5 h-5 dark:text-gray-400 dark:hover:text-gray-200 text-gray-500 hover:text-gray-700"
+          aria-hidden="true"
+        />
       </button>
     </div>
   );

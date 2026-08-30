@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { Recipe } from '../models/Recipe';
+import { FieldLabel, fieldClasses } from './FormField';
 
 interface RecipeDetailsFormProps {
   formData: Recipe;
@@ -8,61 +9,43 @@ interface RecipeDetailsFormProps {
 
 const RecipeDetailsForm: React.FC<RecipeDetailsFormProps> = ({ formData, onFormChange }) => {
   return (
-    <form className="w-full">
-      <div className="relative z-0 w-full mb-5 group">
+    <div className="grid grid-cols-3 gap-3 w-full mb-4">
+      <div>
+        <FieldLabel htmlFor="servings">Servings</FieldLabel>
         <input
           type="number"
           name="servings"
           id="servings"
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-          placeholder=" "
+          className={fieldClasses}
           value={formData.servings}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onFormChange('servings', Number(e.target.value))}
         />
-        <label
-          htmlFor="servings"
-          className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:rtl:translate-x-1/4 peer-focus:rtl:left-auto peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-        >
-          Servings
-        </label>
       </div>
 
-      <div className="relative z-0 w-full mb-5 group">
+      <div>
+        <FieldLabel htmlFor="prep_time">Prep Time (min)</FieldLabel>
         <input
           type="number"
           name="prep_time"
           id="prep_time"
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-          placeholder=" "
+          className={fieldClasses}
           value={formData.prep_time}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onFormChange('prep_time', Number(e.target.value))}
         />
-        <label
-          htmlFor="prep_time"
-          className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:rtl:translate-x-1/4 peer-focus:rtl:left-auto peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-        >
-          Prep Time (minutes)
-        </label>
       </div>
 
-      <div className="relative z-0 w-full mb-5 group">
+      <div>
+        <FieldLabel htmlFor="cook_time">Cook Time (min)</FieldLabel>
         <input
           type="number"
           name="cook_time"
           id="cook_time"
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-hidden focus:ring-0 focus:border-blue-600 peer"
-          placeholder=" "
+          className={fieldClasses}
           value={formData.cook_time}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onFormChange('cook_time', Number(e.target.value))}
         />
-        <label
-          htmlFor="cook_time"
-          className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:rtl:translate-x-1/4 peer-focus:rtl:left-auto peer-focus:text-blue-600 dark:peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-        >
-          Cook Time (minutes)
-        </label>
       </div>
-    </form>
+    </div>
   );
 }
 

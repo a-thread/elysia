@@ -22,6 +22,7 @@ const RecipeForm: React.FC = () => {
     tagList,
     setCollectionSearch,
     setTagSearch,
+    createTag,
   } = useRecipeForm();
   const { handleSave, isLoading } = useRecipeActions(
     formData,
@@ -65,7 +66,7 @@ const RecipeForm: React.FC = () => {
         <div className="mb-4">
           <FieldLabel htmlFor="Tags">Tags</FieldLabel>
           <MultiSelect
-            placeholder="Search for tags..."
+            placeholder="Search or create a tag..."
             inputId="Tags"
             options={tagList}
             selectedOptions={formData.tags || []}
@@ -73,6 +74,8 @@ const RecipeForm: React.FC = () => {
               onFormChange("tags", selectedTags)
             }
             onSearch={setTagSearch}
+            allowCreate
+            onCreateOption={createTag}
           />
         </div>
 

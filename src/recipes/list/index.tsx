@@ -8,11 +8,7 @@ import { Recipe } from "@shared/models/Recipe";
 import SearchInput from "@shared/components/SearchInput";
 import MultiSelect from "@shared/components/MultiSelect";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
-import {
-  AddRecipeModal,
-  AddTagModal,
-  useModalManager,
-} from "@shared/components/Modals";
+import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
 import { useAuth } from "@shared/contexts/AuthContext";
 import InfiniteScroll from "@shared/components/InfiniteScroll";
 import DropdownButton, {
@@ -24,7 +20,6 @@ import {
   FaFileImport,
   FaFilter,
   FaSearch,
-  FaTag,
 } from "react-icons/fa";
 import { RecipeSort, RECIPE_SORT_LABELS } from "@shared/models/RecipeSort";
 
@@ -55,7 +50,7 @@ const RecipeList: React.FC = () => {
   } = useFetchRecipes();
 
   const { openModal, closeModal } = useModalManager();
-  const { authHasBeenChecked, isAuthenticated } = useAuth();
+  const { authHasBeenChecked } = useAuth();
 
   const [showSearch, setShowSearch] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
@@ -66,10 +61,6 @@ const RecipeList: React.FC = () => {
 
   const handleImportRecipe = () => {
     openModal(<AddRecipeModal onClose={closeModal} initialMode="url" />);
-  };
-
-  const handleAddTag = () => {
-    openModal(<AddTagModal onCancel={closeModal} onAddTag={closeModal} />);
   };
 
   const actionOptions: DropdownOption[] = [
@@ -91,16 +82,6 @@ const RecipeList: React.FC = () => {
       disabled: !recipes.length || isExporting,
       onClick: exportAll,
     },
-    ...(isAuthenticated
-      ? [
-          {
-            label: "Add Tag",
-            icon: <FaTag aria-hidden="true" />,
-            dividerBefore: true,
-            onClick: handleAddTag,
-          },
-        ]
-      : []),
   ];
 
   useEffect(() => {

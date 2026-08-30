@@ -54,6 +54,16 @@ const upsert = async (tagId: string, updatedTag: IdTitle) => {
   );
 };
 
+const create = async (title: string): Promise<IdTitle | null> => {
+  const trimmedTitle = title.trim();
+  if (!trimmedTitle) return null;
+
+  const response = await upsert("", { title: trimmedTitle });
+  if (!response?.success || !response.tagId) return null;
+
+  return { id: response.tagId, title: trimmedTitle };
+};
+
 const deleteById = async (tagId: string) => {
   return await supabaseWithAbort.request(
     `deleteById-${tagId}`,
@@ -171,6 +181,7 @@ const TagService = {
   removeAllFromRecipe,
   getList,
   upsert,
+  create,
   deleteById,
 };
 

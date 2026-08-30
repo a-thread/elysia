@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
+import { FaPlus } from "react-icons/fa";
 import { Button, TagButton } from "./Buttons";
 import { IdTitle } from "@shared/models/Tag";
 
@@ -10,6 +11,9 @@ interface MultiSelectProps {
   placeholder: string;
   setSelectedOptions: (options: IdTitle[]) => void;
   onSearch: (searchTerm: string) => void;
+  /** When set, lets the user create a new option from their search text if nothing matches it exactly. */
+  allowCreate?: boolean;
+  onCreateOption?: (title: string) => Promise<IdTitle | null>;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -19,11 +23,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   placeholder = "",
   setSelectedOptions,
   onSearch,
+  allowCreate = false,
+  onCreateOption,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [openUpwards, setOpenUpwards] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -81,6 +88,27 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const handleRemove = (option: IdTitle) => {
     const updatedOptions = selectedOptions.filter((o) => o.id !== option.id);
     setSelectedOptions(updatedOptions);
+  };
+
+  const trimmedSearch = searchTerm.trim();
+  const hasExactMatch = [...options, ...selectedOptions].some(
+    (o) => o.title.trim().toLowerCase() === trimmedSearch.toLowerCase()
+  );
+  const showCreateOption =
+    allowCreate && !!onCreateOption && trimmedSearch.length > 0 && !hasExactMatch;
+
+  const handleCreateOption = async () => {
+    if (!onCreateOption || isCreating) return;
+    setIsCreating(true);
+    try {
+      const created = await onCreateOption(trimmedSearch);
+      if (created) {
+        setSelectedOptions([...selectedOptions, created]);
+        setSearchTerm("");
+      }
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -156,6 +184,21 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               : "top-full pt-2 rounded-b-lg"
           }`}
         >
+          {showCreateOption && (
+            <button
+              type="button"
+              disabled={isCreating}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleCreateOption();
+              }}
+              className="w-full flex items-center gap-2 px-4 py-2 text-left text-sm font-semibold text-leaf-green-700 dark:text-leaf-green-300 hover:bg-leaf-green-50 dark:hover:bg-leaf-green-900/30 transition disabled:opacity-50 disabled:pointer-events-none"
+            >
+              <FaPlus className="w-3 h-3 shrink-0" />
+              {isCreating ? `Creating "${trimmedSearch}"…` : `Create "${trimmedSearch}"`}
+            </button>
+          )}
+
           {options.length > 0 ? (
             options.map((option) => (
               <Button
@@ -181,9 +224,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               </Button>
             ))
           ) : (
-            <div className="p-2 text-gray-500 dark:text-gray-400" role="status">
-              No results found
-            </div>
+            !showCreateOption && (
+              <div className="p-2 text-gray-500 dark:text-gray-400" role="status">
+                No results found
+              </div>
+            )
           )}
 
           {/* Footer for limited results message */}

@@ -24,11 +24,11 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
   const showAction = isAuthenticated && actionName?.length > 0;
 
   return (
-    <>
+    <div className={classes || "mb-4"}>
       <div
         className={`w-full flex items-center text-left ${
           actionVariant === "solid" ? "justify-between" : "space-x-3"
-        } ${classes}`}
+        }`}
       >
         <h1 className="text-3xl font-medium text-leaf-green-900 dark:text-leaf-green-100">
           {title}
@@ -52,11 +52,11 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
       </div>
 
       {!!description?.length && (
-        <p className="text-leaf-green-800 dark:text-gray-300 mt-4 mb-4">
+        <p className="text-leaf-green-800 dark:text-gray-300 mt-4">
           {description}
         </p>
       )}
-    </>
+    </div>
   );
 };
 

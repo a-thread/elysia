@@ -89,26 +89,67 @@ const RecipeList: React.FC = () => {
         onAction={handleAddRecipe}
       />
 
-      <div className="w-full flex flex-wrap items-center gap-2 mb-4">
-        <button
-          type="button"
-          onClick={() => setShowSearch((prev) => !prev)}
-          aria-label={showSearch ? "Close search" : "Search recipes"}
-          aria-expanded={showSearch}
-          aria-controls="recipe-search-field"
-          className={`shrink-0 ${iconButtonClasses(showSearch || searchTerm.length > 0)}`}
-        >
-          <FaSearch className="w-4 h-4" aria-hidden="true" />
-          {!showSearch && searchTerm.length > 0 && (
-            <span
-              aria-hidden="true"
-              className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-leaf-green-600"
+      <div className="w-full mb-4">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowSearch((prev) => !prev)}
+            aria-label={showSearch ? "Close search" : "Search recipes"}
+            aria-expanded={showSearch}
+            aria-controls="recipe-search-field"
+            className={`shrink-0 ${iconButtonClasses(showSearch || searchTerm.length > 0)}`}
+          >
+            <FaSearch className="w-4 h-4" aria-hidden="true" />
+            {!showSearch && searchTerm.length > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-leaf-green-600"
+              />
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowFilter((prev) => !prev)}
+            aria-label={showFilter ? "Close tag filter" : "Filter by tag"}
+            aria-expanded={showFilter}
+            aria-controls="recipe-filter-field"
+            className={`shrink-0 ${iconButtonClasses(showFilter || selectedTags.length > 0)}`}
+          >
+            <FaFilter className="w-4 h-4" aria-hidden="true" />
+            {!showFilter && selectedTags.length > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-leaf-green-600 text-white text-[10px] font-bold flex items-center justify-center"
+              >
+                {selectedTags.length}
+              </span>
+            )}
+          </button>
+
+          <div className="ml-auto shrink-0">
+            <DropdownButton
+              options={actionOptions}
+              triggerLabel="Recipe list actions"
+              trigger={({ onClick, isOpen, menuId }) => (
+                <button
+                  type="button"
+                  onClick={onClick}
+                  aria-label="Recipe list actions"
+                  aria-haspopup="menu"
+                  aria-expanded={isOpen}
+                  aria-controls={menuId}
+                  className={`shrink-0 ${iconButtonClasses(isOpen)}`}
+                >
+                  <FaEllipsisV className="w-4 h-4" aria-hidden="true" />
+                </button>
+              )}
             />
-          )}
-        </button>
+          </div>
+        </div>
 
         {showSearch && (
-          <div id="recipe-search-field" className="flex-1 min-w-[200px] text-left">
+          <div id="recipe-search-field" className="mt-2 text-left">
             <SearchInput
               className="w-full"
               placeholder="Search by title, description or ingredient..."
@@ -119,27 +160,8 @@ const RecipeList: React.FC = () => {
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={() => setShowFilter((prev) => !prev)}
-          aria-label={showFilter ? "Close tag filter" : "Filter by tag"}
-          aria-expanded={showFilter}
-          aria-controls="recipe-filter-field"
-          className={`shrink-0 ${iconButtonClasses(showFilter || selectedTags.length > 0)}`}
-        >
-          <FaFilter className="w-4 h-4" aria-hidden="true" />
-          {!showFilter && selectedTags.length > 0 && (
-            <span
-              aria-hidden="true"
-              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-leaf-green-600 text-white text-[10px] font-bold flex items-center justify-center"
-            >
-              {selectedTags.length}
-            </span>
-          )}
-        </button>
-
         {showFilter && (
-          <div id="recipe-filter-field" className="flex-1 min-w-[200px] text-left">
+          <div id="recipe-filter-field" className="mt-2 text-left">
             <MultiSelect
               inputId="recipe-tag-filter"
               placeholder="Filter by tag..."
@@ -150,26 +172,6 @@ const RecipeList: React.FC = () => {
             />
           </div>
         )}
-
-        <div className="ml-auto">
-          <DropdownButton
-            options={actionOptions}
-            triggerLabel="Recipe list actions"
-            trigger={({ onClick, isOpen, menuId }) => (
-              <button
-                type="button"
-                onClick={onClick}
-                aria-label="Recipe list actions"
-                aria-haspopup="menu"
-                aria-expanded={isOpen}
-                aria-controls={menuId}
-                className={`shrink-0 ${iconButtonClasses(isOpen)}`}
-              >
-                <FaEllipsisV className="w-4 h-4" aria-hidden="true" />
-              </button>
-            )}
-          />
-        </div>
       </div>
 
       {loading && <Loading className="mt-6" />}

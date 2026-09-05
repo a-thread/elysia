@@ -2,28 +2,24 @@ import React, { useState, FormEvent, ChangeEvent } from "react";
 import { Button } from "../../Buttons";
 import { parseRecipeFromHtml } from "./scrapeRecipeForDB";
 import { useNavigate } from "react-router-dom";
-import { useModalManager } from "@shared/components/Modals";
 import { FieldLabel, fieldClasses } from "@shared/components/FormField";
 
 interface HtmlInputFormProps {
-  onCancel: () => void;
+  onClose: () => void;
 }
 
-const HtmlInputForm: React.FC<HtmlInputFormProps> = ({ onCancel }) => {
+const HtmlInputForm: React.FC<HtmlInputFormProps> = ({ onClose }) => {
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { closeModal } = useModalManager();
 
   const processRecipe = async () => {
     try {
       setIsLoading(true);
       const data = await parseRecipeFromHtml(htmlContent, '');
       navigate("/add-new", { state: { recipe: data } });
-      onCancel();
-      closeModal();
-      setError("");
+      onClose();
     } catch (error) {
       setError("Failed to process the recipe. Please check the HTML content.");
     } finally {
@@ -41,7 +37,10 @@ const HtmlInputForm: React.FC<HtmlInputFormProps> = ({ onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="flex-1 flex flex-col gap-4 sm:gap-0 sm:space-y-4"
+    >
       {error && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-sm">
           {error}
@@ -61,8 +60,8 @@ const HtmlInputForm: React.FC<HtmlInputFormProps> = ({ onCancel }) => {
           }
         />
       </div>
-      <div className="flex justify-end space-x-4">
-        <Button type="button" onClick={onCancel}>
+      <div className="flex justify-end space-x-4 mt-auto">
+        <Button type="button" onClick={onClose}>
           Cancel
         </Button>
         <Button type="submit" isLoading={isLoading}>

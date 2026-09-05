@@ -7,6 +7,7 @@ import { Collection } from "@shared/models/Collection";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import InfiniteScroll from "@shared/components/InfiniteScroll";
+import Fab from "@shared/components/Fab";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { FaPlus } from "react-icons/fa6";
 
@@ -36,6 +37,7 @@ const CollectionList: React.FC = () => {
           title="Collections"
           actionName="New Collection"
           actionVariant="solid"
+          actionClassName="hidden sm:flex"
           onAction={() => navigate("add-new")}
         />
         <p className="text-gray-600 dark:text-leaf-green-100 mb-4">
@@ -44,6 +46,10 @@ const CollectionList: React.FC = () => {
           <strong>keep them private</strong>.
         </p>
       </div>
+
+      {isAuthenticated && (
+        <Fab label="New Collection" onClick={() => navigate("add-new")} />
+      )}
 
       {loading && <Loading className="mt-6" />}
 

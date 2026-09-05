@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa6";
 interface TitleDescHeaderProps extends TitleDescriptionImgUrl {
   actionName?: string;
   actionVariant?: "icon" | "solid";
+  actionClassName?: string;
   onAction?: () => void;
 }
 
@@ -15,6 +16,7 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
   description,
   actionName = "",
   actionVariant = "icon",
+  actionClassName = "",
   onAction,
 }) => {
   const { isAuthenticated } = useAuth();
@@ -30,22 +32,25 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
         <h1 className="text-3xl font-medium text-leaf-green-900 dark:text-leaf-green-100">
           {title}
         </h1>
-        {showAction &&
-          (actionVariant === "solid" ? (
-            <Button btnType="primary" className="shrink-0" onClick={onAction}>
-              <FaPlus className="w-3.5 h-3.5" aria-hidden="true" />
-              {actionName}
-            </Button>
-          ) : (
-            <IconButton
-              className="hover:bg-white dark:hover:bg-white/50"
-              title={actionName}
-              onClick={onAction}
-              icon={
-                <FaPlus className="w-5 h-5 dark:text-leaf-green-300 text-leaf-green-500" />
-              }
-            />
-          ))}
+        {showAction && (
+          <div className={`shrink-0 ${actionClassName}`}>
+            {actionVariant === "solid" ? (
+              <Button btnType="primary" onClick={onAction}>
+                <FaPlus className="w-3.5 h-3.5" aria-hidden="true" />
+                {actionName}
+              </Button>
+            ) : (
+              <IconButton
+                className="hover:bg-white dark:hover:bg-white/50"
+                title={actionName}
+                onClick={onAction}
+                icon={
+                  <FaPlus className="w-5 h-5 dark:text-leaf-green-300 text-leaf-green-500" />
+                }
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {!!description?.length && (

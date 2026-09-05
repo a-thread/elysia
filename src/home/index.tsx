@@ -7,6 +7,7 @@ import EmptyState from "@shared/components/EmptyState";
 import Hero from "./components/Hero";
 import MoreToExplore from "./components/MoreToExplore";
 import CtaBand from "./components/CtaBand";
+import AddRecipeFab from "@shared/components/AddRecipeFab";
 
 const Home: React.FC = () => {
   const { user, authHasBeenChecked } = useAuth();
@@ -46,6 +47,7 @@ const Home: React.FC = () => {
               : "No recipes yet. Sign in to add the first one!"
           }
         />
+        <AddRecipeFab />
       </div>
     );
   }
@@ -57,6 +59,7 @@ const Home: React.FC = () => {
       <Hero recipe={featured} />
       <MoreToExplore recipes={rest} />
       <CtaBand />
+      <AddRecipeFab />
     </div>
   );
 };

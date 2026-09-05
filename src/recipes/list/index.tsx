@@ -8,6 +8,7 @@ import { Recipe } from "@shared/models/Recipe";
 import SearchInput from "@shared/components/SearchInput";
 import MultiSelect from "@shared/components/MultiSelect";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
+import AddRecipeFab from "@shared/components/AddRecipeFab";
 import { AddRecipeModal, useModalManager } from "@shared/components/Modals";
 import { useAuth } from "@shared/contexts/AuthContext";
 import InfiniteScroll from "@shared/components/InfiniteScroll";
@@ -85,8 +86,10 @@ const RecipeList: React.FC = () => {
         title="Recipes"
         actionName="New Recipe"
         actionVariant="solid"
+        actionClassName="hidden sm:flex"
         onAction={handleAddRecipe}
       />
+      <AddRecipeFab />
 
       <div className="w-full mb-4">
         <div className="flex items-center gap-2">

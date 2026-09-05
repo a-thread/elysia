@@ -49,7 +49,7 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
       </div>
 
       {!!description?.length && (
-        <p className="text-leaf-green-800 dark:text-gray-300 mt-4">
+        <p className="text-leaf-green-800 dark:text-gray-300 mt-4 mb-6">
           {description}
         </p>
       )}

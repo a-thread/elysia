@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UrlInputForm from "./UrlInputForm";
 import HtmlInputForm from "./HtmlInputForm";
+import ImageInputForm from "./ImageInputForm";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
 
 type AddRecipeModalProps = BaseModalProps;
 
-type AddMethod = "url" | "html";
+type AddMethod = "url" | "html" | "images";
 
 const tabClasses = (active: boolean) =>
   `flex-1 pb-2.5 text-sm font-semibold border-b-2 -mb-px transition-colors ${
@@ -60,16 +61,25 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ onClose }) => {
         >
           Paste HTML
         </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "images"}
+          className={tabClasses(activeTab === "images")}
+          onClick={() => setActiveTab("images")}
+        >
+          From Photos
+        </button>
       </div>
 
-      {activeTab === "url" ? (
+      {activeTab === "url" && (
         <UrlInputForm
           onClose={onClose}
           onSwitchToHtml={() => setActiveTab("html")}
         />
-      ) : (
-        <HtmlInputForm onClose={onClose} />
       )}
+      {activeTab === "html" && <HtmlInputForm onClose={onClose} />}
+      {activeTab === "images" && <ImageInputForm onClose={onClose} />}
 
       <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex items-baseline justify-between text-sm text-gray-500 dark:text-gray-400">
         <span>Prefer to enter it yourself?</span>

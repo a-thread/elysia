@@ -11,6 +11,13 @@ export async function getRecipeFromScraper(url: string): Promise<Recipe> {
   return res.data;
 }
 
+export async function importRecipeFromImages(images: File[]): Promise<Recipe> {
+  const formData = new FormData();
+  images.forEach((image) => formData.append("images", image));
+  const res = await axios.post(`${API}/import/images`, formData);
+  return res.data;
+}
+
 export async function parseRecipeFromHtml(html: string, url: string): Promise<Recipe> {
     const $ = load(html);
 

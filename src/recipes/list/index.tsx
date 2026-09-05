@@ -82,7 +82,6 @@ const RecipeList: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">
       <TitleDescHeader
-        classes="mb-4"
         title="Recipes"
         actionName="New Recipe"
         actionVariant="solid"
@@ -197,6 +196,6 @@ const RecipeList: React.FC = () => {
       )}
     </div>
   );
-}
+};
 
 export default RecipeList;

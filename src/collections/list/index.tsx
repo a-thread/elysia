@@ -36,7 +36,6 @@ const CollectionList: React.FC = () => {
           title="Collections"
           actionName="New Collection"
           actionVariant="solid"
-          classes="mb-2"
           onAction={() => navigate("add-new")}
         />
         <p className="text-gray-600 dark:text-leaf-green-100 mb-4">
@@ -70,7 +69,10 @@ const CollectionList: React.FC = () => {
               onClick={() => navigate("add-new")}
               className="flex flex-col items-center justify-center gap-2 min-h-[172px] p-6 rounded-2xl border-[1.5px] border-dashed border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 transition-colors hover:border-leaf-green-300 hover:bg-leaf-green-50 dark:hover:border-leaf-green-700 dark:hover:bg-leaf-green-900/20 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-leaf-green-400"
             >
-              <FaPlus className="w-6 h-6 text-leaf-green-300" aria-hidden="true" />
+              <FaPlus
+                className="w-6 h-6 text-leaf-green-300"
+                aria-hidden="true"
+              />
               <span className="text-sm font-semibold">New Collection</span>
             </button>
           )}

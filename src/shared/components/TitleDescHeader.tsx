@@ -5,9 +5,7 @@ import { useAuth } from "@shared/contexts/AuthContext";
 import { FaPlus } from "react-icons/fa6";
 
 interface TitleDescHeaderProps extends TitleDescriptionImgUrl {
-  classes?: string;
   actionName?: string;
-  /** "icon" (default): small ghost plus button next to the title. "solid": a filled pill CTA pushed to the right. */
   actionVariant?: "icon" | "solid";
   onAction?: () => void;
 }
@@ -15,7 +13,6 @@ interface TitleDescHeaderProps extends TitleDescriptionImgUrl {
 const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
   title,
   description,
-  classes = "",
   actionName = "",
   actionVariant = "icon",
   onAction,
@@ -24,9 +21,9 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
   const showAction = isAuthenticated && actionName?.length > 0;
 
   return (
-    <div className={classes || "mb-4"}>
+    <>
       <div
-        className={`w-full flex items-center text-left ${
+        className={`w-full flex items-center text-left mb-2 ${
           actionVariant === "solid" ? "justify-between" : "space-x-3"
         }`}
       >
@@ -56,7 +53,7 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
           {description}
         </p>
       )}
-    </div>
+    </>
   );
 };
 

@@ -7,7 +7,7 @@ import SignIn from "./auth/SignIn";
 import { CollectionList, CollectionDetail, CollectionForm } from "./collections";
 import { ModalManager } from "@shared/components/Modals";
 import { ForgotPassword } from "./auth";
-import { RecipeList, RecipeDetail, RecipeForm } from "./recipes";
+import { RecipeList, RecipeDetail, RecipeForm, ImportReview } from "./recipes";
 import Home from "./home";
 
 const App = () => {
@@ -36,6 +36,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <RecipeForm />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/import-review"
+                element={
+                  <ProtectedRoute>
+                    <ImportReview />
                   </ProtectedRoute>
                 }
               />

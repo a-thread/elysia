@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UrlInputForm from "./UrlInputForm";
 import HtmlInputForm from "./HtmlInputForm";
+import ImageInputForm from "./ImageInputForm";
+import PdfInputForm from "./PdfInputForm";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
 
 type AddRecipeModalProps = BaseModalProps;
 
-type AddMethod = "url" | "html";
+// "html" is a sub-option reached from the URL tab (via its "import via html" link), not a peer
+// tab — four top-level import methods crowded the tab bar and HTML is really just a fallback for
+// when URL scraping doesn't work on a given site.
+type AddMethod = "url" | "html" | "images" | "pdf";
 
 const tabClasses = (active: boolean) =>
   `flex-1 pb-2.5 text-sm font-semibold border-b-2 -mb-px transition-colors ${
@@ -23,6 +28,8 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ onClose }) => {
     navigate("/add-new");
     onClose();
   };
+
+  const isUrlGroupActive = activeTab === "url" || activeTab === "html";
 
   return (
     <div
@@ -45,31 +52,43 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ onClose }) => {
         <button
           type="button"
           role="tab"
-          aria-selected={activeTab === "url"}
-          className={tabClasses(activeTab === "url")}
+          aria-selected={isUrlGroupActive}
+          className={tabClasses(isUrlGroupActive)}
           onClick={() => setActiveTab("url")}
         >
-          Import URL
+          URL
         </button>
         <button
           type="button"
           role="tab"
-          aria-selected={activeTab === "html"}
-          className={tabClasses(activeTab === "html")}
-          onClick={() => setActiveTab("html")}
+          aria-selected={activeTab === "images"}
+          className={tabClasses(activeTab === "images")}
+          onClick={() => setActiveTab("images")}
         >
-          Paste HTML
+          Photos
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "pdf"}
+          className={tabClasses(activeTab === "pdf")}
+          onClick={() => setActiveTab("pdf")}
+        >
+          Cookbook PDF
         </button>
       </div>
 
-      {activeTab === "url" ? (
+      {activeTab === "url" && (
         <UrlInputForm
           onClose={onClose}
           onSwitchToHtml={() => setActiveTab("html")}
         />
-      ) : (
-        <HtmlInputForm onClose={onClose} />
       )}
+      {activeTab === "html" && (
+        <HtmlInputForm onClose={onClose} onBackToUrl={() => setActiveTab("url")} />
+      )}
+      {activeTab === "images" && <ImageInputForm onClose={onClose} />}
+      {activeTab === "pdf" && <PdfInputForm onClose={onClose} />}
 
       <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex items-baseline justify-between text-sm text-gray-500 dark:text-gray-400">
         <span>Prefer to enter it yourself?</span>

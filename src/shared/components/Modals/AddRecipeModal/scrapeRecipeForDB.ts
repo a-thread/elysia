@@ -11,8 +11,31 @@ export async function getRecipeFromScraper(url: string): Promise<Recipe> {
   return res.data;
 }
 
-export async function parseRecipeFromHtml(html: string, url: string): Promise<Recipe> {
+export async function importRecipeFromImages(images: File[]): Promise<Recipe> {
+  const formData = new FormData();
+  images.forEach((image) => formData.append("images", image));
+  const res = await axios.post(`${API}/import/images`, formData);
+  return res.data;
+}
+
+export async function importRecipesFromPdf(file: File): Promise<Recipe[]> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await axios.post(`${API}/import/pdf/bulk`, formData);
+  return res.data;
+}
+
+export async function parseRecipeFromHtml(html: string, url = ""): Promise<Recipe> {
     const $ = load(html);
+
+    // Pasted HTML rarely comes with a known page URL, but the page itself usually says what it
+    // is — fall back to its canonical link or og:url so original_recipe_url isn't just blank,
+    // and so relative image paths below have a base to resolve against.
+    const sourceUrl = url || extractFirstMatch($, [
+        "link[rel='canonical']",
+        "meta[property='og:url']",
+        "meta[name='og:url']"
+    ], "href", "content");
 
     const img_url = resolveUrl(extractFirstMatch($, [
         "meta[property='og:image']",
@@ -21,7 +44,7 @@ export async function parseRecipeFromHtml(html: string, url: string): Promise<Re
         "img[class*='recipe-image']:first",
         "img[class*='main-image']:first",
         "img:first"
-    ], "content", "src"), url);
+    ], "content", "src"), sourceUrl);
 
     const description = extractFirstText($, [
         "meta[name='description']",
@@ -55,7 +78,7 @@ export async function parseRecipeFromHtml(html: string, url: string): Promise<Re
             "ol[class*='preparation'] li",
             "div[class*='steps'] ol li",
         ], stripHtml),
-        original_recipe_url: url,
+        original_recipe_url: sourceUrl,
     };
 }
 

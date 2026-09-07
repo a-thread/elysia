@@ -1,6 +1,6 @@
 import React from "react";
 import IngredientList from "./IngredientList";
-import StepList from "./StepList";
+import StepList from "../StepList";
 import { CheckedItems } from ".";
 
 interface MobileViewProps {
@@ -23,7 +23,7 @@ const MobileView: React.FC<MobileViewProps> = ({ activeTab, recipe, checkedItems
           onCheck={onCheck}
         />
       ) : (
-        <StepList steps={recipe.steps} />
+        <StepList steps={recipe.steps} variant="cooking" />
       )}
     </div>
   );

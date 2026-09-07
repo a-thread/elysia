@@ -1,7 +1,7 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { Button } from "../../Buttons";
-import { parseRecipeFromHtml } from "./scrapeRecipeForDB";
+import { parseRecipeFromHtml } from "./recipeHtmlParser";
 import { useNavigate } from "react-router-dom";
 import { FieldLabel, fieldClasses } from "@shared/components/FormField";
 

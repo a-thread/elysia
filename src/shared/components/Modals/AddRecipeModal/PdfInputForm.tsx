@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { Button } from "../../Buttons";
-import { importRecipesFromPdf } from "./scrapeRecipeForDB";
+import { importRecipesFromPdf } from "./RecipeScraperService";
 import { useNavigate } from "react-router-dom";
 import { FieldLabel } from "@shared/components/FormField";
 

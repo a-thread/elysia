@@ -1,5 +1,5 @@
 import React from "react";
-import { StepIngredient } from "@shared/models/StepIngredient";
+import { StepIngredient } from "@recipes/models/StepIngredient";
 
 interface StepListProps {
   steps: StepIngredient[];

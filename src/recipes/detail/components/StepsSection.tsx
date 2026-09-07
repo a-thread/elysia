@@ -1,5 +1,5 @@
 import React from 'react';
-import { StepIngredient } from '@shared/models/StepIngredient';
+import { StepIngredient } from '@recipes/models/StepIngredient';
 import StepList from './StepList';
 
 const StepsSection: React.FC<{ steps: StepIngredient[] }> = ({ steps }) => {

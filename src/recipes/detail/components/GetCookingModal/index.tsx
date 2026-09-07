@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TabNavigation from "./TabNavigation";
 import DesktopView from "./DesktopView";
 import MobileView from "./MobileView";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 
 interface GetCookingModalProps {
   recipe: Recipe;

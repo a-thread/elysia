@@ -7,6 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, 'src/shared'),
+      '@recipes': path.resolve(__dirname, 'src/recipes'),
+      '@collections': path.resolve(__dirname, 'src/collections'),
     },
   },
   test: {

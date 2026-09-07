@@ -1,5 +1,5 @@
 import { jsPDF } from "jspdf";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 
 const marginValue = 15; // Margin for the PDF
 

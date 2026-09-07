@@ -1,5 +1,5 @@
-import { Recipe } from "@shared/models/Recipe";
-import { StepIngredient } from "@shared/models/StepIngredient";
+import { Recipe } from "@recipes/models/Recipe";
+import { StepIngredient } from "@recipes/models/StepIngredient";
 import { CheerioAPI, load } from "cheerio";
 import { v4 as uuidv4 } from "uuid";
 

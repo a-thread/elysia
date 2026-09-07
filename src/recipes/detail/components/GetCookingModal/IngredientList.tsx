@@ -1,7 +1,7 @@
 import React from "react";
 import { FaCheck } from "react-icons/fa";
 import { CheckedItems } from ".";
-import { StepIngredient } from "@shared/models/StepIngredient";
+import { StepIngredient } from "@recipes/models/StepIngredient";
 
 interface IngredientItemProps {
   index: number;

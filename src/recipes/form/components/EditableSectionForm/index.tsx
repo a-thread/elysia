@@ -7,7 +7,7 @@ import {
 import { FaPlus, FaTag, FaTimes } from "react-icons/fa";
 import SortableItem from "./SortableItem";
 import { useGroupedItems } from "./useGroupedItems";
-import { StepIngredient } from "@shared/models/StepIngredient";
+import { StepIngredient } from "@recipes/models/StepIngredient";
 import EmptyState from "@shared/components/EmptyState";
 
 interface EditableSectionFormProps {

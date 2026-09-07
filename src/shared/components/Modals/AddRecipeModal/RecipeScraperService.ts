@@ -1,4 +1,4 @@
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import axios from "axios";
 
 const API = import.meta.env.VITE_RECIPE_SCRAPER_API || "";

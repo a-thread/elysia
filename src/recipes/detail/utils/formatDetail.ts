@@ -1,4 +1,4 @@
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 
 export const formatDetail = (data: any) => {
   const formattedData: Recipe = {

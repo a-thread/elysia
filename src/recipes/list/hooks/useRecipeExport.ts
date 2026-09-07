@@ -4,7 +4,7 @@ import generateRecipesPDF from "@shared/services/PdfGenerator";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";
 import { IdTitle } from "@shared/models/Tag";
-import { RecipeSort } from "@shared/models/RecipeSort";
+import { RecipeSort } from "@recipes/models/RecipeSort";
 
 const ALL_RECIPES_PAGE_SIZE = 1000000;
 

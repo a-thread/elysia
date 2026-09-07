@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { RecipeSort } from "@shared/models/RecipeSort";
+import { RecipeSort } from "@recipes/models/RecipeSort";
 
 const toast = { success: vi.fn(), error: vi.fn(), info: vi.fn(), warning: vi.fn() };
 

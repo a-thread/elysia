@@ -1,4 +1,4 @@
-import { Recipe } from "./Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import { IdTitle } from "./Tag";
 import { TitleDescriptionImgUrl } from "./TitleDescriptionImgUrl";
 

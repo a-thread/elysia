@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Recipe } from '../models/Recipe';
+import { Recipe } from '@recipes/models/Recipe';
 import { FieldLabel, fieldClasses } from './FormField';
 
 interface RecipeDetailsFormProps {

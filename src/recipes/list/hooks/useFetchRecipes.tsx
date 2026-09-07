@@ -1,10 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import RecipeService from "@shared/services/RecipeService";
 import TagService from "@shared/services/TagService";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { IdTitle } from "@shared/models/Tag";
-import { RecipeSort } from "@shared/models/RecipeSort";
+import { RecipeSort } from "@recipes/models/RecipeSort";
 import { useLocation } from "react-router-dom";
 
 const ALL_RECIPES_PAGE_SIZE = 1000000;

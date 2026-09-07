@@ -9,7 +9,7 @@ import EmptyState from "@shared/components/EmptyState";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import Card from "@shared/components/Card";
 import BackLink from "@shared/components/BackLink";
-import { Recipe as RecipeModel } from "@shared/models/Recipe";
+import { Recipe as RecipeModel } from "@recipes/models/Recipe";
 
 const Recipe: React.FC = () => {
   const {

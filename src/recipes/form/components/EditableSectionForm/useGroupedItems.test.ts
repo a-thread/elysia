@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useGroupedItems } from "./useGroupedItems";
-import { StepIngredient } from "@shared/models/StepIngredient";
+import { StepIngredient } from "@recipes/models/StepIngredient";
 
 const item = (id: string, value: string, group?: string): StepIngredient => ({
   id,

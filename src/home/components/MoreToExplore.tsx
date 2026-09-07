@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 
 const MoreToExplore: React.FC<{ recipes: Recipe[] }> = ({ recipes }) => {

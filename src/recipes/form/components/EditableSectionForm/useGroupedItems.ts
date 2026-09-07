@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
-import { StepIngredient } from "@shared/models/StepIngredient";
+import { StepIngredient } from "@recipes/models/StepIngredient";
 
 interface GroupChunk {
   group?: string;

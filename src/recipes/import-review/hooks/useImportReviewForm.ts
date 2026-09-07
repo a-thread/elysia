@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import TagService from "@shared/services/TagService";
 import CollectionService from "@shared/services/CollectionService";
 import { IdTitle } from "@shared/models/Tag";

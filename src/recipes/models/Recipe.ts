@@ -1,6 +1,6 @@
 import { StepIngredient } from "./StepIngredient";
-import { IdTitle } from "./Tag";
-import { TitleDescriptionImgUrl } from "./TitleDescriptionImgUrl";
+import { IdTitle } from "@shared/models/Tag";
+import { TitleDescriptionImgUrl } from "@shared/models/TitleDescriptionImgUrl";
 
 export interface Recipe extends TitleDescriptionImgUrl {
     prep_time: number;

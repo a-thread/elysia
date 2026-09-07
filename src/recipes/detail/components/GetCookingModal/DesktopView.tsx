@@ -1,7 +1,7 @@
 import React from "react";
 import IngredientList from "./IngredientList";
 import StepList from "../StepList";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import { CheckedItems } from ".";
 
 interface DesktopViewProps {

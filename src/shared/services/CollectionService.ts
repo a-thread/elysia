@@ -35,6 +35,44 @@ const getList = async (
   });
 };
 
+/**
+ * A collection's recipes are reachable two ways — directly linked, or via a tag
+ * shared between the collection and the recipe — so the same recipe can appear
+ * in both `collection_to_recipes` and `collection_to_tags`. This dedupes by id.
+ */
+export const mergeCollectionRecipes = (data: {
+  collection_to_recipes?: { recipes: any }[] | null;
+  collection_to_tags?: { tags: any }[] | null;
+}) => {
+  const directRecipes =
+    data.collection_to_recipes?.flatMap((item) => {
+      const recipe = item.recipes;
+      return {
+        ...recipe,
+        tags: recipe?.recipe_to_tags?.map((tag: any) => tag.tags) || [],
+      };
+    }) || [];
+
+  const taggedRecipes =
+    data.collection_to_tags?.flatMap((item) => {
+      return (
+        item.tags?.recipe_to_tags?.map((taggedRecipe: any) => ({
+          ...taggedRecipe.recipes,
+          tags:
+            taggedRecipe.recipes?.recipe_to_tags?.map(
+              (tag: any) => tag.tags
+            ) || [],
+        })) || []
+      );
+    }) || [];
+
+  const recipeMap = new Map();
+  [...directRecipes, ...taggedRecipes].forEach((recipe) => {
+    recipeMap.set(recipe.id, recipe);
+  });
+  return Array.from(recipeMap.values());
+};
+
 const getDetail = async (collectionId: string, userId: string | undefined) => {
   return await supabaseWithAbort.request(
     `getDetail-${collectionId}`,
@@ -46,7 +84,7 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
           id, title, description, img_url, is_public, user_id,
           collection_to_recipes!left(
             recipes!inner(
-              id, title, description, img_url, user_id, is_public, 
+              id, title, description, img_url, user_id, is_public,
               recipe_to_tags!left(tags!inner(id, title))
             )
           ),
@@ -55,42 +93,22 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
           `
         )
         .eq("id", collectionId);
-      
+
       if (userId) {
         query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
       } else {
         query = query.eq("is_public", true);
       }
-      
+
       const { data, error } = await query.maybeSingle();
       if (error) throw new Error("Failed to fetch collection details.");
       if (!data) throw new Error("No data returned.");
 
-      // Extract collection-level tags
-      const collectionTags = data?.collection_to_tags?.flatMap((item) => item.tags) || [];
-      
-      // Extract recipes directly associated with the collection
-      const directRecipes = data?.collection_to_recipes?.flatMap((item) => {
-        const recipe = item.recipes;
-        return { ...recipe, tags: (recipe as any).recipe_to_tags?.map((tag: any) => tag.tags) || [] };
-      }) || [];
-      
-      // Extract recipes associated with tags linked to the collection
-      const taggedRecipes = (data as any)?.collection_to_tags?.flatMap((item: any) => {
-        return item.tags.recipe_to_tags?.map((taggedRecipe: any) => {
-          return { ...taggedRecipe.recipes, tags: taggedRecipe.recipes.recipe_to_tags?.map((tag: any) => tag.tags) || [] };
-        }) || [];
-      }) || [];
-      
-      // Merge recipes, ensuring uniqueness
-      const recipeMap = new Map();
-      [...directRecipes, ...taggedRecipes].forEach((recipe) => {
-        recipeMap.set(recipe.id, recipe);
-      });
-      
+      const collectionTags = data.collection_to_tags?.flatMap((item) => item.tags) || [];
+
       return {
         ...data,
-        recipes: Array.from(recipeMap.values()),
+        recipes: mergeCollectionRecipes(data),
         tags: collectionTags,
         can_edit:
           data.user_id === userId ||

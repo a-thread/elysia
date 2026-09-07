@@ -1,45 +1,62 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import IngredientsSection from "./components/IngredientsSection";
 import StepsSection from "./components/StepsSection";
 import RecipeTimeSection from "./components/RecipeTimeSection";
 import EllipsisMenu from "./components/EllipsisMenu";
-import { useRecipeDetails } from "./hooks/useRecipeDetails";
+import { useRecipeDetailPage } from "./hooks/useRecipeDetailPage";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
-import { useAuth } from "@shared/contexts/AuthContext";
 import Card from "@shared/components/Card";
 import BackLink from "@shared/components/BackLink";
+import { Recipe as RecipeModel } from "@shared/models/Recipe";
 
 const Recipe: React.FC = () => {
-  const { id } = useParams();
-  const { user } = useAuth();
-
-  const { recipe, loading, fetchRecipe } = useRecipeDetails(id, user?.id);
+  const {
+    recipe,
+    loading,
+    isAuthenticated,
+    editRecipe,
+    confirmDelete,
+    addTags,
+    addToCollection,
+    exportRecipe,
+    isPublic,
+    sharedUsers,
+    toggleIsPublic,
+    shareWithUser,
+    revokeAccessById,
+    copyLink,
+  } = useRecipeDetailPage();
 
   if (loading) return <Loading className="mt-40" />;
   if (!recipe) return <EmptyState message="Recipe not found." />;
 
   return (
     <div className="max-w-4xl mx-auto mt-4">
-      <Header recipe={recipe} onRecipeUpdated={fetchRecipe} />
+      <div className="w-full flex justify-between items-center mb-4">
+        <BackLink to="/recipes">Recipes</BackLink>
+        <EllipsisMenu
+          isAuthenticated={isAuthenticated}
+          isPublic={isPublic}
+          sharedUsers={sharedUsers}
+          onEdit={editRecipe}
+          onDelete={confirmDelete}
+          onAddTags={addTags}
+          onAddToCollection={addToCollection}
+          onExport={exportRecipe}
+          onTogglePublicShare={toggleIsPublic}
+          shareWithUser={shareWithUser}
+          onRevokeAccess={revokeAccessById}
+          onCopyLink={copyLink}
+        />
+      </div>
       <Content recipe={recipe} />
     </div>
   );
 };
 
-const Header: React.FC<{
-  recipe: any;
-  onRecipeUpdated: () => void;
-}> = ({ recipe, onRecipeUpdated }) => (
-  <div className="w-full flex justify-between items-center mb-4">
-    <BackLink to="/recipes">Recipes</BackLink>
-    <EllipsisMenu recipe={recipe} onRecipeUpdated={onRecipeUpdated} />
-  </div>
-);
-
-const Content: React.FC<{ recipe: any }> = ({ recipe }) => (
+const Content: React.FC<{ recipe: RecipeModel }> = ({ recipe }) => (
   <div className="flex flex-col-reverse md:flex-row gap-6">
     <div className="w-full md:w-3/4">
       {recipe.img_url && (

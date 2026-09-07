@@ -8,7 +8,7 @@ import { BaseModalProps } from "../BaseModal/BaseModalProps";
 type PermissionType = "read" | "edit";
 
 // Define shared user type
-interface SharedUser {
+export interface SharedUser {
   id: string;
   users: { email: string };
   permission: PermissionType;

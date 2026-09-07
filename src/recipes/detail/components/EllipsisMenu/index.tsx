@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   FaDownload,
   FaEllipsisV,
@@ -8,116 +7,42 @@ import {
   FaTags,
   FaTrash,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@shared/components/Toast";
-import {
-  DeleteConfirmationModal,
-  ShareModal,
-  useModalManager,
-} from "@shared/components/Modals";
-import RecipeService from "@shared/services/RecipeService";
-import { Recipe } from "@shared/models/Recipe";
+import { useModalManager, ShareModal } from "@shared/components/Modals";
+import type { SharedUser } from "@shared/components/Modals/ShareModal";
 import DropdownButton, {
   DropdownOption,
 } from "@shared/components/Buttons/DropdownButton";
-import { UserService } from "@shared/services/UserService";
-import generateRecipePDF from "@shared/services/PdfGenerator";
-import { useAuth } from "@shared/contexts/AuthContext";
-import AddTagsToRecipeModal from "../AddTagsToRecipeModal";
-import AddRecipeToCollectionsModal from "../AddRecipeToCollections";
 
 interface EllipsisMenuProps {
-  recipe: Recipe;
-  /** Called after tags or collections are added, so the caller can refetch the recipe. */
-  onRecipeUpdated?: () => void;
+  isAuthenticated: boolean;
+  isPublic: boolean;
+  sharedUsers: SharedUser[];
+  onEdit: () => void;
+  onDelete: () => void;
+  onAddTags: () => void;
+  onAddToCollection: () => void;
+  onExport: () => void;
+  onTogglePublicShare: () => void;
+  shareWithUser: (email: string, permission: "read" | "edit") => void;
+  onRevokeAccess: (shareId: string) => void;
+  onCopyLink: () => void;
 }
 
-const EllipsisMenu: React.FC<EllipsisMenuProps> = ({ recipe, onRecipeUpdated }) => {
-  const navigate = useNavigate();
-  const toast = useToast();
-  const { isAuthenticated } = useAuth();
+const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
+  isAuthenticated,
+  isPublic,
+  sharedUsers,
+  onEdit,
+  onDelete,
+  onAddTags,
+  onAddToCollection,
+  onExport,
+  onTogglePublicShare,
+  shareWithUser,
+  onRevokeAccess,
+  onCopyLink,
+}) => {
   const { openModal, closeModal } = useModalManager();
-  const [sharedUsers, setSharedUsers] = useState<any[]>([]);
-  const [isPublic, setIsPublic] = useState(recipe.is_public!);
-
-  const updateSharedUsers = async () => {
-    try {
-      const users = await RecipeService.getSharedUsers(recipe.id);
-      setSharedUsers(users || []);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleEditClick = () =>
-    navigate(`/recipes/${recipe.id}/edit`, { state: { recipe } });
-
-  const handleAddTagsClick = () =>
-    openModal(
-      <AddTagsToRecipeModal
-        recipeId={recipe.id}
-        tagAdded={() => onRecipeUpdated?.()}
-      />
-    );
-
-  const handleAddToCollectionClick = () =>
-    openModal(
-      <AddRecipeToCollectionsModal
-        recipeId={recipe.id}
-        collectionAdded={() => onRecipeUpdated?.()}
-      />
-    );
-
-  const handleDeleteClick = () =>
-    openModal(
-      <DeleteConfirmationModal
-        label="recipe"
-        onCancelDelete={closeModal}
-        onDelete={deleteRecipe}
-      />
-    );
-
-  const handleTogglePublicShare = async () => {
-    try {
-      const newStatus = !isPublic;
-      await RecipeService.setIsPublic(recipe.id, newStatus);
-      setIsPublic(newStatus);
-      toast.success(`Recipe is now ${newStatus ? "public" : "private"}!`);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleShareWithUser = async (email: string, permission: string) => {
-    if (!email) return toast.error("Please enter a valid email.");
-
-    try {
-      const user = await UserService.findByEmail(email);
-      if (!user) throw new Error("User not found");
-      await RecipeService.shareWithUser(recipe.id, user.id!, permission);
-      toast.success(
-        `Recipe shared with ${user.display_name} as ${permission}.`
-      );
-      updateSharedUsers();
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleRevokeAccess = async (shareId: string) => {
-    try {
-      await RecipeService.revokeAccess(shareId);
-      toast.success("Access revoked.");
-      updateSharedUsers();
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success("Public link copied!");
-  };
 
   const handleShareClick = () =>
     openModal(
@@ -125,62 +50,42 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({ recipe, onRecipeUpdated }) 
         typeOfShare="Recipe"
         sharedUsers={sharedUsers}
         isPublic={isPublic}
-        onTogglePublicShare={handleTogglePublicShare}
-        shareWithUser={handleShareWithUser}
-        onRevokeAccess={handleRevokeAccess}
-        onCopyLink={handleCopyLink}
+        onTogglePublicShare={onTogglePublicShare}
+        shareWithUser={shareWithUser}
+        onRevokeAccess={onRevokeAccess}
+        onCopyLink={onCopyLink}
         onClose={closeModal}
       />
     );
 
-  const deleteRecipe = async () => {
-    try {
-      await RecipeService.deleteById(recipe.id);
-      toast.success("Recipe deleted successfully!");
-      closeModal();
-      navigate("/recipes");
-    } catch (error: any) {
-      toast.error("Failed to delete recipe. Please try again.");
-    }
-  };
-
-  const handleExportClick = async () => {
-    try {
-      await generateRecipePDF([recipe]);
-    } catch (error: any) {
-      console.error("Error generating PDF:", error);
-      toast.error("Failed to export recipe. Please try again.");
-    }
-  };
-
   const options: DropdownOption[] = [
     ...(isAuthenticated
       ? [
-          { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: handleEditClick },
+          { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: onEdit },
           {
             label: "Delete",
             icon: <FaTrash aria-hidden="true" />,
             destructive: true,
-            onClick: handleDeleteClick,
+            onClick: onDelete,
           },
           { label: "Share", icon: <FaShareAlt aria-hidden="true" />, onClick: handleShareClick },
           {
             label: "Add Tags",
             icon: <FaTags aria-hidden="true" />,
             dividerBefore: true,
-            onClick: handleAddTagsClick,
+            onClick: onAddTags,
           },
           {
             label: "Add to Collection",
             icon: <FaLayerGroup aria-hidden="true" />,
-            onClick: handleAddToCollectionClick,
+            onClick: onAddToCollection,
           },
         ]
       : []),
     {
       label: "Export",
       icon: <FaDownload aria-hidden="true" />,
-      onClick: handleExportClick,
+      onClick: onExport,
       dividerBefore: isAuthenticated,
     },
   ];

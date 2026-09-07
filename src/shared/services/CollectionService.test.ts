@@ -17,7 +17,45 @@ vi.mock("./SupabaseWithAbort", () => ({
   },
 }));
 
-const { default: CollectionService } = await import("./CollectionService");
+const { default: CollectionService, mergeCollectionRecipes } = await import(
+  "./CollectionService"
+);
+
+describe("mergeCollectionRecipes", () => {
+  it("returns an empty array when there are no recipes", () => {
+    expect(mergeCollectionRecipes({})).toEqual([]);
+  });
+
+  it("returns a directly-linked recipe untouched", () => {
+    const result = mergeCollectionRecipes({
+      collection_to_recipes: [
+        { recipes: { id: "r1", title: "Recipe One", recipe_to_tags: [] } },
+      ],
+    });
+    expect(result).toEqual([
+      { id: "r1", title: "Recipe One", recipe_to_tags: [], tags: [] },
+    ]);
+  });
+
+  it("dedupes a recipe reachable both directly and via a shared tag", () => {
+    const result = mergeCollectionRecipes({
+      collection_to_recipes: [
+        { recipes: { id: "r1", title: "Recipe One", recipe_to_tags: [] } },
+      ],
+      collection_to_tags: [
+        {
+          tags: {
+            recipe_to_tags: [
+              { recipes: { id: "r1", title: "Recipe One", recipe_to_tags: [] } },
+              { recipes: { id: "r2", title: "Recipe Two", recipe_to_tags: [] } },
+            ],
+          },
+        },
+      ],
+    });
+    expect(result.map((r) => r.id).sort()).toEqual(["r1", "r2"]);
+  });
+});
 
 // Spec convention: default/loading, success, error, empty/edge case.
 describe("CollectionService.getDetail", () => {

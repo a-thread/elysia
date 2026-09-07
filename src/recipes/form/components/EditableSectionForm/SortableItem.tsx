@@ -3,7 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { MdDragIndicator } from "react-icons/md";
 import AutoResizeTextarea from "./AutoResizeTextbox";
 import { IconButton, RemoveButton } from "@shared/components/Buttons";
-import { StepIngredient } from "@shared/models/StepIngredient";
+import { StepIngredient } from "@recipes/models/StepIngredient";
 
 interface SortableItemProps {
   id: string;

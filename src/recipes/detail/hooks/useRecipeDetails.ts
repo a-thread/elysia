@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import RecipeService from "@shared/services/RecipeService";
-import { Recipe } from "@shared/models/Recipe";
+import RecipeService from "@recipes/services/RecipeService";
+import { Recipe } from "@recipes/models/Recipe";
 import { formatDetail } from "../utils/formatDetail";
 
 export const useRecipeDetails = (

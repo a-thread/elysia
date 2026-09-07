@@ -1,7 +1,7 @@
 import React from "react";
 import IngredientList from "./IngredientList";
-import StepList from "./StepList";
-import { Recipe } from "@shared/models/Recipe";
+import StepList from "../StepList";
+import { Recipe } from "@recipes/models/Recipe";
 import { CheckedItems } from ".";
 
 interface DesktopViewProps {
@@ -28,7 +28,7 @@ const DesktopView: React.FC<DesktopViewProps> = ({ recipe, checkedItems, onCheck
         <h2 className="text-2xl font-semibold text-leaf-green-900 dark:text-leaf-green-100 mb-4">
           Directions
         </h2>
-        <StepList steps={recipe.steps} />
+        <StepList steps={recipe.steps} variant="cooking" />
       </div>
     </div>
   );

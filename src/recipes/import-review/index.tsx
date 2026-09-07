@@ -2,7 +2,7 @@ import React from "react";
 import PhotoUpload from "@shared/components/PhotoUpload";
 import EditableSectionForm from "../form/components/EditableSectionForm";
 import TitleDescriptionForm from "@shared/components/TitleDescriptionForm";
-import RecipeDetailsForm from "@shared/components/RecipeDetailsForm";
+import RecipeDetailsForm from "@recipes/components/RecipeDetailsForm";
 import MultiSelect from "@shared/components/MultiSelect";
 import Card from "@shared/components/Card";
 import { FieldLabel } from "@shared/components/FormField";

@@ -3,8 +3,8 @@ import MultiSelect from "@shared/components/MultiSelect";
 import { Button } from "@shared/components/Buttons";
 import { useModalManager } from "@shared/components/Modals";
 import { useToast } from "@shared/components/Toast";
-import CollectionService from "@shared/services/CollectionService";
-import RecipeService from "@shared/services/RecipeService";
+import CollectionService from "@collections/services/CollectionService";
+import RecipeService from "@recipes/services/RecipeService";
 import { IdTitle } from "@shared/models/Tag";
 
 interface AddRecipeToCollectionsModalProps {

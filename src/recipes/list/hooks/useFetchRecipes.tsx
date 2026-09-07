@@ -1,12 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import RecipeService from "@shared/services/RecipeService";
+import RecipeService from "@recipes/services/RecipeService";
 import TagService from "@shared/services/TagService";
-import generateRecipesPDF from "@shared/services/PdfGenerator";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { useToast } from "@shared/components/Toast";
 import { IdTitle } from "@shared/models/Tag";
-import { RecipeSort } from "@shared/models/RecipeSort";
+import { RecipeSort } from "@recipes/models/RecipeSort";
 import { useLocation } from "react-router-dom";
 
 const ALL_RECIPES_PAGE_SIZE = 1000000;
@@ -14,7 +12,6 @@ const ALL_RECIPES_PAGE_SIZE = 1000000;
 export function useFetchRecipes() {
   const location = useLocation();
   const { user, authHasBeenChecked } = useAuth();
-  const toast = useToast();
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [tags, setTags] = useState<IdTitle[]>([]);
@@ -25,7 +22,6 @@ export function useFetchRecipes() {
   const [currentSkip, setCurrentSkip] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
 
   // Ref to prevent duplicate fetches.
   const isFetching = useRef(false);
@@ -119,31 +115,6 @@ export function useFetchRecipes() {
     sort,
   ]);
 
-  // Exports every recipe matching the current search/filter/sort (not just the loaded page) to one PDF.
-  const exportAll = useCallback(async () => {
-    setIsExporting(true);
-    try {
-      const response = await RecipeService.getRecipeList(
-        0,
-        ALL_RECIPES_PAGE_SIZE,
-        searchTerm,
-        user?.id,
-        selectedTags,
-        sort,
-      );
-      if (!response?.data?.length) {
-        toast.error("No recipes to export.");
-        return;
-      }
-      await generateRecipesPDF(response.data);
-    } catch (error) {
-      console.error("Error exporting recipes:", error);
-      toast.error("Failed to export recipes. Please try again.");
-    } finally {
-      setIsExporting(false);
-    }
-  }, [searchTerm, selectedTags, sort, user?.id, toast]);
-
   return {
     tags,
     selectedTags,
@@ -159,7 +130,5 @@ export function useFetchRecipes() {
     hasMore,
     resetAndLoadRecipes,
     loadMoreRecipes,
-    isExporting,
-    exportAll,
   };
 }

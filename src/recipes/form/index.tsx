@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import PhotoUpload from "../../shared/components/PhotoUpload";
+import PhotoUpload from "@shared/components/PhotoUpload";
 import EditableSectionForm from "./components/EditableSectionForm";
 import TitleDescriptionForm from "@shared/components/TitleDescriptionForm";
-import RecipeDetailsForm from "@shared/components/RecipeDetailsForm";
+import RecipeDetailsForm from "@recipes/components/RecipeDetailsForm";
 import { useRecipeForm } from "./hooks/useRecipeForm";
 import { useRecipeActions } from "./hooks/useRecipeActions";
 import MultiSelect from "@shared/components/MultiSelect";
@@ -15,6 +15,7 @@ const RecipeForm: React.FC = () => {
   const navigate = useNavigate();
   const {
     formData,
+    originalData,
     onFormChange,
     isEditing,
     id,
@@ -26,6 +27,7 @@ const RecipeForm: React.FC = () => {
   } = useRecipeForm();
   const { handleSave, isLoading } = useRecipeActions(
     formData,
+    originalData,
     isEditing,
     id
   );

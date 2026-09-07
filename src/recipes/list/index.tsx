@@ -1,10 +1,11 @@
 import { useEffect, useCallback, useState } from "react";
 import { useFetchRecipes } from "./hooks/useFetchRecipes";
+import { useRecipeExport } from "./hooks/useRecipeExport";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import { Link, Outlet, useParams } from "react-router-dom";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import SearchInput from "@shared/components/SearchInput";
 import MultiSelect from "@shared/components/MultiSelect";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
@@ -16,7 +17,7 @@ import DropdownButton, {
   DropdownOption,
 } from "@shared/components/Buttons/DropdownButton";
 import { FaDownload, FaEllipsisV, FaFilter, FaSearch } from "react-icons/fa";
-import { RecipeSort, RECIPE_SORT_LABELS } from "@shared/models/RecipeSort";
+import { RecipeSort, RECIPE_SORT_LABELS } from "@recipes/models/RecipeSort";
 
 const iconButtonClasses = (active: boolean) =>
   `relative inline-flex items-center justify-center w-9 h-9 rounded-full transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-leaf-green-400 ${
@@ -40,9 +41,12 @@ const RecipeList: React.FC = () => {
     setSort,
     resetAndLoadRecipes,
     loadMoreRecipes,
-    isExporting,
-    exportAll,
   } = useFetchRecipes();
+  const { isExporting, exportAll } = useRecipeExport(
+    searchTerm,
+    selectedTags,
+    sort
+  );
 
   const { id } = useParams();
   const { openModal, closeModal } = useModalManager();

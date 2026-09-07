@@ -1,46 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import EllipsisMenu from "./components/EllipsisMenu";
-import { useAuth } from "@shared/contexts/AuthContext";
-import { Collection as CollectionData } from "@shared/models/Collection";
-import CollectionService from "@shared/services/CollectionService";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { TagButton } from "@shared/components/Buttons";
-import { useNavigate } from "react-router-dom";
 import Card from "@shared/components/Card";
 import BackLink from "@shared/components/BackLink";
+import { useCollectionDetailPage } from "./hooks/useCollectionDetailPage";
 
 const CollectionDetail: React.FC = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
-
-  const [collection, setCollection] = useState<CollectionData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch collection details
-  useEffect(() => {
-    const loadCollection = async () => {
-      setLoading(true);
-      try {
-        if (!id) {
-          throw new Error("no id found");
-        }
-        const collectionData = await CollectionService.getDetail(id, user?.id);
-        if (!collectionData) {
-          throw new Error("no data returned");
-        }
-        setCollection(collectionData);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadCollection();
-  }, [id, user]);
+  const {
+    collection,
+    loading,
+    showMenu,
+    editCollection,
+    confirmDelete,
+    isPublic,
+    sharedUsers,
+    toggleIsPublic,
+    shareWithUser,
+    revokeAccessById,
+    copyLink,
+  } = useCollectionDetailPage();
 
   if (loading) {
     return <Loading className="mt-40" />;
@@ -55,7 +39,18 @@ const CollectionDetail: React.FC = () => {
       <div className="w-full flex justify-between items-center mb-4">
         <BackLink to="/collections">Collections</BackLink>
         <div className="flex justify-end flex-wrap gap-2">
-          {!!user?.id && <EllipsisMenu collection={collection} />}
+          {showMenu && (
+            <EllipsisMenu
+              isPublic={isPublic}
+              sharedUsers={sharedUsers}
+              onEdit={editCollection}
+              onDelete={confirmDelete}
+              onTogglePublicShare={toggleIsPublic}
+              shareWithUser={shareWithUser}
+              onRevokeAccess={revokeAccessById}
+              onCopyLink={copyLink}
+            />
+          )}
         </div>
       </div>
 

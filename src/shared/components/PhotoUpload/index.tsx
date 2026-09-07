@@ -1,6 +1,6 @@
 import React, { useRef, useState, ChangeEvent, DragEvent } from "react";
 import { FaCamera, FaTrash } from "react-icons/fa";
-import PhotoService from "./photoService";
+import PhotoService from "./PhotoService";
 import { useToast } from "@shared/components/Toast";
 import { Button } from "@shared/components/Buttons";
 

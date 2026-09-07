@@ -8,9 +8,6 @@ import { BaseModalProps } from "../BaseModal/BaseModalProps";
 
 type AddRecipeModalProps = BaseModalProps;
 
-// "html" is a sub-option reached from the URL tab (via its "import via html" link), not a peer
-// tab — four top-level import methods crowded the tab bar and HTML is really just a fallback for
-// when URL scraping doesn't work on a given site.
 type AddMethod = "url" | "html" | "images" | "pdf";
 
 const tabClasses = (active: boolean) =>
@@ -33,7 +30,6 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ onClose }) => {
 
   return (
     <div
-      role="dialog"
       aria-labelledby="modal-title"
       className="p-4 flex flex-col h-full sm:h-auto"
     >
@@ -85,7 +81,10 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ onClose }) => {
         />
       )}
       {activeTab === "html" && (
-        <HtmlInputForm onClose={onClose} onBackToUrl={() => setActiveTab("url")} />
+        <HtmlInputForm
+          onClose={onClose}
+          onBackToUrl={() => setActiveTab("url")}
+        />
       )}
       {activeTab === "images" && <ImageInputForm onClose={onClose} />}
       {activeTab === "pdf" && <PdfInputForm onClose={onClose} />}

@@ -1,8 +1,8 @@
-import { Recipe } from "../models/Recipe";
-import { supabaseWithAbort } from "./SupabaseWithAbort";
-import { TableNames } from "./TableNames";
+import { Recipe } from "@recipes/models/Recipe";
+import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
+import { TableNames } from "@shared/services/TableNames";
 import { IdTitle } from "@shared/models/Tag";
-import { RecipeSort, recipeSortToOrder } from "@shared/models/RecipeSort";
+import { RecipeSort, recipeSortToOrder } from "@recipes/models/RecipeSort";
 
 const getRecipeList = async (
   currentSkip: number,

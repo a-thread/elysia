@@ -1,6 +1,6 @@
 import React from "react";
 import ListItem from "./ListItem";
-import { StepIngredient } from "@shared/models/StepIngredient";
+import { StepIngredient } from "@recipes/models/StepIngredient";
 
 interface IngredientGroup {
   group?: string;

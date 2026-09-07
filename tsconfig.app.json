@@ -16,7 +16,9 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
-      "@shared/*": ["src/shared/*"]
+      "@shared/*": ["src/shared/*"],
+      "@recipes/*": ["src/recipes/*"],
+      "@collections/*": ["src/collections/*"]
     },
 
     /* Linting */

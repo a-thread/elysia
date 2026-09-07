@@ -1,20 +1,19 @@
-import { supabaseWithAbort } from "./SupabaseWithAbort";
-import { Collection } from "@shared/models/Collection";
-import { TableNames } from "./TableNames";
+import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
+import { Collection } from "@collections/models/Collection";
+import { TableNames } from "@shared/services/TableNames";
 
 const getList = async (
   currentSkip: number,
   currentPageSize: number,
   searchTerm: string,
-  userId?: string
+  userId?: string,
 ) => {
   return await supabaseWithAbort.request("getList", async (client) => {
     let query = client
       .from(TableNames.COLLECTIONS)
       .select("*", { count: "exact" });
 
-    // Visibility filtering — same rule as RecipeService.getRecipeList: everyone sees public
-    // collections, and a signed-in user also sees their own private ones.
+    // If userId is provided, fetch both public collections and those owned by the user.
     if (userId) {
       query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
     } else {
@@ -23,16 +22,51 @@ const getList = async (
 
     if (searchTerm) {
       query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`
+        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`,
       );
     }
     const { data, count, error } = await query.range(
       currentSkip,
-      currentSkip + currentPageSize - 1
+      currentSkip + currentPageSize - 1,
     );
     if (error) throw new Error("Failed to fetch collections.");
     return { data, count };
   });
+};
+
+/**
+ * Dedupes recipes by id. A recipe can be linked to a collection directly or via a shared tag.
+ */
+export const mergeCollectionRecipes = (data: {
+  collection_to_recipes?: { recipes: any }[] | null;
+  collection_to_tags?: { tags: any }[] | null;
+}) => {
+  const directRecipes =
+    data.collection_to_recipes?.flatMap((item) => {
+      const recipe = item.recipes;
+      return {
+        ...recipe,
+        tags: recipe?.recipe_to_tags?.map((tag: any) => tag.tags) || [],
+      };
+    }) || [];
+
+  const taggedRecipes =
+    data.collection_to_tags?.flatMap((item) => {
+      return (
+        item.tags?.recipe_to_tags?.map((taggedRecipe: any) => ({
+          ...taggedRecipe.recipes,
+          tags:
+            taggedRecipe.recipes?.recipe_to_tags?.map((tag: any) => tag.tags) ||
+            [],
+        })) || []
+      );
+    }) || [];
+
+  const recipeMap = new Map();
+  [...directRecipes, ...taggedRecipes].forEach((recipe) => {
+    recipeMap.set(recipe.id, recipe);
+  });
+  return Array.from(recipeMap.values());
 };
 
 const getDetail = async (collectionId: string, userId: string | undefined) => {
@@ -46,65 +80,48 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
           id, title, description, img_url, is_public, user_id,
           collection_to_recipes!left(
             recipes!inner(
-              id, title, description, img_url, user_id, is_public, 
+              id, title, description, img_url, user_id, is_public,
               recipe_to_tags!left(tags!inner(id, title))
             )
           ),
           collection_to_tags!left(tags!inner(id, title, recipe_to_tags!left(recipes!inner(id, title, description, img_url, user_id, is_public)))) ,
           collection_to_users!left(permission)
-          `
+          `,
         )
         .eq("id", collectionId);
-      
+
       if (userId) {
         query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
       } else {
         query = query.eq("is_public", true);
       }
-      
+
       const { data, error } = await query.maybeSingle();
       if (error) throw new Error("Failed to fetch collection details.");
       if (!data) throw new Error("No data returned.");
 
-      // Extract collection-level tags
-      const collectionTags = data?.collection_to_tags?.flatMap((item) => item.tags) || [];
-      
-      // Extract recipes directly associated with the collection
-      const directRecipes = data?.collection_to_recipes?.flatMap((item) => {
-        const recipe = item.recipes;
-        return { ...recipe, tags: (recipe as any).recipe_to_tags?.map((tag: any) => tag.tags) || [] };
-      }) || [];
-      
-      // Extract recipes associated with tags linked to the collection
-      const taggedRecipes = (data as any)?.collection_to_tags?.flatMap((item: any) => {
-        return item.tags.recipe_to_tags?.map((taggedRecipe: any) => {
-          return { ...taggedRecipe.recipes, tags: taggedRecipe.recipes.recipe_to_tags?.map((tag: any) => tag.tags) || [] };
-        }) || [];
-      }) || [];
-      
-      // Merge recipes, ensuring uniqueness
-      const recipeMap = new Map();
-      [...directRecipes, ...taggedRecipes].forEach((recipe) => {
-        recipeMap.set(recipe.id, recipe);
-      });
-      
+      const collectionTags =
+        data.collection_to_tags?.flatMap((item) => item.tags) || [];
+
       return {
         ...data,
-        recipes: Array.from(recipeMap.values()),
+        recipes: mergeCollectionRecipes(data),
         tags: collectionTags,
         can_edit:
           data.user_id === userId ||
           (data.collection_to_users &&
-            data.collection_to_users.some((share) => share.permission === "edit")),
+            data.collection_to_users.some(
+              (share) => share.permission === "edit",
+            )),
       };
-    }
+    },
   );
 };
 
 const upsert = async (
   collectionId: string,
   simpleValues: Partial<Collection>,
-  userId?: string
+  userId?: string,
 ) => {
   return await supabaseWithAbort.request(
     `upsert-${collectionId || "new"}`,
@@ -136,7 +153,7 @@ const upsert = async (
           throw new Error(`Failed to update collection: ${error.message}`);
       }
       return { success: true, collectionId: newCollectionId };
-    }
+    },
   );
 };
 
@@ -149,7 +166,7 @@ const deleteById = async (collectionId: string) => {
         .delete()
         .eq("id", collectionId);
       if (error) throw new Error("Failed to delete collection.");
-    }
+    },
   );
 };
 
@@ -166,7 +183,7 @@ const setIsPublic = async (collectionId: string, isPublic: boolean) => {
         throw new Error("Failed to update public status.");
       }
       return isPublic;
-    }
+    },
   );
 };
 
@@ -184,14 +201,14 @@ const fetchSharedUsers = async (collectionId: string) => {
         return [];
       }
       return data || [];
-    }
+    },
   );
 };
 
 const share = async (
   collectionId: string,
   userId: string,
-  permission: string
+  permission: string,
 ) => {
   return await supabaseWithAbort.request(
     `share-${collectionId}-${userId}`,
@@ -203,7 +220,7 @@ const share = async (
       if (error) {
         throw new Error("Failed to share collection.");
       }
-    }
+    },
   );
 };
 
@@ -219,7 +236,7 @@ const revokeAccess = async (shareId: string) => {
       if (error) {
         throw new Error("Failed to revoke access.");
       }
-    }
+    },
   );
 };
 
@@ -238,7 +255,7 @@ const getIsPublic = async (collectionId: string) => {
         return false;
       }
       return data.is_public;
-    }
+    },
   );
 };
 

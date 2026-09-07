@@ -4,7 +4,7 @@ import formatMinutes from "../../utils/formatMinutes";
 import GetCookingModal from "../GetCookingModal";
 import { FaFire } from "react-icons/fa";
 import TimeLabelValue from "./TimeLabelValue";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import { useModalManager } from "@shared/components/Modals";
 import { ModalSize } from "@shared/components/Modals/BaseModal/ModalSize";
 import { Button, TagButton } from "@shared/components/Buttons";

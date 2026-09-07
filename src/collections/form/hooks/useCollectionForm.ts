@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { Collection } from "@shared/models/Collection";
-import RecipeService from "@shared/services/RecipeService";
+import { Collection } from "@collections/models/Collection";
+import RecipeService from "@recipes/services/RecipeService";
 import TagService from "@shared/services/TagService";
+import { useEntitySearch } from "@shared/hooks/useEntitySearch";
 
 export const useCollectionForm = () => {
   const navigate = useNavigate();
@@ -13,10 +14,15 @@ export const useCollectionForm = () => {
 
   const isEditing = !!id;
   const [loading, setLoading] = useState(false);
-  const [recipeSearch, setRecipeSearch] = useState("");
-  const [recipeList, setRecipeList] = useState<any[]>([]);
-  const [tagSearch, setTagSearch] = useState("");
-  const [tagList, setTagList] = useState<any[]>([]);
+
+  const { setSearchTerm: setRecipeSearch, list: recipeList } = useEntitySearch(
+    (term) => RecipeService.getRecipeList(0, 25, term),
+    "recipes"
+  );
+  const { setSearchTerm: setTagSearch, list: tagList } = useEntitySearch(
+    (term) => TagService.getList(0, 25, term),
+    "tags"
+  );
 
   const [originalData, setOriginalData] = useState<Partial<Collection> | null>(null);
   const [formData, setFormData] = useState<Partial<Collection>>({
@@ -43,38 +49,6 @@ export const useCollectionForm = () => {
       }
     }
   }, [isEditing, location.state?.collection]);
-
-  // Fetch Recipes
-  const fetchRecipes = useCallback(async () => {
-    try {
-      const response = await RecipeService.getRecipeList(0, 25, recipeSearch);
-      if (response?.data) {
-        setRecipeList(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-    }
-  }, [recipeSearch]);
-
-  // Fetch Tags
-  const fetchTags = useCallback(async () => {
-    try {
-      const response = await TagService.getList(0, 25, tagSearch);
-      if (response?.data) {
-        setTagList(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching tags:", error);
-    }
-  }, [tagSearch]);
-
-  useEffect(() => {
-    fetchRecipes();
-  }, [fetchRecipes]);
-
-  useEffect(() => {
-    fetchTags();
-  }, [fetchTags]);
 
   const onFormChange = (field: keyof Collection, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

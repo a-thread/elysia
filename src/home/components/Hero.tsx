@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Recipe } from "@shared/models/Recipe";
+import { Recipe } from "@recipes/models/Recipe";
 import { Button } from "@shared/components/Buttons";
 
 const Hero: React.FC<{ recipe: Recipe }> = ({ recipe }) => {

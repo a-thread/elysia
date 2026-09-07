@@ -14,7 +14,9 @@
     "noEmit": true,
     "baseUrl": "./",
     "paths": {
-      "@shared/*": ["src/shared/*"]
+      "@shared/*": ["src/shared/*"],
+      "@recipes/*": ["src/recipes/*"],
+      "@collections/*": ["src/collections/*"]
     },
 
     /* Linting */
@@ -27,6 +29,7 @@
   },
   "include": [
     "vite.config.ts",
+    "vitest.config.ts",
     "src/**/*"
   ],
   "exclude": [

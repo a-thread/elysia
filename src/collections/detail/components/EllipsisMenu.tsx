@@ -1,134 +1,54 @@
-import { useState, useEffect } from "react";
 import { FaEllipsisV, FaPen, FaShareAlt, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@shared/components/Toast";
-import {
-  useModalManager,
-  DeleteConfirmationModal,
-  ShareModal,
-} from "@shared/components/Modals";
-import CollectionService from "@shared/services/CollectionService";
-import { Collection } from "@shared/models/Collection";
+import { useModalManager, ShareModal } from "@shared/components/Modals";
+import type { SharedUser } from "@shared/components/Modals/ShareModal";
 import DropdownButton, {
   DropdownOption,
 } from "@shared/components/Buttons/DropdownButton";
-import { UserService } from "@shared/services/UserService";
 
-const EllipsisMenu: React.FC<{ collection: Collection }> = ({ collection }) => {
-  const navigate = useNavigate();
-  const toast = useToast();
+interface EllipsisMenuProps {
+  isPublic: boolean;
+  sharedUsers: SharedUser[];
+  onEdit: () => void;
+  onDelete: () => void;
+  onTogglePublicShare: () => void;
+  shareWithUser: (email: string, permission: "read" | "edit") => void;
+  onRevokeAccess: (shareId: string) => void;
+  onCopyLink: () => void;
+}
+
+const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
+  isPublic,
+  sharedUsers,
+  onEdit,
+  onDelete,
+  onTogglePublicShare,
+  shareWithUser,
+  onRevokeAccess,
+  onCopyLink,
+}) => {
   const { openModal, closeModal } = useModalManager();
-  const [isPublic, setIsPublic] = useState(collection.is_public || false);
-  const [sharedUsers, setSharedUsers] = useState<any[]>([]);
 
-  const handleEditClick = () => {
-    navigate(`/collections/${collection.id}/edit`, { state: { collection } });
-  };
-
-  const handleDeleteClick = () =>
-    openModal(
-      <DeleteConfirmationModal
-        label="collection"
-        onCancelDelete={closeModal}
-        onDelete={deleteCollection}
-      />
-    );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (collection.id) {
-        const sharedUsers = await CollectionService.fetchSharedUsers(
-          collection.id
-        );
-        setSharedUsers(sharedUsers!);
-      }
-    };
-    fetchData();
-  }, [collection.id]);
-
-  const handleTogglePublicShare = async () => {
-    try {
-      const newStatus = !isPublic;
-      await CollectionService.setIsPublic(collection.id, newStatus);
-      setIsPublic(newStatus);
-      toast.success(`Collection is now ${newStatus ? "public" : "private"}!`);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleShareWithUser = async (email: string, permission: string) => {
-    if (!email) return toast.error("Please enter a valid email.");
-    if (!collection.id) return toast.error();
-
-    try {
-      const user = await UserService.findByEmail(email);
-      await CollectionService.share(collection.id, user?.id!, permission);
-      toast.success(
-        `Collection shared with ${user?.display_name} as ${permission}.`
-      );
-      const sharedUsers = await CollectionService.fetchSharedUsers(
-        collection.id
-      );
-      setSharedUsers(sharedUsers!);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleRevokeAccess = async (shareId: string) => {
-    if (!collection.id) return toast.error();
-    try {
-      await CollectionService.revokeAccess(shareId);
-      toast.success("Access revoked.");
-      const sharedUsers = await CollectionService.fetchSharedUsers(
-        collection.id
-      );
-      setSharedUsers(sharedUsers!);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success("Public link copied!");
-  };
-
-  const handleShareClick = () => {
+  const handleShareClick = () =>
     openModal(
       <ShareModal
         typeOfShare="Collection"
         sharedUsers={sharedUsers}
         isPublic={isPublic}
-        onTogglePublicShare={handleTogglePublicShare}
-        shareWithUser={handleShareWithUser}
-        onRevokeAccess={handleRevokeAccess}
-        onCopyLink={handleCopyLink}
+        onTogglePublicShare={onTogglePublicShare}
+        shareWithUser={shareWithUser}
+        onRevokeAccess={onRevokeAccess}
+        onCopyLink={onCopyLink}
         onClose={closeModal}
       />
     );
-  };
-
-  const deleteCollection = async () => {
-    try {
-      if (!collection.id) return toast.error();
-      await CollectionService.deleteById(collection.id);
-      toast.success("Collection deleted successfully!");
-      closeModal();
-      navigate("/collections");
-    } catch (error: any) {
-      toast.error("Failed to delete collection. Please try again.");
-    }
-  };
 
   const options: DropdownOption[] = [
-    { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: handleEditClick },
+    { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: onEdit },
     {
       label: "Delete",
       icon: <FaTrash aria-hidden="true" />,
       destructive: true,
-      onClick: handleDeleteClick,
+      onClick: onDelete,
     },
     { label: "Share", icon: <FaShareAlt aria-hidden="true" />, onClick: handleShareClick },
   ];

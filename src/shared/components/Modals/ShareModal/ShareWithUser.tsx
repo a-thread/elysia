@@ -79,8 +79,11 @@ const ShareWithUser: React.FC<ShareWithUserProps> = ({ shareWithUser }) => {
             <div className="absolute w-full bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
               <ul className="py-2 text-gray-700 dark:text-gray-200">
                 {options.map((opt) => (
-                  <li key={opt.value} onClick={() => handleListClick(opt.value)}>
-                    <button className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                  <li key={opt.value}>
+                    <button
+                      onClick={() => handleListClick(opt.value)}
+                      className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    >
                       {opt.label}
                     </button>
                   </li>

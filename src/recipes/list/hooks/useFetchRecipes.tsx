@@ -30,16 +30,30 @@ export function useFetchRecipes() {
   // Ref to prevent duplicate fetches.
   const isFetching = useRef(false);
 
-  // Consolidated fetch function.
+  // Keep the callback keyed to the user ID so session refreshes do not reset the list.
   const fetchRecipes = useCallback(
-    async (skip: number, term: string, selected: IdTitle[], sortBy: RecipeSort) => {
+    async (
+      skip: number,
+      term: string,
+      selected: IdTitle[],
+      sortBy: RecipeSort,
+    ) => {
       setLoading(true);
       try {
-        const response = await RecipeService.getRecipeList(skip, 10, term, user?.id, selected, sortBy);
+        const response = await RecipeService.getRecipeList(
+          skip,
+          10,
+          term,
+          user?.id,
+          selected,
+          sortBy,
+        );
         if (!response) throw new Error("Something went wrong.");
 
         // Update recipes: replace list if skip is 0; otherwise, append.
-        setRecipes((prev) => (skip === 0 ? response.data : [...prev, ...response.data]));
+        setRecipes((prev) =>
+          skip === 0 ? response.data : [...prev, ...response.data],
+        );
 
         // Calculate new skip count and determine if more recipes are available.
         const newSkip = skip + response.data.length;
@@ -51,15 +65,17 @@ export function useFetchRecipes() {
         setLoading(false);
       }
     },
-    [user]
+    [user?.id],
   );
 
   // The tag filter's own option list is independent of the recipe search term,
   // so it gets its own search text and fetch.
   useEffect(() => {
-    TagService.getList(0, ALL_RECIPES_PAGE_SIZE, tagSearchTerm).then((response) => {
-      if (response?.data) setTags(response.data);
-    });
+    TagService.getList(0, ALL_RECIPES_PAGE_SIZE, tagSearchTerm).then(
+      (response) => {
+        if (response?.data) setTags(response.data);
+      },
+    );
   }, [tagSearchTerm]);
 
   // On location change, reset recipes if there are selected tags in location.state.
@@ -93,7 +109,15 @@ export function useFetchRecipes() {
     fetchRecipes(currentSkip, searchTerm, selectedTags, sort).finally(() => {
       isFetching.current = false;
     });
-  }, [currentSkip, hasMore, authHasBeenChecked, fetchRecipes, searchTerm, selectedTags, sort]);
+  }, [
+    currentSkip,
+    hasMore,
+    authHasBeenChecked,
+    fetchRecipes,
+    searchTerm,
+    selectedTags,
+    sort,
+  ]);
 
   // Exports every recipe matching the current search/filter/sort (not just the loaded page) to one PDF.
   const exportAll = useCallback(async () => {
@@ -105,7 +129,7 @@ export function useFetchRecipes() {
         searchTerm,
         user?.id,
         selectedTags,
-        sort
+        sort,
       );
       if (!response?.data?.length) {
         toast.error("No recipes to export.");
@@ -118,7 +142,7 @@ export function useFetchRecipes() {
     } finally {
       setIsExporting(false);
     }
-  }, [searchTerm, selectedTags, sort, user, toast]);
+  }, [searchTerm, selectedTags, sort, user?.id, toast]);
 
   return {
     tags,

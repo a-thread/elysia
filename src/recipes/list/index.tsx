@@ -2,7 +2,7 @@ import { useEffect, useCallback, useState } from "react";
 import { useFetchRecipes } from "./hooks/useFetchRecipes";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
-import { Link } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import { Recipe } from "@shared/models/Recipe";
 import SearchInput from "@shared/components/SearchInput";
@@ -44,6 +44,7 @@ const RecipeList: React.FC = () => {
     exportAll,
   } = useFetchRecipes();
 
+  const { id } = useParams();
   const { openModal, closeModal } = useModalManager();
   const { authHasBeenChecked } = useAuth();
 
@@ -81,6 +82,7 @@ const RecipeList: React.FC = () => {
   }, [loading, hasMore, loadMoreRecipes]);
 
   return (
+    <>
     <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">
       <TitleDescHeader
         title="Recipes"
@@ -198,6 +200,15 @@ const RecipeList: React.FC = () => {
         </InfiniteScroll>
       )}
     </div>
+
+    {id && (
+      <div className="fixed inset-x-0 top-[73px] bottom-0 z-[35] overflow-y-auto bg-cream dark:bg-gray-900">
+        <div className="container mx-auto px-4 py-6">
+          <Outlet />
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 

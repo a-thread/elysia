@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useFetchCollections } from "./useFetchCollections";
+import { useFetchCollections } from "./hooks/useFetchCollections";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import { Collection } from "@collections/models/Collection";

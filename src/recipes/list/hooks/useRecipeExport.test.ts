@@ -11,10 +11,10 @@ vi.mock("@shared/contexts/AuthContext", () => ({
 vi.mock("@recipes/services/RecipeService", () => ({
   default: { getRecipeList: vi.fn() },
 }));
-vi.mock("@shared/services/PdfGenerator", () => ({ default: vi.fn() }));
+vi.mock("@recipes/utils/PdfGenerator", () => ({ default: vi.fn() }));
 
 const { default: RecipeService } = await import("@recipes/services/RecipeService");
-const { default: generateRecipesPDF } = await import("@shared/services/PdfGenerator");
+const { default: generateRecipesPDF } = await import("@recipes/utils/PdfGenerator");
 const { useRecipeExport } = await import("./useRecipeExport");
 
 // Spec convention: default/loading, success, error, empty/edge case.

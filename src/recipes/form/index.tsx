@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import PhotoUpload from "../../shared/components/PhotoUpload";
+import PhotoUpload from "@shared/components/PhotoUpload";
 import EditableSectionForm from "./components/EditableSectionForm";
 import TitleDescriptionForm from "@shared/components/TitleDescriptionForm";
-import RecipeDetailsForm from "@shared/components/RecipeDetailsForm";
+import RecipeDetailsForm from "@recipes/components/RecipeDetailsForm";
 import { useRecipeForm } from "./hooks/useRecipeForm";
 import { useRecipeActions } from "./hooks/useRecipeActions";
 import MultiSelect from "@shared/components/MultiSelect";

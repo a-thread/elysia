@@ -3,7 +3,7 @@ import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";
 import { useModalManager, DeleteConfirmationModal } from "@shared/components/Modals";
 import RecipeService from "@recipes/services/RecipeService";
-import generateRecipePDF from "@shared/services/PdfGenerator";
+import generateRecipePDF from "@recipes/utils/PdfGenerator";
 import { useShareableEntity } from "@shared/hooks/useShareableEntity";
 import { useRecipeDetails } from "./useRecipeDetails";
 import AddTagsToRecipeModal from "../components/AddTagsToRecipeModal";

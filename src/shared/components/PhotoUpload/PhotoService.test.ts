@@ -10,14 +10,13 @@ const storage = {
 vi.mock("@shared/services/SupabaseWithAbort", () => ({
   supabaseWithAbort: {
     request: vi.fn(async (_key: string, fn: (client: unknown) => unknown) =>
-      fn({ storage })
+      fn({ storage }),
     ),
   },
 }));
 
 const { default: PhotoService } = await import("./PhotoService");
 
-// Spec convention: default/loading, success, error, empty/edge case.
 describe("PhotoService", () => {
   beforeEach(() => {
     upload.mockReset();
@@ -31,9 +30,7 @@ describe("PhotoService", () => {
       data: { publicUrl: "https://cdn.example/photo.jpg" },
     });
 
-    const url = await PhotoService.addPhoto(
-      new File(["data"], "My Photo.jpg")
-    );
+    const url = await PhotoService.addPhoto(new File(["data"], "My Photo.jpg"));
 
     expect(url).toBe("https://cdn.example/photo.jpg");
     expect(upload).toHaveBeenCalled();
@@ -43,7 +40,7 @@ describe("PhotoService", () => {
     upload.mockResolvedValue({ error: { message: "quota exceeded" } });
 
     await expect(
-      PhotoService.addPhoto(new File(["data"], "photo.jpg"))
+      PhotoService.addPhoto(new File(["data"], "photo.jpg")),
     ).rejects.toThrow("Error uploading file: quota exceeded");
   });
 
@@ -59,7 +56,7 @@ describe("PhotoService", () => {
     getPublicUrl.mockReturnValue({ data: null });
 
     await expect(PhotoService.getPhotoUrl("photo.jpg")).rejects.toThrow(
-      "Failed to get public URL"
+      "Failed to get public URL",
     );
   });
 });

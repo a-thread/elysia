@@ -9,14 +9,12 @@ import { RecipeSort } from "@recipes/models/RecipeSort";
 const ALL_RECIPES_PAGE_SIZE = 1000000;
 
 /**
- * Exports every recipe matching the given search/filter/sort (not just the
- * currently loaded page) to one PDF. Split out from useFetchRecipes, which
- * owns pagination/search/sort state — this hook just consumes it.
+ * Exports every recipe, matching the applied filters, to one PDF.
  */
 export function useRecipeExport(
   searchTerm: string,
   selectedTags: IdTitle[],
-  sort: RecipeSort
+  sort: RecipeSort,
 ) {
   const { user } = useAuth();
   const toast = useToast();

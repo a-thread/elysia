@@ -12,14 +12,13 @@ const chain = {
 vi.mock("@shared/services/SupabaseWithAbort", () => ({
   supabaseWithAbort: {
     request: vi.fn(async (_key: string, fn: (client: unknown) => unknown) =>
-      fn(chain)
+      fn(chain),
     ),
   },
 }));
 
-const { default: CollectionService, mergeCollectionRecipes } = await import(
-  "./CollectionService"
-);
+const { default: CollectionService, mergeCollectionRecipes } =
+  await import("./CollectionService");
 
 describe("mergeCollectionRecipes", () => {
   it("returns an empty array when there are no recipes", () => {
@@ -46,8 +45,12 @@ describe("mergeCollectionRecipes", () => {
         {
           tags: {
             recipe_to_tags: [
-              { recipes: { id: "r1", title: "Recipe One", recipe_to_tags: [] } },
-              { recipes: { id: "r2", title: "Recipe Two", recipe_to_tags: [] } },
+              {
+                recipes: { id: "r1", title: "Recipe One", recipe_to_tags: [] },
+              },
+              {
+                recipes: { id: "r2", title: "Recipe Two", recipe_to_tags: [] },
+              },
             ],
           },
         },
@@ -57,7 +60,6 @@ describe("mergeCollectionRecipes", () => {
   });
 });
 
-// Spec convention: default/loading, success, error, empty/edge case.
 describe("CollectionService.getDetail", () => {
   beforeEach(() => {
     maybeSingle.mockReset();
@@ -88,8 +90,20 @@ describe("CollectionService.getDetail", () => {
               title: "Quick",
               recipe_to_tags: [
                 // r1 is reachable both directly and via this tag — should be deduped.
-                { recipes: { id: "r1", title: "Recipe One", recipe_to_tags: [] } },
-                { recipes: { id: "r2", title: "Recipe Two", recipe_to_tags: [] } },
+                {
+                  recipes: {
+                    id: "r1",
+                    title: "Recipe One",
+                    recipe_to_tags: [],
+                  },
+                },
+                {
+                  recipes: {
+                    id: "r2",
+                    title: "Recipe Two",
+                    recipe_to_tags: [],
+                  },
+                },
               ],
             },
           },
@@ -110,15 +124,15 @@ describe("CollectionService.getDetail", () => {
     maybeSingle.mockResolvedValue({ data: null, error: { message: "boom" } });
 
     await expect(CollectionService.getDetail("c1", "owner-1")).rejects.toThrow(
-      "Failed to fetch collection details."
+      "Failed to fetch collection details.",
     );
   });
 
   it("throws when no collection is found (empty result)", async () => {
     maybeSingle.mockResolvedValue({ data: null, error: null });
 
-    await expect(CollectionService.getDetail("missing", "owner-1")).rejects.toThrow(
-      "No data returned."
-    );
+    await expect(
+      CollectionService.getDetail("missing", "owner-1"),
+    ).rejects.toThrow("No data returned.");
   });
 });

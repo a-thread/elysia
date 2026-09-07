@@ -5,10 +5,10 @@ vi.mock("@recipes/services/RecipeService", () => ({
   default: { getDetail: vi.fn() },
 }));
 
-const { default: RecipeService } = await import("@recipes/services/RecipeService");
+const { default: RecipeService } =
+  await import("@recipes/services/RecipeService");
 const { useRecipeDetails } = await import("./useRecipeDetails");
 
-// Spec convention: default/loading, success, error, empty/edge case.
 describe("useRecipeDetails", () => {
   beforeEach(() => {
     vi.mocked(RecipeService.getDetail).mockReset();
@@ -18,7 +18,7 @@ describe("useRecipeDetails", () => {
     vi.mocked(RecipeService.getDetail).mockReturnValue(
       new Promise(() => {
         // Never resolves — asserting the hook's initial loading state.
-      })
+      }),
     );
 
     const { result } = renderHook(() => useRecipeDetails("r1", "u1"));
@@ -54,7 +54,9 @@ describe("useRecipeDetails", () => {
   });
 
   it("stops loading without setting a recipe when the fetch errors", async () => {
-    vi.mocked(RecipeService.getDetail).mockRejectedValue(new Error("network down"));
+    vi.mocked(RecipeService.getDetail).mockRejectedValue(
+      new Error("network down"),
+    );
 
     const { result } = renderHook(() => useRecipeDetails("r1", "u1"));
 

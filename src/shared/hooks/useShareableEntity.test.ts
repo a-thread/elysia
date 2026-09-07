@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor, act } from "@testing-library/react";
 
-const toast = { success: vi.fn(), error: vi.fn(), info: vi.fn(), warning: vi.fn() };
+const toast = {
+  success: vi.fn(),
+  error: vi.fn(),
+  info: vi.fn(),
+  warning: vi.fn(),
+};
 
 vi.mock("@shared/components/Toast", () => ({
   useToast: () => toast,
@@ -26,7 +31,6 @@ const baseArgs = () => ({
   revokeAccess: vi.fn().mockResolvedValue(undefined),
 });
 
-// Spec convention: default/loading, success, error, empty/edge case.
 describe("useShareableEntity", () => {
   beforeEach(() => {
     toast.success.mockReset();
@@ -69,7 +73,7 @@ describe("useShareableEntity", () => {
   it("surfaces an error toast when sharing fails", async () => {
     const args = baseArgs();
     vi.mocked(UserService.findByEmail).mockRejectedValue(
-      new Error("User not found.")
+      new Error("User not found."),
     );
 
     const { result } = renderHook(() => useShareableEntity(args));

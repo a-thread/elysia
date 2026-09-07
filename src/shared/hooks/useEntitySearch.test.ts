@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from "vitest";
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { useEntitySearch } from "./useEntitySearch";
 
-// Spec convention: default/loading, success, error, empty/edge case.
 describe("useEntitySearch", () => {
   it("starts with an empty search term and list", () => {
     const { result } = renderHook(() =>
@@ -10,8 +9,8 @@ describe("useEntitySearch", () => {
         () =>
           new Promise(() => {
             // Never resolves — asserting the hook's initial state.
-          })
-      )
+          }),
+      ),
     );
 
     expect(result.current.searchTerm).toBe("");

@@ -13,16 +13,18 @@ import { FaPlus } from "react-icons/fa6";
 
 const CollectionList: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, authHasBeenChecked } = useAuth();
   const { collections, loading, hasMore, loadMoreCollections } =
     useFetchCollections();
 
   useEffect(() => {
     loadMoreCollections();
-    // Mount-only fetch of the first page; loadMoreCollections isn't memoized
-    // and guards against re-entrancy itself via its loading/hasMore checks.
+    // Runs on mount and again once the session check resolves, so the first
+    // fetch's visibility filter reflects the signed-in user, not a logged-out
+    // guess. loadMoreCollections isn't memoized and guards against
+    // re-entrancy itself via its loading/hasMore checks.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authHasBeenChecked]);
 
   const handleInfiniteScroll = useCallback(() => {
     if (!loading && hasMore) {

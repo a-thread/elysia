@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
 import { Collection } from "@shared/models/Collection";
 import CollectionService from "@shared/services/CollectionService";
+import { useAuth } from "@shared/contexts/AuthContext";
 
 export function useFetchCollections() {
+  const { user, authHasBeenChecked } = useAuth();
   const [currentSkip, setCurrentSkip] = useState<number>(0);
   const [currentPageSize] = useState<number>(10);
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -17,7 +19,7 @@ export function useFetchCollections() {
   const isFetching = useRef(false);
 
   const loadMoreCollections = async () => {
-    if (isFetching.current || loading || !hasMore) return;
+    if (isFetching.current || loading || !hasMore || !authHasBeenChecked) return;
     isFetching.current = true;
     setLoading(true);
     try {
@@ -25,7 +27,8 @@ export function useFetchCollections() {
         await CollectionService.getList(
           currentSkip,
           currentPageSize,
-          searchTerm
+          searchTerm,
+          user?.id
         );
 
       if (!response || response.data.length === 0) {

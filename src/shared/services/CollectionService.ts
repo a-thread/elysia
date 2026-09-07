@@ -5,12 +5,22 @@ import { TableNames } from "./TableNames";
 const getList = async (
   currentSkip: number,
   currentPageSize: number,
-  searchTerm: string
+  searchTerm: string,
+  userId?: string
 ) => {
   return await supabaseWithAbort.request("getList", async (client) => {
     let query = client
       .from(TableNames.COLLECTIONS)
       .select("*", { count: "exact" });
+
+    // Visibility filtering — same rule as RecipeService.getRecipeList: everyone sees public
+    // collections, and a signed-in user also sees their own private ones.
+    if (userId) {
+      query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
+    } else {
+      query = query.eq("is_public", true);
+    }
+
     if (searchTerm) {
       query = query.or(
         `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`
@@ -149,13 +159,13 @@ const setIsPublic = async (collectionId: string, isPublic: boolean) => {
     async (client) => {
       const { error } = await client
         .from(TableNames.COLLECTIONS)
-        .update({ is_public: !isPublic })
+        .update({ is_public: isPublic })
         .eq("id", collectionId);
 
       if (error) {
         throw new Error("Failed to update public status.");
       }
-      return !isPublic;
+      return isPublic;
     }
   );
 };

@@ -91,8 +91,7 @@ const EllipsisMenu: React.FC<{ collection: Collection }> = ({ collection }) => {
   };
 
   const handleCopyLink = () => {
-    const publicUrl = `${window.location.origin}/collections/${collection.id}`;
-    navigator.clipboard.writeText(publicUrl);
+    navigator.clipboard.writeText(window.location.href);
     toast.success("Public link copied!");
   };
 

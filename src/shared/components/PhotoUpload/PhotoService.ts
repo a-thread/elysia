@@ -1,6 +1,5 @@
 import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
 
-// File upload helpers
 const sanitizeFileName = (fileName: string) => {
   const extension = fileName.split(".").pop();
   const baseName = fileName
@@ -29,7 +28,9 @@ const addPhoto = async (file: File) => {
 
 const getPhotoUrl = (filePath: string) => {
   return supabaseWithAbort.request("getPhotoUrl", async (client) => {
-    const { data } = client.storage.from("elysia_recipe_photo").getPublicUrl(filePath);
+    const { data } = client.storage
+      .from("elysia_recipe_photo")
+      .getPublicUrl(filePath);
     if (!data) throw new Error("Failed to get public URL");
     return data.publicUrl;
   });
@@ -42,7 +43,6 @@ const deletePhoto = async (imgUrl: string) => {
   });
 };
 
-// Export photo service
 const PhotoService = {
   addPhoto,
   getPhotoUrl,

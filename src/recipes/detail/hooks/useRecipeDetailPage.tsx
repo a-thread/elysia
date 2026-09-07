@@ -10,11 +10,8 @@ import AddTagsToRecipeModal from "../components/AddTagsToRecipeModal";
 import AddRecipeToCollectionsModal from "../components/AddRecipeToCollections";
 
 /**
- * Composed page hook for the recipe detail screen — the single place
- * `recipes/detail/index.tsx` reads state and intents from. Fetches the
- * recipe, owns the share flow, and owns edit/delete/tag/collection/export
- * intents, so the ellipsis menu receives everything via props instead of
- * fetching independently.
+ * Composed recipe detail page hook.
+ * Centralizes recipe data, sharing, and actions for the detail screen.
  */
 export const useRecipeDetailPage = () => {
   const { id } = useParams();

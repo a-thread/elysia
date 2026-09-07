@@ -8,14 +8,10 @@ interface GetCookingModalProps {
   recipe: Recipe;
 }
 
-export interface CheckedItems {
-  [key: number]: boolean;
-}
+export type CheckedItems = Record<number, boolean>;
 
 const GetCookingModal: React.FC<GetCookingModalProps> = ({ recipe }) => {
-  const [checkedItems, setCheckedItems] = useState<CheckedItems>(
-    {}
-  );
+  const [checkedItems, setCheckedItems] = useState<CheckedItems>({});
   const [activeTab, setActiveTab] = useState<string>("ingredients"); // Tab state for mobile
 
   const toggleCheck = (index: number) => {

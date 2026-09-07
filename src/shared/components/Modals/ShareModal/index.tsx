@@ -4,17 +4,14 @@ import ShareWithUser from "./ShareWithUser";
 import { FaCheck } from "react-icons/fa";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
 
-// Define permission type
 type PermissionType = "read" | "edit";
 
-// Define shared user type
 export interface SharedUser {
   id: string;
   users: { email: string };
   permission: PermissionType;
 }
 
-// Define ShareModal Props
 interface ShareModalProps extends BaseModalProps {
   typeOfShare: string;
   sharedUsers: SharedUser[];
@@ -44,14 +41,13 @@ const ShareModal: React.FC<ShareModalProps> = ({
   const handleTogglePublicShare = () => {
     setIsPublicLocal(!isPublicLocal);
     onTogglePublicShare();
-  }
+  };
   return (
     <>
       <h2 className="text-lg font-semibold mb-4 min-w-[300px] dark:text-leaf-green-100">
         Share {typeOfShare}
       </h2>
 
-      {/* Toggle Public Access */}
       <div className="flex items-center justify-between mb-4 dark:text-leaf-green-100">
         <label className="text-sm">Make Public</label>
         <input
@@ -82,13 +78,13 @@ const ShareModal: React.FC<ShareModalProps> = ({
 
       <hr className="border-gray-700 my-4" />
 
-      {/* Share with a Specific User */}
       <ShareWithUser shareWithUser={shareWithUser} />
 
       <hr className="border-gray-700 my-4" />
 
-      {/* List of Shared Users */}
-      <h3 className="text-sm font-medium mb-2 dark:text-leaf-green-100">Shared Users</h3>
+      <h3 className="text-sm font-medium mb-2 dark:text-leaf-green-100">
+        Shared Users
+      </h3>
       <ul className="space-y-2 mb-4 dark:text-leaf-green-100">
         {sharedUsers.map((user) => (
           <li

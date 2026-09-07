@@ -1,25 +1,17 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 import Modal from "./BaseModal";
 import { ModalSize } from "./BaseModal/ModalSize";
 
-// Define the context type
 interface ModalManagerContextType {
   isModalOpen: boolean;
   openModal: (content: ReactNode, size?: ModalSize) => void;
   closeModal: () => void;
 }
 
-// Create a context with a default empty object and assert it as ModalManagerContextType
 const ModalManagerContext = createContext<ModalManagerContextType | undefined>(
-  undefined
+  undefined,
 );
 
-// Define props for ModalManager
 interface ModalManagerProps {
   children: ReactNode;
 }

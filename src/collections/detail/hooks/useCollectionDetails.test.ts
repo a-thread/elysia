@@ -5,12 +5,10 @@ vi.mock("@collections/services/CollectionService", () => ({
   default: { getDetail: vi.fn() },
 }));
 
-const { default: CollectionService } = await import(
-  "@collections/services/CollectionService"
-);
+const { default: CollectionService } =
+  await import("@collections/services/CollectionService");
 const { useCollectionDetails } = await import("./useCollectionDetails");
 
-// Spec convention: default/loading, success, error, empty/edge case.
 describe("useCollectionDetails", () => {
   beforeEach(() => {
     vi.mocked(CollectionService.getDetail).mockReset();
@@ -20,7 +18,7 @@ describe("useCollectionDetails", () => {
     vi.mocked(CollectionService.getDetail).mockReturnValue(
       new Promise(() => {
         // Never resolves — asserting the hook's initial loading state.
-      })
+      }),
     );
 
     const { result } = renderHook(() => useCollectionDetails("c1", "u1"));
@@ -53,7 +51,7 @@ describe("useCollectionDetails", () => {
 
   it("stops loading without setting a collection when the fetch errors", async () => {
     vi.mocked(CollectionService.getDetail).mockRejectedValue(
-      new Error("not found")
+      new Error("not found"),
     );
 
     const { result } = renderHook(() => useCollectionDetails("missing", "u1"));

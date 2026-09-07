@@ -1,17 +1,17 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";
-import { useModalManager, DeleteConfirmationModal } from "@shared/components/Modals";
+import {
+  useModalManager,
+  DeleteConfirmationModal,
+} from "@shared/components/Modals";
 import CollectionService from "@collections/services/CollectionService";
 import { useShareableEntity } from "@shared/hooks/useShareableEntity";
 import { useCollectionDetails } from "./useCollectionDetails";
 
 /**
- * Composed page hook for the collection detail screen — the single place
- * `collections/detail/index.tsx` reads state and intents from. Fetches the
- * collection, owns the share flow, and owns edit/delete navigation, so child
- * components (the ellipsis menu) receive everything via props instead of
- * fetching independently.
+ * Collection detail page hook: fetches the collection, manages sharing,
+ * and exposes edit/delete actions for the screen.
  */
 export const useCollectionDetailPage = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ export const useCollectionDetailPage = () => {
         label="collection"
         onCancelDelete={closeModal}
         onDelete={deleteCollection}
-      />
+      />,
     );
 
   return {

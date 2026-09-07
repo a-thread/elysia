@@ -6,15 +6,14 @@ const getList = async (
   currentSkip: number,
   currentPageSize: number,
   searchTerm: string,
-  userId?: string
+  userId?: string,
 ) => {
   return await supabaseWithAbort.request("getList", async (client) => {
     let query = client
       .from(TableNames.COLLECTIONS)
       .select("*", { count: "exact" });
 
-    // Visibility filtering — same rule as RecipeService.getRecipeList: everyone sees public
-    // collections, and a signed-in user also sees their own private ones.
+    // If userId is provided, fetch both public collections and those owned by the user.
     if (userId) {
       query = query.or(`is_public.eq.true,user_id.eq.${userId}`);
     } else {
@@ -23,12 +22,12 @@ const getList = async (
 
     if (searchTerm) {
       query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`
+        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`,
       );
     }
     const { data, count, error } = await query.range(
       currentSkip,
-      currentSkip + currentPageSize - 1
+      currentSkip + currentPageSize - 1,
     );
     if (error) throw new Error("Failed to fetch collections.");
     return { data, count };
@@ -36,9 +35,7 @@ const getList = async (
 };
 
 /**
- * A collection's recipes are reachable two ways — directly linked, or via a tag
- * shared between the collection and the recipe — so the same recipe can appear
- * in both `collection_to_recipes` and `collection_to_tags`. This dedupes by id.
+ * Dedupes recipes by id. A recipe can be linked to a collection directly or via a shared tag.
  */
 export const mergeCollectionRecipes = (data: {
   collection_to_recipes?: { recipes: any }[] | null;
@@ -59,9 +56,8 @@ export const mergeCollectionRecipes = (data: {
         item.tags?.recipe_to_tags?.map((taggedRecipe: any) => ({
           ...taggedRecipe.recipes,
           tags:
-            taggedRecipe.recipes?.recipe_to_tags?.map(
-              (tag: any) => tag.tags
-            ) || [],
+            taggedRecipe.recipes?.recipe_to_tags?.map((tag: any) => tag.tags) ||
+            [],
         })) || []
       );
     }) || [];
@@ -90,7 +86,7 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
           ),
           collection_to_tags!left(tags!inner(id, title, recipe_to_tags!left(recipes!inner(id, title, description, img_url, user_id, is_public)))) ,
           collection_to_users!left(permission)
-          `
+          `,
         )
         .eq("id", collectionId);
 
@@ -104,7 +100,8 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
       if (error) throw new Error("Failed to fetch collection details.");
       if (!data) throw new Error("No data returned.");
 
-      const collectionTags = data.collection_to_tags?.flatMap((item) => item.tags) || [];
+      const collectionTags =
+        data.collection_to_tags?.flatMap((item) => item.tags) || [];
 
       return {
         ...data,
@@ -113,16 +110,18 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
         can_edit:
           data.user_id === userId ||
           (data.collection_to_users &&
-            data.collection_to_users.some((share) => share.permission === "edit")),
+            data.collection_to_users.some(
+              (share) => share.permission === "edit",
+            )),
       };
-    }
+    },
   );
 };
 
 const upsert = async (
   collectionId: string,
   simpleValues: Partial<Collection>,
-  userId?: string
+  userId?: string,
 ) => {
   return await supabaseWithAbort.request(
     `upsert-${collectionId || "new"}`,
@@ -154,7 +153,7 @@ const upsert = async (
           throw new Error(`Failed to update collection: ${error.message}`);
       }
       return { success: true, collectionId: newCollectionId };
-    }
+    },
   );
 };
 
@@ -167,7 +166,7 @@ const deleteById = async (collectionId: string) => {
         .delete()
         .eq("id", collectionId);
       if (error) throw new Error("Failed to delete collection.");
-    }
+    },
   );
 };
 
@@ -184,7 +183,7 @@ const setIsPublic = async (collectionId: string, isPublic: boolean) => {
         throw new Error("Failed to update public status.");
       }
       return isPublic;
-    }
+    },
   );
 };
 
@@ -202,14 +201,14 @@ const fetchSharedUsers = async (collectionId: string) => {
         return [];
       }
       return data || [];
-    }
+    },
   );
 };
 
 const share = async (
   collectionId: string,
   userId: string,
-  permission: string
+  permission: string,
 ) => {
   return await supabaseWithAbort.request(
     `share-${collectionId}-${userId}`,
@@ -221,7 +220,7 @@ const share = async (
       if (error) {
         throw new Error("Failed to share collection.");
       }
-    }
+    },
   );
 };
 
@@ -237,7 +236,7 @@ const revokeAccess = async (shareId: string) => {
       if (error) {
         throw new Error("Failed to revoke access.");
       }
-    }
+    },
   );
 };
 
@@ -256,7 +255,7 @@ const getIsPublic = async (collectionId: string) => {
         return false;
       }
       return data.is_public;
-    }
+    },
   );
 };
 

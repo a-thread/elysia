@@ -6,9 +6,7 @@ import { ModalManager } from "@shared/components/Modals";
 import Loading from "@shared/components/Loading";
 import Home from "./home";
 
-// Lazy-loaded per route (not via the recipes/collections/auth barrels, whose
-// re-exports would otherwise pull every feature into one chunk) so each
-// route's code only downloads when it's actually visited.
+// Lazy-load each route to keep the initial bundle smaller.
 const About = lazy(() => import("./About"));
 const SignIn = lazy(() => import("./auth/SignIn"));
 const ForgotPassword = lazy(() => import("./auth/ForgotPassword"));

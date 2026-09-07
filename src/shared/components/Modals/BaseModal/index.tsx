@@ -13,12 +13,11 @@ const Modal: React.FC<BaseModalProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
-  // Move focus into the modal on open, trap Tab within it, close on Escape,
-  // and return focus to whatever triggered the modal on close.
   useEffect(() => {
     const modalEl = modalRef.current;
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    const firstFocusable = modalEl?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+    const firstFocusable =
+      modalEl?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
     (firstFocusable ?? modalEl)?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -29,7 +28,7 @@ const Modal: React.FC<BaseModalProps> = ({
       if (event.key !== "Tab" || !modalEl) return;
 
       const focusableEls = Array.from(
-        modalEl.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+        modalEl.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
       );
       if (focusableEls.length === 0) return;
       const first = focusableEls[0];
@@ -51,12 +50,6 @@ const Modal: React.FC<BaseModalProps> = ({
     };
   }, [onClose]);
 
-  // Determine modal size classes. The Large variant is used by content
-  // (GetCookingModal) that itself switches to a single-column mobile layout
-  // at the `md` breakpoint, so it stays full-screen until `md` too instead
-  // of the `sm` breakpoint the other sizes use — otherwise there's a gap
-  // between `sm` and `md` where the modal shrinks but the content is still
-  // rendering its mobile layout.
   const modalSize =
     size === ModalSize.Large
       ? "max-w-5xl md:max-w-[1200px] md:w-[calc(100%-64px)] md:max-h-[calc(100%-64px)]"

@@ -3,8 +3,9 @@ import { StepIngredient } from "@recipes/models/StepIngredient";
 
 interface StepListProps {
   steps: StepIngredient[];
-  /** "detail" is the compact recipe-page rendering; "cooking" is the larger,
-   * easier-to-read-at-arm's-length rendering used by GetCookingModal. */
+  /** Controls the layout.
+   * "detail" is compact
+   * "cooking" uses larger text */
   variant?: "detail" | "cooking";
 }
 

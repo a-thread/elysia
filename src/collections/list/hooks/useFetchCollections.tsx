@@ -13,23 +13,21 @@ export function useFetchCollections() {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
-  // Ref to prevent duplicate fetches: `loading` state alone doesn't guard against
-  // two synchronous calls (e.g. React StrictMode's double-invoked mount effect),
-  // since a setState update isn't visible to the second call's closure yet.
+  // Prevent duplicate in-flight fetches across StrictMode re-renders.
   const isFetching = useRef(false);
 
   const loadMoreCollections = async () => {
-    if (isFetching.current || loading || !hasMore || !authHasBeenChecked) return;
+    if (isFetching.current || loading || !hasMore || !authHasBeenChecked)
+      return;
     isFetching.current = true;
     setLoading(true);
     try {
-      const response =
-        await CollectionService.getList(
-          currentSkip,
-          currentPageSize,
-          searchTerm,
-          user?.id
-        );
+      const response = await CollectionService.getList(
+        currentSkip,
+        currentPageSize,
+        searchTerm,
+        user?.id,
+      );
 
       if (!response || response.data.length === 0) {
         setHasMore(false);
@@ -46,5 +44,13 @@ export function useFetchCollections() {
     }
   };
 
-  return { collections, searchTerm, setSearchTerm, loading, hasMore, totalCount, loadMoreCollections };
+  return {
+    collections,
+    searchTerm,
+    setSearchTerm,
+    loading,
+    hasMore,
+    totalCount,
+    loadMoreCollections,
+  };
 }

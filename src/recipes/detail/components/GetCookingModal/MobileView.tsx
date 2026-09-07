@@ -2,18 +2,21 @@ import React from "react";
 import IngredientList from "./IngredientList";
 import StepList from "../StepList";
 import { CheckedItems } from ".";
+import { Recipe } from "@recipes/models/Recipe";
 
 interface MobileViewProps {
   activeTab: string;
-  recipe: {
-    ingredients: any[];
-    steps: any[];
-  };
+  recipe: Recipe;
   checkedItems: CheckedItems;
   onCheck: (index: number) => void;
 }
 
-const MobileView: React.FC<MobileViewProps> = ({ activeTab, recipe, checkedItems, onCheck }) => {
+const MobileView: React.FC<MobileViewProps> = ({
+  activeTab,
+  recipe,
+  checkedItems,
+  onCheck,
+}) => {
   return (
     <div className="block md:hidden h-full w-full overflow-y-auto scrollable-container px-4 sm:pt-4">
       {activeTab === "ingredients" ? (

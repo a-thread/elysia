@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
-import { Collection } from "@shared/models/Collection";
-import CollectionService from "@shared/services/CollectionService";
+import { Collection } from "@collections/models/Collection";
+import CollectionService from "@collections/services/CollectionService";
 import { useAuth } from "@shared/contexts/AuthContext";
 
 export function useFetchCollections() {

@@ -8,12 +8,12 @@ vi.mock("@shared/components/Toast", () => ({ useToast: () => toast }));
 vi.mock("@shared/contexts/AuthContext", () => ({
   useAuth: () => ({ user: { id: "u1" } }),
 }));
-vi.mock("@shared/services/RecipeService", () => ({
+vi.mock("@recipes/services/RecipeService", () => ({
   default: { getRecipeList: vi.fn() },
 }));
 vi.mock("@shared/services/PdfGenerator", () => ({ default: vi.fn() }));
 
-const { default: RecipeService } = await import("@shared/services/RecipeService");
+const { default: RecipeService } = await import("@recipes/services/RecipeService");
 const { default: generateRecipesPDF } = await import("@shared/services/PdfGenerator");
 const { useRecipeExport } = await import("./useRecipeExport");
 

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFetchCollections } from "./useFetchCollections";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
-import { Collection } from "@shared/models/Collection";
+import { Collection } from "@collections/models/Collection";
 import ImgTitleDescription from "@shared/components/ImgTitleDescCard";
 import TitleDescHeader from "@shared/components/TitleDescHeader";
 import InfiniteScroll from "@shared/components/InfiniteScroll";

@@ -1,10 +1,10 @@
 import { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
-import { Collection } from "@shared/models/Collection";
-import CollectionService from "@shared/services/CollectionService";
+import { Collection } from "@collections/models/Collection";
+import CollectionService from "@collections/services/CollectionService";
 import TagService from "@shared/services/TagService";
-import RecipeService from "@shared/services/RecipeService";
+import RecipeService from "@recipes/services/RecipeService";
 import FormUtils from "@shared/utils/form-field-helpers";
 import { syncRelationship } from "@shared/utils/relationshipDiff";
 

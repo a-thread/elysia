@@ -1,6 +1,6 @@
 import { Recipe } from "@recipes/models/Recipe";
-import { supabaseWithAbort } from "./SupabaseWithAbort";
-import { TableNames } from "./TableNames";
+import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
+import { TableNames } from "@shared/services/TableNames";
 import { IdTitle } from "@shared/models/Tag";
 import { RecipeSort, recipeSortToOrder } from "@recipes/models/RecipeSort";
 

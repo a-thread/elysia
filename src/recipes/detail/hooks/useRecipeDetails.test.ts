@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 
-vi.mock("@shared/services/RecipeService", () => ({
+vi.mock("@recipes/services/RecipeService", () => ({
   default: { getDetail: vi.fn() },
 }));
 
-const { default: RecipeService } = await import("@shared/services/RecipeService");
+const { default: RecipeService } = await import("@recipes/services/RecipeService");
 const { useRecipeDetails } = await import("./useRecipeDetails");
 
 // Spec convention: default/loading, success, error, empty/edge case.

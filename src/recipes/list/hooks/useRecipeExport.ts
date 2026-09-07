@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import RecipeService from "@shared/services/RecipeService";
+import RecipeService from "@recipes/services/RecipeService";
 import generateRecipesPDF from "@shared/services/PdfGenerator";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";

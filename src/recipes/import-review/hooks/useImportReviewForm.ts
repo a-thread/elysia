@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Recipe } from "@recipes/models/Recipe";
 import TagService from "@shared/services/TagService";
-import CollectionService from "@shared/services/CollectionService";
+import CollectionService from "@collections/services/CollectionService";
 import { IdTitle } from "@shared/models/Tag";
 import { useEntitySearch } from "@shared/hooks/useEntitySearch";
 

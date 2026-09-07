@@ -9,7 +9,7 @@ const chain = {
   maybeSingle,
 };
 
-vi.mock("./SupabaseWithAbort", () => ({
+vi.mock("@shared/services/SupabaseWithAbort", () => ({
   supabaseWithAbort: {
     request: vi.fn(async (_key: string, fn: (client: unknown) => unknown) =>
       fn(chain)

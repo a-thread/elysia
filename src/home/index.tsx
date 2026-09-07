@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import RecipeService from "@shared/services/RecipeService";
+import RecipeService from "@recipes/services/RecipeService";
 import { Recipe } from "@recipes/models/Recipe";
 import { useAuth } from "@shared/contexts/AuthContext";
 import Loading from "@shared/components/Loading";

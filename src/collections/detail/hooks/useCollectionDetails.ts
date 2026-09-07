@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import CollectionService from "@shared/services/CollectionService";
-import { Collection } from "@shared/models/Collection";
+import CollectionService from "@collections/services/CollectionService";
+import { Collection } from "@collections/models/Collection";
 
 export const useCollectionDetails = (
   id: string | undefined,

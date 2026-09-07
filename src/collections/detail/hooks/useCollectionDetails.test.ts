@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 
-vi.mock("@shared/services/CollectionService", () => ({
+vi.mock("@collections/services/CollectionService", () => ({
   default: { getDetail: vi.fn() },
 }));
 
 const { default: CollectionService } = await import(
-  "@shared/services/CollectionService"
+  "@collections/services/CollectionService"
 );
 const { useCollectionDetails } = await import("./useCollectionDetails");
 

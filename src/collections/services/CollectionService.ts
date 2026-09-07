@@ -1,6 +1,6 @@
-import { supabaseWithAbort } from "./SupabaseWithAbort";
-import { Collection } from "@shared/models/Collection";
-import { TableNames } from "./TableNames";
+import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
+import { Collection } from "@collections/models/Collection";
+import { TableNames } from "@shared/services/TableNames";
 
 const getList = async (
   currentSkip: number,

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { Collection } from "@shared/models/Collection";
-import RecipeService from "@shared/services/RecipeService";
+import { Collection } from "@collections/models/Collection";
+import RecipeService from "@recipes/services/RecipeService";
 import TagService from "@shared/services/TagService";
 import { useEntitySearch } from "@shared/hooks/useEntitySearch";
 

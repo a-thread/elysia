@@ -1,6 +1,6 @@
 import { Recipe } from "@recipes/models/Recipe";
-import { IdTitle } from "./Tag";
-import { TitleDescriptionImgUrl } from "./TitleDescriptionImgUrl";
+import { IdTitle } from "@shared/models/Tag";
+import { TitleDescriptionImgUrl } from "@shared/models/TitleDescriptionImgUrl";
 
 export interface Collection extends TitleDescriptionImgUrl {
   id: string;

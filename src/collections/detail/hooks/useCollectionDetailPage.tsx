@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";
 import { useModalManager, DeleteConfirmationModal } from "@shared/components/Modals";
-import CollectionService from "@shared/services/CollectionService";
+import CollectionService from "@collections/services/CollectionService";
 import { useShareableEntity } from "@shared/hooks/useShareableEntity";
 import { useCollectionDetails } from "./useCollectionDetails";
 

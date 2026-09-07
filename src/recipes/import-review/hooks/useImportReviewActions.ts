@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@shared/components/Toast";
 import { Recipe } from "@recipes/models/Recipe";
-import RecipeService from "@shared/services/RecipeService";
+import RecipeService from "@recipes/services/RecipeService";
 import TagService from "@shared/services/TagService";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { syncRelationship } from "@shared/utils/relationshipDiff";

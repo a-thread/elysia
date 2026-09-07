@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";
 import { useModalManager, DeleteConfirmationModal } from "@shared/components/Modals";
-import RecipeService from "@shared/services/RecipeService";
+import RecipeService from "@recipes/services/RecipeService";
 import generateRecipePDF from "@shared/services/PdfGenerator";
 import { useShareableEntity } from "@shared/hooks/useShareableEntity";
 import { useRecipeDetails } from "./useRecipeDetails";

@@ -33,7 +33,6 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ onClose }) => {
 
   return (
     <div
-      role="dialog"
       aria-labelledby="modal-title"
       className="p-4 flex flex-col h-full sm:h-auto"
     >

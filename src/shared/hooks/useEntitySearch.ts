@@ -5,17 +5,14 @@ interface PagedResponse<T> {
 }
 
 /**
- * Search-as-you-type + fetched candidate list — the pattern duplicated across
- * the tag/collection/recipe pickers in the recipe, import-review, and
- * collection form hooks. `fetchFn` should be a service call bound to a fixed
- * page size, e.g. `(term) => TagService.getList(0, 25, term)`; it's expected
- * to only vary its results by `searchTerm`, not by any other reactive value,
- * so its identity is intentionally left out of the effect dependencies below
- * (a fresh inline binding every render would otherwise refetch every render).
+ * Search-as-you-type hook for fetching data.
+ *
+ * `fetchFn` should be bound to a fixed page size and depend only on
+ * `searchTerm`. For example: `(term) => TagService.getList(0, 25, term)`
  */
 export const useEntitySearch = <T>(
   fetchFn: (searchTerm: string) => Promise<PagedResponse<T> | null | undefined>,
-  errorContext = "entities"
+  errorContext = "entities",
 ) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [list, setList] = useState<T[]>([]);

@@ -6,11 +6,17 @@ interface FormActionBarProps {
   isLoading?: boolean;
   onCancel: MouseEventHandler<HTMLButtonElement>;
   onSave: MouseEventHandler<HTMLButtonElement>;
-  /** The noun shown in the heading, e.g. "Recipe" -> "Edit Recipe" / "Add Recipe". */
+  // The noun shown in the heading, e.g. "Recipe" -> "Edit Recipe" / "Add Recipe".
   resourceName: string;
 }
 
-const FormActionBar: React.FC<FormActionBarProps> = ({ isEditing, isLoading, onCancel, onSave, resourceName }) => (
+const FormActionBar: React.FC<FormActionBarProps> = ({
+  isEditing,
+  isLoading,
+  onCancel,
+  onSave,
+  resourceName,
+}) => (
   <div className="w-full flex justify-between items-center mb-5 gap-4">
     <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
       {isEditing ? `Edit ${resourceName}` : `Add ${resourceName}`}

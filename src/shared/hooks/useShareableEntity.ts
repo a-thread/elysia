@@ -18,15 +18,14 @@ interface UseShareableEntityArgs {
   share: (
     entityId: string,
     userId: string,
-    permission: Permission
+    permission: Permission,
   ) => Promise<unknown>;
   revokeAccess: (shareId: string) => Promise<unknown>;
 }
 
 /**
- * Share/revoke/toggle-public/copy-link flow shared by the recipe and collection
- * ellipsis menus. Owns its data (fetches shared users on mount) so callers pass
- * this hook's output down as props instead of fetching independently.
+ * Shared sharing controls for recipe and collection menus.
+ * Fetches shared users so callers can pass the hook's output to their UI.
  */
 export const useShareableEntity = ({
   entityId,
@@ -49,9 +48,7 @@ export const useShareableEntity = ({
 
   useEffect(() => {
     if (!entityId) return;
-    // Re-seed from the entity's own public status only when the entity itself
-    // changes (e.g. the page's async fetch resolves after this hook first
-    // mounts) — not on every render, which would stomp an in-flight toggle.
+    // Sync when the entity changes, without overwriting an in-flight toggle.
     setIsPublicState(initialIsPublic);
     refreshSharedUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,7 +60,9 @@ export const useShareableEntity = ({
       const newStatus = !isPublic;
       await setIsPublic(entityId, newStatus);
       setIsPublicState(newStatus);
-      toast.success(`${entityLabel} is now ${newStatus ? "public" : "private"}!`);
+      toast.success(
+        `${entityLabel} is now ${newStatus ? "public" : "private"}!`,
+      );
     } catch (error) {
       toast.error(errorMessage(error));
     }
@@ -78,7 +77,7 @@ export const useShareableEntity = ({
       if (!user) throw new Error("User not found.");
       await share(entityId, user.id, permission);
       toast.success(
-        `${entityLabel} shared with ${user.display_name} as ${permission}.`
+        `${entityLabel} shared with ${user.display_name} as ${permission}.`,
       );
       await refreshSharedUsers();
     } catch (error) {

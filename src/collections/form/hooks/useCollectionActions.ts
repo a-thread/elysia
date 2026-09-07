@@ -6,6 +6,7 @@ import CollectionService from "@shared/services/CollectionService";
 import TagService from "@shared/services/TagService";
 import RecipeService from "@shared/services/RecipeService";
 import FormUtils from "@shared/utils/form-field-helpers";
+import { syncRelationship } from "@shared/utils/relationshipDiff";
 
 export const useCollectionActions = (
   formData: Partial<Collection>,
@@ -40,10 +41,6 @@ export const useCollectionActions = (
         const simpleObject = FormUtils.extractSimpleValues(updatedFields);
         await CollectionService.upsert(collectionId, simpleObject);
         toast.success("Collection updated successfully!");
-
-        // Handle relationship updates (Tags & Recipes)
-        await handleTagChanges(collectionId, originalData.tags || [], formData.tags || []);
-        await handleRecipeChanges(collectionId, originalData.recipes || [], formData.recipes || []);
       } else {
         // Adding new collection
         const simpleObject = FormUtils.extractSimpleValues(formData);
@@ -53,18 +50,28 @@ export const useCollectionActions = (
           throw new Error("Failed to create collection.");
         }
         collectionId = response.collectionId;
-
-        // Since this is a new collection, just add all selected tags & recipes
-        if (formData.tags && formData.tags.length > 0) {
-          await TagService.addToCollection(collectionId, formData.tags);
-        }
-
-        if (formData.recipes && formData.recipes.length > 0) {
-          await RecipeService.addManyToOneCollection(collectionId, formData.recipes);
-        }
-
         toast.success("Collection added successfully!");
       }
+
+      // Relationship updates (Tags & Recipes) — a fresh collection has no
+      // originalData, so this simply adds everything selected.
+      await syncRelationship(
+        originalData?.tags || [],
+        formData.tags || [],
+        (tags) => TagService.addToCollection(collectionId!, tags),
+        (tags) => TagService.removeFromCollection(collectionId!, tags)
+      );
+
+      await syncRelationship(
+        originalData?.recipes || [],
+        formData.recipes || [],
+        (recipes) => RecipeService.addManyToOneCollection(collectionId!, recipes),
+        (recipes) =>
+          RecipeService.removeManyFromManyCollections(
+            [collectionId!],
+            recipes.map((r) => r.id!)
+          )
+      );
 
       navigate(`/collections/${collectionId}`);
     } catch (error: any) {
@@ -74,36 +81,4 @@ export const useCollectionActions = (
   };
 
   return { handleSave };
-};
-
-/**
- * Handles changes in Tags (adds new ones, removes deleted ones).
- */
-const handleTagChanges = async (collectionId: string, originalTags: any[], updatedTags: any[]) => {
-  const tagsToAdd = updatedTags.filter(tag => !originalTags.some((origTag) => origTag.id === tag.id));
-  const tagsToRemove = originalTags.filter(origTag => !updatedTags.some(tag => tag.id === origTag.id));
-
-  if (tagsToAdd.length > 0) {
-    await TagService.addToCollection(collectionId, tagsToAdd);
-  }
-
-  if (tagsToRemove.length > 0) {
-    await TagService.removeFromCollection(collectionId, tagsToRemove);
-  }
-};
-
-/**
- * Handles changes in Recipes (adds new ones, removes deleted ones).
- */
-const handleRecipeChanges = async (collectionId: string, originalRecipes: any[], updatedRecipes: any[]) => {
-  const recipesToAdd = updatedRecipes.filter(recipe => !originalRecipes.some(origRecipe => origRecipe.id === recipe.id));
-  const recipesToRemove = originalRecipes.filter(origRecipe => !updatedRecipes.some(recipe => recipe.id === origRecipe.id));
-
-  if (recipesToAdd.length > 0) {
-    await RecipeService.addManyToOneCollection(collectionId, recipesToAdd);
-  }
-
-  if (recipesToRemove.length > 0) {
-    await RecipeService.removeManyFromManyCollections([collectionId], recipesToRemove);
-  }
 };

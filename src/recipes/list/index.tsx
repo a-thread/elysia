@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState } from "react";
 import { useFetchRecipes } from "./hooks/useFetchRecipes";
+import { useRecipeExport } from "./hooks/useRecipeExport";
 import Loading from "@shared/components/Loading";
 import EmptyState from "@shared/components/EmptyState";
 import { Link, Outlet, useParams } from "react-router-dom";
@@ -40,9 +41,12 @@ const RecipeList: React.FC = () => {
     setSort,
     resetAndLoadRecipes,
     loadMoreRecipes,
-    isExporting,
-    exportAll,
   } = useFetchRecipes();
+  const { isExporting, exportAll } = useRecipeExport(
+    searchTerm,
+    selectedTags,
+    sort
+  );
 
   const { id } = useParams();
   const { openModal, closeModal } = useModalManager();

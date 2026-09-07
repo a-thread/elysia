@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Recipe } from "@shared/models/Recipe";
 import TagService from "@shared/services/TagService";
 import CollectionService from "@shared/services/CollectionService";
 import { IdTitle } from "@shared/models/Tag";
+import { useEntitySearch } from "@shared/hooks/useEntitySearch";
 
 export const useRecipeForm = () => {
   const location = useLocation();
@@ -11,10 +12,14 @@ export const useRecipeForm = () => {
 
   const isEditing = !!id;
 
-  const [collectionSearch, setCollectionSearch] = useState("");
-  const [collectionList, setCollectionList] = useState<any[]>([]);
-  const [tagSearch, setTagSearch] = useState("");
-  const [tagList, setTagList] = useState<IdTitle[]>([]);
+  const { setSearchTerm: setCollectionSearch, list: collectionList } =
+    useEntitySearch((term) => CollectionService.getList(0, 25, term), "collections");
+  const {
+    setSearchTerm: setTagSearch,
+    list: tagList,
+    setList: setTagList,
+  } = useEntitySearch((term) => TagService.getList(0, 25, term), "tags");
+
   const [formData, setFormData] = useState<Recipe>({
     title: "",
     description: "",
@@ -66,38 +71,6 @@ export const useRecipeForm = () => {
   const onFormChange = (field: keyof Recipe, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
-  // Fetch Tags
-  const fetchTags = useCallback(async () => {
-    try {
-      const response = await TagService.getList(0, 25, tagSearch);
-      if (response?.data) {
-        setTagList(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching tags:", error);
-    }
-  }, [tagSearch]);
-
-  // Fetch Recipes
-  const fetchCollections = useCallback(async () => {
-    try {
-      const response = await CollectionService.getList(0, 25, collectionSearch);
-      if (response?.data) {
-        setCollectionList(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-    }
-  }, [collectionSearch]);
-
-  useEffect(() => {
-    fetchCollections();
-  }, [collectionSearch]);
-
-  useEffect(() => {
-    fetchTags();
-  }, [fetchTags]);
 
   const createTag = async (title: string): Promise<IdTitle | null> => {
     try {

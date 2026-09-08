@@ -27,10 +27,10 @@ const IngredientsSection: React.FC<{ ingredients: StepIngredient[] }> = ({ ingre
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-leaf-green-900 dark:text-leaf-green-100 mb-4">
+      <h2 className="text-xl md:text-2xl font-semibold text-leaf-green-900 dark:text-leaf-green-100 mb-3 md:mb-4">
         Ingredients
       </h2>
-      <div className="flex flex-col gap-4 mb-6">
+      <div className="flex flex-col gap-3 md:gap-4 mb-4 md:mb-6">
         {groups.map((group, groupIndex) => (
           <div key={groupIndex}>
             {group.group && (

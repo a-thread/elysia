@@ -9,6 +9,8 @@ interface TitleDescHeaderProps extends TitleDescriptionImgUrl {
   actionVariant?: "icon" | "solid";
   actionClassName?: string;
   onAction?: () => void;
+  titleClassName?: string;
+  descriptionClassName?: string;
 }
 
 const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
@@ -18,6 +20,8 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
   actionVariant = "icon",
   actionClassName = "",
   onAction,
+  titleClassName = "text-3xl font-medium text-leaf-green-900 dark:text-leaf-green-100",
+  descriptionClassName = "text-leaf-green-800 dark:text-gray-300 mt-4 mb-6",
 }) => {
   const { isAuthenticated } = useAuth();
   const showAction = isAuthenticated && actionName?.length > 0;
@@ -29,7 +33,7 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
           actionVariant === "solid" ? "justify-between" : "space-x-3"
         }`}
       >
-        <h1 className="text-3xl font-medium text-leaf-green-900 dark:text-leaf-green-100">
+        <h1 className={titleClassName}>
           {title}
         </h1>
         {showAction && (
@@ -54,7 +58,7 @@ const TitleDescHeader: React.FC<TitleDescHeaderProps> = ({
       </div>
 
       {!!description?.length && (
-        <p className="text-leaf-green-800 dark:text-gray-300 mt-4 mb-6">
+        <p className={descriptionClassName}>
           {description}
         </p>
       )}

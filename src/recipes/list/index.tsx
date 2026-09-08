@@ -45,7 +45,7 @@ const RecipeList: React.FC = () => {
   const { isExporting, exportAll } = useRecipeExport(
     searchTerm,
     selectedTags,
-    sort
+    sort,
   );
 
   const { id } = useParams();
@@ -87,131 +87,131 @@ const RecipeList: React.FC = () => {
 
   return (
     <>
-    <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">
-      <TitleDescHeader
-        title="Recipes"
-        actionName="New Recipe"
-        actionVariant="solid"
-        actionClassName="hidden sm:flex"
-        onAction={handleAddRecipe}
-      />
-      <AddRecipeFab />
+      <div className="max-w-5xl mx-auto p-6 flex flex-col justify-center items-center text-center transition-all duration-300">
+        <TitleDescHeader
+          title="Recipes"
+          actionName="New Recipe"
+          actionVariant="solid"
+          actionClassName="hidden sm:flex"
+          onAction={handleAddRecipe}
+        />
+        <AddRecipeFab />
 
-      <div className="w-full mb-4">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setShowSearch((prev) => !prev)}
-            aria-label={showSearch ? "Close search" : "Search recipes"}
-            aria-expanded={showSearch}
-            aria-controls="recipe-search-field"
-            className={`shrink-0 ${iconButtonClasses(showSearch || searchTerm.length > 0)}`}
-          >
-            <FaSearch className="w-4 h-4" aria-hidden="true" />
-            {!showSearch && searchTerm.length > 0 && (
-              <span
-                aria-hidden="true"
-                className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-leaf-green-600"
-              />
-            )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowFilter((prev) => !prev)}
-            aria-label={showFilter ? "Close tag filter" : "Filter by tag"}
-            aria-expanded={showFilter}
-            aria-controls="recipe-filter-field"
-            className={`shrink-0 ${iconButtonClasses(showFilter || selectedTags.length > 0)}`}
-          >
-            <FaFilter className="w-4 h-4" aria-hidden="true" />
-            {!showFilter && selectedTags.length > 0 && (
-              <span
-                aria-hidden="true"
-                className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-leaf-green-600 text-white text-[10px] font-bold flex items-center justify-center"
-              >
-                {selectedTags.length}
-              </span>
-            )}
-          </button>
-
-          <div className="ml-auto shrink-0">
-            <DropdownButton
-              options={actionOptions}
-              triggerLabel="Recipe list actions"
-              trigger={({ onClick, isOpen, menuId }) => (
-                <button
-                  type="button"
-                  onClick={onClick}
-                  aria-label="Recipe list actions"
-                  aria-haspopup="menu"
-                  aria-expanded={isOpen}
-                  aria-controls={menuId}
-                  className={`shrink-0 ${iconButtonClasses(isOpen)}`}
-                >
-                  <FaEllipsisV className="w-4 h-4" aria-hidden="true" />
-                </button>
+        <div className="w-full mb-4">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowSearch((prev) => !prev)}
+              aria-label={showSearch ? "Close search" : "Search recipes"}
+              aria-expanded={showSearch}
+              aria-controls="recipe-search-field"
+              className={`shrink-0 ${iconButtonClasses(showSearch || searchTerm.length > 0)}`}
+            >
+              <FaSearch className="w-4 h-4" aria-hidden="true" />
+              {!showSearch && searchTerm.length > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-leaf-green-600"
+                />
               )}
-            />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowFilter((prev) => !prev)}
+              aria-label={showFilter ? "Close tag filter" : "Filter by tag"}
+              aria-expanded={showFilter}
+              aria-controls="recipe-filter-field"
+              className={`shrink-0 ${iconButtonClasses(showFilter || selectedTags.length > 0)}`}
+            >
+              <FaFilter className="w-4 h-4" aria-hidden="true" />
+              {!showFilter && selectedTags.length > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-leaf-green-600 text-white text-[10px] font-bold flex items-center justify-center"
+                >
+                  {selectedTags.length}
+                </span>
+              )}
+            </button>
+
+            <div className="ml-auto shrink-0">
+              <DropdownButton
+                options={actionOptions}
+                triggerLabel="Recipe list actions"
+                trigger={({ onClick, isOpen, menuId }) => (
+                  <button
+                    type="button"
+                    onClick={onClick}
+                    aria-label="Recipe list actions"
+                    aria-haspopup="menu"
+                    aria-expanded={isOpen}
+                    aria-controls={menuId}
+                    className={`shrink-0 ${iconButtonClasses(isOpen)}`}
+                  >
+                    <FaEllipsisV className="w-4 h-4" aria-hidden="true" />
+                  </button>
+                )}
+              />
+            </div>
           </div>
+
+          {showSearch && (
+            <div id="recipe-search-field" className="mt-2 text-left">
+              <SearchInput
+                className="w-full"
+                placeholder="Search by title, description or ingredient..."
+                onSearch={setSearchTerm}
+                showIcon={false}
+                autoFocus
+              />
+            </div>
+          )}
+
+          {showFilter && (
+            <div id="recipe-filter-field" className="mt-2 text-left">
+              <MultiSelect
+                inputId="recipe-tag-filter"
+                placeholder="Filter by tag..."
+                options={tags}
+                selectedOptions={selectedTags}
+                setSelectedOptions={setSelectedTags}
+                onSearch={setTagSearchTerm}
+              />
+            </div>
+          )}
         </div>
 
-        {showSearch && (
-          <div id="recipe-search-field" className="mt-2 text-left">
-            <SearchInput
-              className="w-full"
-              placeholder="Search by title, description or ingredient..."
-              onSearch={setSearchTerm}
-              showIcon={false}
-              autoFocus
-            />
+        {loading && <Loading className="mt-6" />}
+
+        {!loading && recipes.length === 0 && (
+          <EmptyState message="No recipes found. Add some to get started!" />
+        )}
+
+        {recipes.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+            {recipes.map((recipe: Recipe) => (
+              <Link key={recipe.id} to={`/recipes/${recipe.id}`}>
+                <ImgTitleDescription {...recipe} />
+              </Link>
+            ))}
           </div>
         )}
 
-        {showFilter && (
-          <div id="recipe-filter-field" className="mt-2 text-left">
-            <MultiSelect
-              inputId="recipe-tag-filter"
-              placeholder="Filter by tag..."
-              options={tags}
-              selectedOptions={selectedTags}
-              setSelectedOptions={setSelectedTags}
-              onSearch={setTagSearchTerm}
-            />
-          </div>
+        {hasMore && (
+          <InfiniteScroll threshold={0.1} onScrolled={handleInfiniteScroll}>
+            <div className="h-1" />
+          </InfiniteScroll>
         )}
       </div>
 
-      {loading && <Loading className="mt-6" />}
-
-      {!loading && recipes.length === 0 && (
-        <EmptyState message="No recipes found. Add some to get started!" />
-      )}
-
-      {recipes.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-          {recipes.map((recipe: Recipe) => (
-            <Link key={recipe.id} to={`/recipes/${recipe.id}`}>
-              <ImgTitleDescription {...recipe} />
-            </Link>
-          ))}
+      {id && (
+        <div className="fixed inset-x-0 top-[73px] bottom-0 z-[35] overflow-y-auto bg-cream dark:bg-gray-900">
+          <div className="container mx-auto px-4">
+            <Outlet />
+          </div>
         </div>
       )}
-
-      {hasMore && (
-        <InfiniteScroll threshold={0.1} onScrolled={handleInfiniteScroll}>
-          <div className="h-1" />
-        </InfiniteScroll>
-      )}
-    </div>
-
-    {id && (
-      <div className="fixed inset-x-0 top-[73px] bottom-0 z-[35] overflow-y-auto bg-cream dark:bg-gray-900">
-        <div className="container mx-auto px-4 py-6">
-          <Outlet />
-        </div>
-      </div>
-    )}
     </>
   );
 };

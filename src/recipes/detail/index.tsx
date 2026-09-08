@@ -36,8 +36,8 @@ const Recipe: React.FC = () => {
   if (!recipe) return <EmptyState message="Recipe not found." />;
 
   return (
-    <div className="max-w-4xl mx-auto mt-4">
-      <div className="w-full flex justify-between items-center mb-4">
+    <div className="max-w-4xl mx-auto mt-2 md:mt-4">
+      <div className="w-full flex justify-between items-center mb-3 md:mb-4">
         <BackLink to="/recipes">Recipes</BackLink>
         <EllipsisMenu
           canEdit={canEdit}
@@ -63,19 +63,21 @@ const Recipe: React.FC = () => {
 };
 
 const Content: React.FC<{ recipe: RecipeModel }> = ({ recipe }) => (
-  <div className="flex flex-col-reverse md:flex-row gap-6">
+  <div className="flex flex-col-reverse md:flex-row gap-4 md:gap-6">
     <div className="w-full md:w-3/4">
       {recipe.img_url && (
         <img
           src={recipe.img_url}
           alt={recipe.title}
-          className="w-full h-64 object-cover rounded-t-xl"
+          className="w-full h-48 md:h-64 object-cover rounded-t-xl"
         />
       )}
-      <Card hasImageAbove={!!recipe.img_url}>
+      <Card hasImageAbove={!!recipe.img_url} className="p-4 md:p-6">
         <TitleDescHeader
           title={recipe.title}
           description={recipe.description}
+          titleClassName="text-2xl md:text-3xl font-medium text-leaf-green-900 dark:text-leaf-green-100"
+          descriptionClassName="text-leaf-green-800 dark:text-gray-300 mt-2 mb-4 md:mt-4 md:mb-6"
         />
         <IngredientsSection ingredients={recipe.ingredients} />
         <StepsSection steps={recipe.steps} />

@@ -1,2 +1,0 @@
-import{j as t,l as o}from"./index-B4f0-vn_.js";const a=({onClick:r,label:e="Remove",className:s=""})=>t.jsx("button",{type:"button",onClick:r,title:e,"aria-label":e,className:`shrink-0 p-1.5 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-500 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-leaf-green-300 rounded-full ${s}`,children:t.jsx(o,{className:"w-3.5 h-3.5"})});export{a as R};
-//# sourceMappingURL=RemoveButton-B2pLN9In.js.map

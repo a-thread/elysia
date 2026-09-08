@@ -15,7 +15,7 @@ const ImgTitleDescription: React.FC<ImgTitleDescCardProps> = ({
   servings,
 }) => {
   const totalTime = (prep_time || 0) + (cook_time || 0);
-  const hasStats = !!totalTime || !!servings;
+  const hasStats = !!totalTime || (servings && servings > 1);
 
   return (
     <>

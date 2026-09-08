@@ -44,6 +44,9 @@ describe("useRecipeDetails", () => {
       recipe_to_users: [],
       collection_to_recipes: [],
       recipe_to_tags: [],
+      can_edit: true,
+      is_owner: true,
+      public_permission: "read",
     });
 
     const { result } = renderHook(() => useRecipeDetails("r1", "u1"));
@@ -51,6 +54,9 @@ describe("useRecipeDetails", () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.recipe?.title).toBe("Soup");
     expect(result.current.recipe?.total_time).toBe(15);
+    expect(result.current.recipe?.can_edit).toBe(true);
+    expect(result.current.recipe?.is_owner).toBe(true);
+    expect(result.current.recipe?.public_permission).toBe("read");
   });
 
   it("stops loading without setting a recipe when the fetch errors", async () => {

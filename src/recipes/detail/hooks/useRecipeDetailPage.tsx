@@ -16,7 +16,7 @@ import AddRecipeToCollectionsModal from "../components/AddRecipeToCollections";
 export const useRecipeDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
 
@@ -26,6 +26,7 @@ export const useRecipeDetailPage = () => {
     entityId: recipe?.id,
     entityLabel: "Recipe",
     initialIsPublic: recipe?.is_public ?? false,
+    initialPublicPermission: recipe?.public_permission ?? "read",
     fetchSharedUsers: RecipeService.getSharedUsers,
     setIsPublic: RecipeService.setIsPublic,
     share: RecipeService.shareWithUser,
@@ -88,7 +89,8 @@ export const useRecipeDetailPage = () => {
   return {
     recipe,
     loading,
-    isAuthenticated,
+    canEdit: recipe?.can_edit ?? false,
+    isOwner: recipe?.is_owner ?? false,
     editRecipe,
     confirmDelete,
     addTags,

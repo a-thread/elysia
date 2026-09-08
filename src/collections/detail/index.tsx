@@ -16,11 +16,15 @@ const CollectionDetail: React.FC = () => {
     collection,
     loading,
     showMenu,
+    canEdit,
+    isOwner,
     editCollection,
     confirmDelete,
     isPublic,
+    publicPermission,
     sharedUsers,
     toggleIsPublic,
+    setPublicPermission,
     shareWithUser,
     revokeAccessById,
     copyLink,
@@ -41,11 +45,15 @@ const CollectionDetail: React.FC = () => {
         <div className="flex justify-end flex-wrap gap-2">
           {showMenu && (
             <EllipsisMenu
+              canEdit={canEdit}
+              isOwner={isOwner}
               isPublic={isPublic}
+              publicPermission={publicPermission}
               sharedUsers={sharedUsers}
               onEdit={editCollection}
               onDelete={confirmDelete}
               onTogglePublicShare={toggleIsPublic}
+              onSetPublicPermission={setPublicPermission}
               shareWithUser={shareWithUser}
               onRevokeAccess={revokeAccessById}
               onCopyLink={copyLink}

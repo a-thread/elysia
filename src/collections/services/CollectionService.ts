@@ -1,6 +1,7 @@
 import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
 import { Collection } from "@collections/models/Collection";
 import { TableNames } from "@shared/services/TableNames";
+import { Permission } from "@shared/models/Permission";
 
 const getList = async (
   currentSkip: number,
@@ -77,7 +78,7 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
         .from(TableNames.COLLECTIONS)
         .select(
           `
-          id, title, description, img_url, is_public, user_id,
+          id, title, description, img_url, is_public, user_id, public_permission,
           collection_to_recipes!left(
             recipes!inner(
               id, title, description, img_url, user_id, is_public,
@@ -103,16 +104,20 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
       const collectionTags =
         data.collection_to_tags?.flatMap((item) => item.tags) || [];
 
+      const isOwner = data.user_id === userId;
+
       return {
         ...data,
         recipes: mergeCollectionRecipes(data),
         tags: collectionTags,
+        is_owner: isOwner,
         can_edit:
-          data.user_id === userId ||
-          (data.collection_to_users &&
-            data.collection_to_users.some(
-              (share) => share.permission === "edit",
-            )),
+          isOwner ||
+          (data.collection_to_users?.some(
+            (share) => share.permission === "edit",
+          ) ??
+            false) ||
+          (data.is_public && data.public_permission === "edit" && !!userId),
       };
     },
   );
@@ -170,13 +175,17 @@ const deleteById = async (collectionId: string) => {
   );
 };
 
-const setIsPublic = async (collectionId: string, isPublic: boolean) => {
+const setIsPublic = async (
+  collectionId: string,
+  isPublic: boolean,
+  publicPermission: Permission = "read",
+) => {
   return await supabaseWithAbort.request(
     `setIsPublic-${collectionId}`,
     async (client) => {
       const { error } = await client
         .from(TableNames.COLLECTIONS)
-        .update({ is_public: isPublic })
+        .update({ is_public: isPublic, public_permission: publicPermission })
         .eq("id", collectionId);
 
       if (error) {
@@ -208,7 +217,7 @@ const fetchSharedUsers = async (collectionId: string) => {
 const share = async (
   collectionId: string,
   userId: string,
-  permission: string,
+  permission: Permission,
 ) => {
   return await supabaseWithAbort.request(
     `share-${collectionId}-${userId}`,

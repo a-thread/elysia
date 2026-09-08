@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useToast } from "@shared/components/Toast";
 import { UserService } from "@shared/services/UserService";
 import type { SharedUser } from "@shared/components/Modals/ShareModal";
-
-type Permission = "read" | "edit";
+import type { Permission } from "@shared/models/Permission";
 
 const errorMessage = (error: unknown) =>
   error instanceof Error ? error.message : undefined;
@@ -13,8 +12,13 @@ interface UseShareableEntityArgs {
   /** Used in toast copy, e.g. "Recipe" or "Collection". */
   entityLabel: string;
   initialIsPublic: boolean;
+  initialPublicPermission: Permission;
   fetchSharedUsers: (entityId: string) => Promise<unknown>;
-  setIsPublic: (entityId: string, isPublic: boolean) => Promise<unknown>;
+  setIsPublic: (
+    entityId: string,
+    isPublic: boolean,
+    publicPermission: Permission,
+  ) => Promise<unknown>;
   share: (
     entityId: string,
     userId: string,
@@ -31,6 +35,7 @@ export const useShareableEntity = ({
   entityId,
   entityLabel,
   initialIsPublic,
+  initialPublicPermission,
   fetchSharedUsers,
   setIsPublic,
   share,
@@ -38,6 +43,9 @@ export const useShareableEntity = ({
 }: UseShareableEntityArgs) => {
   const toast = useToast();
   const [isPublic, setIsPublicState] = useState(initialIsPublic);
+  const [publicPermission, setPublicPermissionState] = useState<Permission>(
+    initialPublicPermission,
+  );
   const [sharedUsers, setSharedUsers] = useState<SharedUser[]>([]);
 
   const refreshSharedUsers = useCallback(async () => {
@@ -50,6 +58,7 @@ export const useShareableEntity = ({
     if (!entityId) return;
     // Sync when the entity changes, without overwriting an in-flight toggle.
     setIsPublicState(initialIsPublic);
+    setPublicPermissionState(initialPublicPermission);
     refreshSharedUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entityId]);
@@ -58,10 +67,25 @@ export const useShareableEntity = ({
     if (!entityId) return;
     try {
       const newStatus = !isPublic;
-      await setIsPublic(entityId, newStatus);
+      await setIsPublic(entityId, newStatus, publicPermission);
       setIsPublicState(newStatus);
       toast.success(
         `${entityLabel} is now ${newStatus ? "public" : "private"}!`,
+      );
+    } catch (error) {
+      toast.error(errorMessage(error));
+    }
+  };
+
+  const setPublicPermission = async (permission: Permission) => {
+    if (!entityId) return;
+    try {
+      await setIsPublic(entityId, isPublic, permission);
+      setPublicPermissionState(permission);
+      toast.success(
+        `${entityLabel} is now ${
+          permission === "edit" ? "editable by" : "read-only for"
+        } signed-in users.`,
       );
     } catch (error) {
       toast.error(errorMessage(error));
@@ -103,8 +127,10 @@ export const useShareableEntity = ({
 
   return {
     isPublic,
+    publicPermission,
     sharedUsers,
     toggleIsPublic,
+    setPublicPermission,
     shareWithUser,
     revokeAccessById,
     copyLink,

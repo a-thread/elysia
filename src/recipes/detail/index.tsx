@@ -15,15 +15,18 @@ const Recipe: React.FC = () => {
   const {
     recipe,
     loading,
-    isAuthenticated,
+    canEdit,
+    isOwner,
     editRecipe,
     confirmDelete,
     addTags,
     addToCollection,
     exportRecipe,
     isPublic,
+    publicPermission,
     sharedUsers,
     toggleIsPublic,
+    setPublicPermission,
     shareWithUser,
     revokeAccessById,
     copyLink,
@@ -37,8 +40,10 @@ const Recipe: React.FC = () => {
       <div className="w-full flex justify-between items-center mb-4">
         <BackLink to="/recipes">Recipes</BackLink>
         <EllipsisMenu
-          isAuthenticated={isAuthenticated}
+          canEdit={canEdit}
+          isOwner={isOwner}
           isPublic={isPublic}
+          publicPermission={publicPermission}
           sharedUsers={sharedUsers}
           onEdit={editRecipe}
           onDelete={confirmDelete}
@@ -46,6 +51,7 @@ const Recipe: React.FC = () => {
           onAddToCollection={addToCollection}
           onExport={exportRecipe}
           onTogglePublicShare={toggleIsPublic}
+          onSetPublicPermission={setPublicPermission}
           shareWithUser={shareWithUser}
           onRevokeAccess={revokeAccessById}
           onCopyLink={copyLink}

@@ -25,6 +25,7 @@ const baseArgs = () => ({
   entityId: "e1",
   entityLabel: "Recipe",
   initialIsPublic: false,
+  initialPublicPermission: "read" as const,
   fetchSharedUsers: vi.fn().mockResolvedValue([]),
   setIsPublic: vi.fn().mockResolvedValue(undefined),
   share: vi.fn().mockResolvedValue(undefined),
@@ -64,10 +65,35 @@ describe("useShareableEntity", () => {
 
     await act(() => result.current.toggleIsPublic());
     expect(result.current.isPublic).toBe(true);
+    expect(args.setIsPublic).toHaveBeenCalledWith("e1", true, "read");
     expect(toast.success).toHaveBeenCalled();
 
     await act(() => result.current.shareWithUser("bea@example.com", "read"));
     expect(args.share).toHaveBeenCalledWith("e1", "u2", "read");
+  });
+
+  it("updates the public permission on success", async () => {
+    const args = baseArgs();
+
+    const { result } = renderHook(() => useShareableEntity(args));
+    await waitFor(() => expect(args.fetchSharedUsers).toHaveBeenCalled());
+
+    await act(() => result.current.setPublicPermission("edit"));
+    expect(result.current.publicPermission).toBe("edit");
+    expect(args.setIsPublic).toHaveBeenCalledWith("e1", false, "edit");
+    expect(toast.success).toHaveBeenCalled();
+  });
+
+  it("surfaces an error toast when updating the public permission fails", async () => {
+    const args = baseArgs();
+    args.setIsPublic.mockRejectedValue(new Error("Failed to update public status."));
+
+    const { result } = renderHook(() => useShareableEntity(args));
+    await waitFor(() => expect(args.fetchSharedUsers).toHaveBeenCalled());
+
+    await act(() => result.current.setPublicPermission("edit"));
+    expect(toast.error).toHaveBeenCalledWith("Failed to update public status.");
+    expect(result.current.publicPermission).toBe("read");
   });
 
   it("surfaces an error toast when sharing fails", async () => {

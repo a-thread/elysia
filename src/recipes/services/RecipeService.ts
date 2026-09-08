@@ -3,6 +3,7 @@ import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
 import { TableNames } from "@shared/services/TableNames";
 import { IdTitle } from "@shared/models/Tag";
 import { RecipeSort, recipeSortToOrder } from "@recipes/models/RecipeSort";
+import { Permission } from "@shared/models/Permission";
 
 const getRecipeList = async (
   currentSkip: number,
@@ -57,7 +58,7 @@ const getDetail = async (
         .from(TableNames.RECIPES)
         .select(
           `
-      id, title, description, img_url, user_id, is_public, servings, prep_time, cook_time, original_recipe_url,
+      id, title, description, img_url, user_id, is_public, public_permission, servings, prep_time, cook_time, original_recipe_url,
       ingredients,
       steps,
       recipe_to_users!left(permission),
@@ -77,7 +78,19 @@ const getDetail = async (
       if (error) throw new Error("Failed to fetch recipe details.");
       if (!data) throw new Error("No data returned for the given recipe.");
 
-      return data;
+      const isOwner = data.user_id === userId;
+
+      return {
+        ...data,
+        is_owner: isOwner,
+        can_edit:
+          isOwner ||
+          (data.recipe_to_users?.some(
+            (share: { permission: string }) => share.permission === "edit",
+          ) ??
+            false) ||
+          (data.is_public && data.public_permission === "edit" && !!userId),
+      };
     },
   );
 };
@@ -258,19 +271,23 @@ const getIsPublic = async (recipeId: string | undefined) => {
   );
 };
 
-const setIsPublic = async (recipeId: string | undefined, isPublic: boolean) => {
+const setIsPublic = async (
+  recipeId: string | undefined,
+  isPublic: boolean,
+  publicPermission: Permission = "read",
+) => {
   return await supabaseWithAbort.request(
     `togglePublicShare-${recipeId}`,
     async (client) => {
       const { error } = await client
         .from(TableNames.RECIPES)
-        .update({ is_public: isPublic })
+        .update({ is_public: isPublic, public_permission: publicPermission })
         .eq("id", recipeId);
 
       if (error) {
         throw new Error("Failed to update public status.");
       }
-      return !isPublic;
+      return isPublic;
     },
   );
 };
@@ -278,7 +295,7 @@ const setIsPublic = async (recipeId: string | undefined, isPublic: boolean) => {
 const shareWithUser = async (
   recipeId: string | undefined,
   userId: string,
-  permission: string,
+  permission: Permission,
 ) => {
   return await supabaseWithAbort.request(
     `shareRecipe-${recipeId}-${userId}`,

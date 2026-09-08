@@ -26,6 +26,7 @@ export const useCollectionDetailPage = () => {
     entityId: collection?.id,
     entityLabel: "Collection",
     initialIsPublic: collection?.is_public ?? false,
+    initialPublicPermission: collection?.public_permission ?? "read",
     fetchSharedUsers: CollectionService.fetchSharedUsers,
     setIsPublic: CollectionService.setIsPublic,
     share: CollectionService.share,
@@ -61,7 +62,9 @@ export const useCollectionDetailPage = () => {
   return {
     collection,
     loading,
-    showMenu: !!user?.id,
+    canEdit: collection?.can_edit ?? false,
+    isOwner: collection?.is_owner ?? false,
+    showMenu: (collection?.can_edit || collection?.is_owner) ?? false,
     editCollection,
     confirmDelete,
     ...share,

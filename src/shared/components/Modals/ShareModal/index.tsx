@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Button, RemoveButton } from "../../Buttons";
 import ShareWithUser from "./ShareWithUser";
+import PermissionDropdown from "./PermissionDropdown";
 import { FaCheck } from "react-icons/fa";
 import { BaseModalProps } from "../BaseModal/BaseModalProps";
-
-type PermissionType = "read" | "edit";
+import type { Permission } from "@shared/models/Permission";
 
 export interface SharedUser {
   id: string;
   users: { email: string };
-  permission: PermissionType;
+  permission: Permission;
 }
 
 interface ShareModalProps extends BaseModalProps {
   typeOfShare: string;
   sharedUsers: SharedUser[];
   isPublic: boolean;
+  publicPermission: Permission;
   onTogglePublicShare: () => void;
-  shareWithUser: (email: string, permission: PermissionType) => void;
+  onSetPublicPermission: (permission: Permission) => void;
+  shareWithUser: (email: string, permission: Permission) => void;
   onRevokeAccess: (userId: string) => void;
   onCopyLink: () => void;
 }
@@ -26,7 +28,9 @@ const ShareModal: React.FC<ShareModalProps> = ({
   typeOfShare,
   sharedUsers,
   isPublic,
+  publicPermission,
   onTogglePublicShare,
+  onSetPublicPermission,
   shareWithUser,
   onRevokeAccess,
   onCopyLink,
@@ -71,9 +75,15 @@ const ShareModal: React.FC<ShareModalProps> = ({
       </div>
 
       {isPublicLocal && (
-        <Button btnType="secondary" onClick={onCopyLink} className="w-full">
-          Copy Public Link
-        </Button>
+        <div className="flex flex-col space-y-2 mb-4">
+          <PermissionDropdown
+            value={publicPermission}
+            onChange={onSetPublicPermission}
+          />
+          <Button btnType="secondary" onClick={onCopyLink} className="w-full">
+            Copy Public Link
+          </Button>
+        </div>
       )}
 
       <hr className="border-gray-700 my-4" />

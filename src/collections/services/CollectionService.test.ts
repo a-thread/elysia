@@ -109,6 +109,7 @@ describe("CollectionService.getDetail", () => {
           },
         ],
         collection_to_users: [],
+        public_permission: "read",
       },
       error: null,
     });
@@ -118,6 +119,64 @@ describe("CollectionService.getDetail", () => {
     expect(result?.recipes.map((r) => r.id).sort()).toEqual(["r1", "r2"]);
     expect(result?.tags.map((t: { id: string }) => t.id)).toEqual(["t1"]);
     expect(result?.can_edit).toBe(true);
+    expect(result?.is_owner).toBe(true);
+  });
+
+  const baseCollectionRow = {
+    id: "c1",
+    title: "Weeknight dinners",
+    description: null,
+    img_url: null,
+    user_id: "owner-1",
+    collection_to_recipes: [],
+    collection_to_tags: [],
+    collection_to_users: [],
+  };
+
+  it("grants can_edit to a signed-in non-owner when public_permission is edit", async () => {
+    maybeSingle.mockResolvedValue({
+      data: {
+        ...baseCollectionRow,
+        is_public: true,
+        public_permission: "edit",
+      },
+      error: null,
+    });
+
+    const result = await CollectionService.getDetail("c1", "visitor-1");
+
+    expect(result?.can_edit).toBe(true);
+    expect(result?.is_owner).toBe(false);
+  });
+
+  it("does not grant can_edit to a signed-in non-owner when public_permission is read", async () => {
+    maybeSingle.mockResolvedValue({
+      data: {
+        ...baseCollectionRow,
+        is_public: true,
+        public_permission: "read",
+      },
+      error: null,
+    });
+
+    const result = await CollectionService.getDetail("c1", "visitor-1");
+
+    expect(result?.can_edit).toBe(false);
+  });
+
+  it("never grants can_edit to an anonymous visitor even when public_permission is edit", async () => {
+    maybeSingle.mockResolvedValue({
+      data: {
+        ...baseCollectionRow,
+        is_public: true,
+        public_permission: "edit",
+      },
+      error: null,
+    });
+
+    const result = await CollectionService.getDetail("c1", undefined);
+
+    expect(result?.can_edit).toBe(false);
   });
 
   it("throws when the query returns an error", async () => {

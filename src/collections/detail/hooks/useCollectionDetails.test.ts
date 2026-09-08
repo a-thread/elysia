@@ -41,6 +41,8 @@ describe("useCollectionDetails", () => {
       recipes: [],
       tags: [],
       can_edit: true,
+      is_owner: true,
+      public_permission: "read",
     });
 
     const { result } = renderHook(() => useCollectionDetails("c1", "u1"));

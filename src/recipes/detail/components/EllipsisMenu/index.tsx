@@ -9,13 +9,16 @@ import {
 } from "react-icons/fa";
 import { useModalManager, ShareModal } from "@shared/components/Modals";
 import type { SharedUser } from "@shared/components/Modals/ShareModal";
+import type { Permission } from "@shared/models/Permission";
 import DropdownButton, {
   DropdownOption,
 } from "@shared/components/Buttons/DropdownButton";
 
 interface EllipsisMenuProps {
-  isAuthenticated: boolean;
+  canEdit: boolean;
+  isOwner: boolean;
   isPublic: boolean;
+  publicPermission: Permission;
   sharedUsers: SharedUser[];
   onEdit: () => void;
   onDelete: () => void;
@@ -23,14 +26,17 @@ interface EllipsisMenuProps {
   onAddToCollection: () => void;
   onExport: () => void;
   onTogglePublicShare: () => void;
-  shareWithUser: (email: string, permission: "read" | "edit") => void;
+  onSetPublicPermission: (permission: Permission) => void;
+  shareWithUser: (email: string, permission: Permission) => void;
   onRevokeAccess: (shareId: string) => void;
   onCopyLink: () => void;
 }
 
 const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
-  isAuthenticated,
+  canEdit,
+  isOwner,
   isPublic,
+  publicPermission,
   sharedUsers,
   onEdit,
   onDelete,
@@ -38,6 +44,7 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
   onAddToCollection,
   onExport,
   onTogglePublicShare,
+  onSetPublicPermission,
   shareWithUser,
   onRevokeAccess,
   onCopyLink,
@@ -50,7 +57,9 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
         typeOfShare="Recipe"
         sharedUsers={sharedUsers}
         isPublic={isPublic}
+        publicPermission={publicPermission}
         onTogglePublicShare={onTogglePublicShare}
+        onSetPublicPermission={onSetPublicPermission}
         shareWithUser={shareWithUser}
         onRevokeAccess={onRevokeAccess}
         onCopyLink={onCopyLink}
@@ -59,7 +68,7 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
     );
 
   const options: DropdownOption[] = [
-    ...(isAuthenticated
+    ...(canEdit
       ? [
           { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: onEdit },
           {
@@ -68,7 +77,6 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
             destructive: true,
             onClick: onDelete,
           },
-          { label: "Share", icon: <FaShareAlt aria-hidden="true" />, onClick: handleShareClick },
           {
             label: "Add Tags",
             icon: <FaTags aria-hidden="true" />,
@@ -82,11 +90,20 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
           },
         ]
       : []),
+    ...(isOwner
+      ? [
+          {
+            label: "Share",
+            icon: <FaShareAlt aria-hidden="true" />,
+            onClick: handleShareClick,
+          },
+        ]
+      : []),
     {
       label: "Export",
       icon: <FaDownload aria-hidden="true" />,
       onClick: onExport,
-      dividerBefore: isAuthenticated,
+      dividerBefore: canEdit || isOwner,
     },
   ];
 

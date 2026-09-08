@@ -61,14 +61,15 @@ function Navbar() {
 
   return (
     <nav
-      className={`sticky top-0 z-40 bg-white border-b border-gray-200 shadow-xs dark:bg-gray-900 dark:border-gray-800 ${isModalOpen ? "opacity-50 pointer-events-none" : ""
-        }`}
+      className={`sticky top-0 z-40 bg-white border-b border-gray-200 shadow-xs dark:bg-gray-900 dark:border-gray-800 ${
+        isModalOpen ? "opacity-50 pointer-events-none" : ""
+      }`}
       ref={menuRef}
     >
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
         <Link to="/" className="flex items-center space-x-2">
           <img
-            src="https://bbosgvxsamxhzjgzxiuz.supabase.co/storage/v1/object/public/elysia_recipe_photo/echlorotica_nature-removebg-preview_1737171542691_7626.png"
+            src={`${import.meta.env.BASE_URL}transparent-logo.png`}
             className="h-8"
             alt="Elysia Logo"
           />
@@ -81,10 +82,11 @@ function Navbar() {
             <Link
               key={path}
               to={path}
-              className={`py-2 px-3 rounded-md transition duration-200 ${location.pathname === path
+              className={`py-2 px-3 rounded-md transition duration-200 ${
+                location.pathname === path
                   ? "dark:text-leaf-green-300 text-leaf-green-500"
                   : "hover:text-leaf-green-300 dark:text-leaf-green-100 dark:hover:text-leaf-green-300"
-                }`}
+              }`}
             >
               {label}
             </Link>

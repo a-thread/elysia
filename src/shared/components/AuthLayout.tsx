@@ -22,7 +22,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ title, children }) => {
         </div>
         <div className="flex flex-row justify-center m-2">
           <img
-            src="https://bbosgvxsamxhzjgzxiuz.supabase.co/storage/v1/object/public/elysia_recipe_photo/echlorotica_nature-removebg-preview_1737171542691_7626.png"
+            src={`${import.meta.env.BASE_URL}transparent-logo.png`}
             className="h-28"
             alt="Elysia Chloratica"
           />

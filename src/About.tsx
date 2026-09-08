@@ -26,7 +26,7 @@ const About: React.FC = () => {
 
       <div className="flex flex-row justify-center m-4">
         <img
-          src="https://bbosgvxsamxhzjgzxiuz.supabase.co/storage/v1/object/public/elysia_recipe_photo/echlorotica_nature-removebg-preview_1737171542691_7626.png"
+          src={`${import.meta.env.BASE_URL}transparent-logo.png`}
           className="h-40"
           alt="Elysia Chloratica"
         />

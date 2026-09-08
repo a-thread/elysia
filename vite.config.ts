@@ -1,40 +1,54 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-import tailwindcss from '@tailwindcss/vite'
-import { VitePWA } from 'vite-plugin-pwa';
-import path from 'path';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import tailwindcss from "@tailwindcss/vite";
+import { VitePWA } from "vite-plugin-pwa";
+import path from "path";
 
 export default defineConfig({
-  base: '/elysia/',
+  base: "/elysia/",
   plugins: [
     tailwindcss(),
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: "autoUpdate",
       injectRegister: false,
-      includeAssets: ['favicon16.png', 'favicon32.png', 'favicon180.png'],
+      includeAssets: [
+        "favicon-16x16.png",
+        "favicon-32x32.png",
+        "apple-touch-icon.png",
+      ],
       manifest: {
-        name: 'Elysia',
-        short_name: 'Elysia',
-        description: 'Your recipes will be in good hands with Elysia.',
-        start_url: '.',
-        display: 'standalone',
-        theme_color: '#faf6ef',
-        background_color: '#faf6ef',
+        name: "Elysia",
+        short_name: "Elysia",
+        description: "Your recipes will be in good hands with Elysia.",
+        start_url: ".",
+        display: "standalone",
+        theme_color: "#faf6ef",
+        background_color: "#faf6ef",
         icons: [
-          { src: 'logo192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-          { src: 'logo512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          {
+            src: "android-chrome-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any",
+          },
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff2}"],
         runtimeCaching: [
           {
             // Recipe photos stored in Supabase storage.
             urlPattern: /^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/.*/i,
-            handler: 'StaleWhileRevalidate',
+            handler: "StaleWhileRevalidate",
             options: {
-              cacheName: 'elysia-recipe-images',
+              cacheName: "elysia-recipe-images",
               expiration: { maxEntries: 200, maxAgeSeconds: 30 * 24 * 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
@@ -42,9 +56,9 @@ export default defineConfig({
           {
             // Supabase REST API reads, so the last-seen data still renders offline.
             urlPattern: /^https:\/\/[a-z0-9-]+\.supabase\.co\/rest\/.*/i,
-            handler: 'NetworkFirst',
+            handler: "NetworkFirst",
             options: {
-              cacheName: 'elysia-api',
+              cacheName: "elysia-api",
               networkTimeoutSeconds: 8,
               expiration: { maxEntries: 100, maxAgeSeconds: 24 * 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
@@ -60,16 +74,16 @@ export default defineConfig({
   resolve: {
     alias: {
       // Matches tsconfig paths
-      '@shared': path.resolve(__dirname, 'src/shared'),
-      '@recipes': path.resolve(__dirname, 'src/recipes'),
-      '@collections': path.resolve(__dirname, 'src/collections'),
+      "@shared": path.resolve(__dirname, "src/shared"),
+      "@recipes": path.resolve(__dirname, "src/recipes"),
+      "@collections": path.resolve(__dirname, "src/collections"),
     },
   },
   build: {
-    outDir: './dist',
-    target: 'esnext',
+    outDir: "./dist",
+    target: "esnext",
     sourcemap: true,
-    rollupOptions: {}
+    rollupOptions: {},
   },
   server: {
     port: 3000, // Default dev server port
@@ -77,9 +91,9 @@ export default defineConfig({
     strictPort: true, // Ensures no fallback to another port
     hmr: {
       overlay: true, // Enables hot module replacement
-    }
+    },
   },
   esbuild: {
-    jsx: 'automatic', // Ensures JSX works correctly with React 18
-  }
+    jsx: "automatic", // Ensures JSX works correctly with React 18
+  },
 });

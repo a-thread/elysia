@@ -1,2 +1,0 @@
-import{r as s,j as f}from"./index-BWZVwQ_y.js";const a=({threshold:r=1,onScrolled:t,children:c})=>{const e=s.useRef(null);return s.useEffect(()=>{const n=new IntersectionObserver(i=>{i.forEach(o=>{o.isIntersecting&&t()})},{threshold:r});return e.current&&n.observe(e.current),()=>{n.disconnect()}},[r,t]),f.jsx("div",{ref:e,children:c})};export{a as I};
-//# sourceMappingURL=InfiniteScroll-sI0ZKU-u.js.map

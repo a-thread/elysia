@@ -24,7 +24,9 @@ const SignIn: React.FC = () => {
 
   const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false);
   const [isRegistering, setIsRegistering] = React.useState<boolean>(false);
-  const [isOAuthLoading, setIsOAuthLoading] = React.useState<string | null>(null);
+  const [isOAuthLoading, setIsOAuthLoading] = React.useState<string | null>(
+    null,
+  );
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -46,7 +48,7 @@ const SignIn: React.FC = () => {
       setIsRegistering(true);
       await UserService.signUp(data.email, data.password);
       toast.success(
-        "Registration successful! A confirmation link has been sent to your email."
+        "Registration successful! A confirmation link has been sent to your email.",
       );
       navigate("/");
     } catch (error: any) {
@@ -69,68 +71,85 @@ const SignIn: React.FC = () => {
 
   return (
     <AuthLayout title="Sign In">
-        <form onSubmit={handleSubmit(handleSignIn)}>
-          <div className="mb-4">
-            <FieldLabel htmlFor="email">Email</FieldLabel>
-            <input
-              type="email"
-              {...register("email", { required: "Email is required" })}
-              id="email"
-              className={fieldClasses}
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-          </div>
-          <div className="mb-4">
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <input
-              type="password"
-              {...register("password", { required: "Password is required" })}
-              id="password"
-              className={fieldClasses}
-            />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-          </div>
-          <div className="mb-2 text-right">
-            <Link to="/forgot-password">Forgot password?</Link>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Button type="submit" isLoading={isLoggingIn} className="w-full" disabled={isLoggingIn || !isValid}>
-              Sign In
-            </Button>
-            <Button
-              btnType="secondary"
-              isLoading={isRegistering}
-              className="w-full"
-              disabled={isRegistering || !isValid}
-              onClick={handleSubmit(handleRegister)}
-            >
-              Register
-            </Button>
-          </div>
-        </form>
-
-        <div className="mt-6 mb-3 text-center text-sm text-gray-500 dark:text-gray-400">
-          OR
+      <form onSubmit={handleSubmit(handleSignIn)}>
+        <div className="mb-3">
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <input
+            type="email"
+            {...register("email", { required: "Email is required" })}
+            id="email"
+            className={fieldClasses}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          )}
         </div>
-
-        <div className="flex flex-col gap-2">
+        <div className="mb-3">
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <input
+            type="password"
+            {...register("password", { required: "Password is required" })}
+            id="password"
+            className={fieldClasses}
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+        <div className="mb-2 text-right">
+          <Link to="/forgot-password">Forgot password?</Link>
+        </div>
+        <div className="flex gap-2">
           <Button
-            className="w-full flex items-center justify-center gap-2"
-            onClick={() => handleOAuthLogin("google")}
-            isLoading={isOAuthLoading === "google"}
+            type="submit"
+            isLoading={isLoggingIn}
+            className="flex-1"
+            disabled={isLoggingIn || !isValid}
           >
-            <FaGoogle className="h-5 w-5" />
-            Continue with Google
+            Sign In
           </Button>
           <Button
-            className="w-full flex items-center justify-center gap-2"
-            onClick={() => handleOAuthLogin("github")}
-            isLoading={isOAuthLoading === "github"}
+            btnType="secondary"
+            isLoading={isRegistering}
+            className="flex-1"
+            disabled={isRegistering || !isValid}
+            onClick={handleSubmit(handleRegister)}
           >
-            <FaGithub className="h-5 w-5" />
-            Continue with GitHub
+            Register
           </Button>
         </div>
+      </form>
+
+      <div className="flex items-center gap-3 mt-4 mb-4">
+        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          or continue with
+        </span>
+        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+      </div>
+
+      <div className="flex gap-2">
+        <Button
+          btnType="secondary"
+          className="flex-1 flex items-center justify-center"
+          onClick={() => handleOAuthLogin("google")}
+          isLoading={isOAuthLoading === "google"}
+          aria-label="Continue with Google"
+        >
+          <FaGoogle className="h-5 w-5" />
+        </Button>
+        <Button
+          btnType="secondary"
+          className="flex-1 flex items-center justify-center"
+          onClick={() => handleOAuthLogin("github")}
+          isLoading={isOAuthLoading === "github"}
+          aria-label="Continue with GitHub"
+        >
+          <FaGithub className="h-5 w-5" />
+        </Button>
+      </div>
     </AuthLayout>
   );
 };

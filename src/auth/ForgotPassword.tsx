@@ -33,7 +33,7 @@ const ForgotPassword: React.FC = () => {
   return (
     <AuthLayout title="Reset Password">
       <form onSubmit={handlePasswordReset}>
-        <div className="mb-4">
+        <div className="mb-3">
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <input
             type="email"

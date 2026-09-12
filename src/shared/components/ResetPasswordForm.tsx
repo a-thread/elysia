@@ -40,7 +40,7 @@ const ResetPasswordForm: React.FC = () => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             {/* New Password Input */}
-            <div className="mb-4 mt-2">
+            <div className="mb-3 mt-2">
                 <FieldLabel htmlFor="new-password">New Password</FieldLabel>
                 <input
                     type="password"
@@ -60,7 +60,7 @@ const ResetPasswordForm: React.FC = () => {
             </div>
 
             {/* Confirm Password Input */}
-            <div className="mb-4">
+            <div className="mb-3">
                 <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
                 <input
                     type="password"

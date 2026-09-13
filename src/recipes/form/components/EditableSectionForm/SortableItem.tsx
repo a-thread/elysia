@@ -44,7 +44,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
           <MdDragIndicator className="w-4 h-4 text-gray-400 dark:text-gray-500" />
         }
         title="Drag to reorder"
-        className="w-8 h-8 shrink-0 cursor-grab"
+        className="w-8 h-8 shrink-0 cursor-grab touch-none"
         attributes={attributes}
         listeners={listeners}
       />

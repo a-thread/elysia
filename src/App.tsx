@@ -18,6 +18,7 @@ const ImportReview = lazy(() => import("./recipes/import-review"));
 const CollectionList = lazy(() => import("./collections/list"));
 const CollectionDetail = lazy(() => import("./collections/detail"));
 const CollectionForm = lazy(() => import("./collections/form"));
+const ShoppingList = lazy(() => import("./shopping-list"));
 
 const App = () => {
   return (
@@ -80,6 +81,14 @@ const App = () => {
                 <Route
                   path="/collections/:id/edit"
                   element={<CollectionForm />}
+                />
+                <Route
+                  path="/shopping-list"
+                  element={
+                    <ProtectedRoute>
+                      <ShoppingList />
+                    </ProtectedRoute>
+                  }
                 />
               </Routes>
             </Suspense>

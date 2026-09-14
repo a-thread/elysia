@@ -77,6 +77,7 @@ export default defineConfig({
       "@shared": path.resolve(__dirname, "src/shared"),
       "@recipes": path.resolve(__dirname, "src/recipes"),
       "@collections": path.resolve(__dirname, "src/collections"),
+      "@shopping-list": path.resolve(__dirname, "src/shopping-list"),
     },
   },
   build: {

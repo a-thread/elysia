@@ -16,7 +16,8 @@
     "paths": {
       "@shared/*": ["src/shared/*"],
       "@recipes/*": ["src/recipes/*"],
-      "@collections/*": ["src/collections/*"]
+      "@collections/*": ["src/collections/*"],
+      "@shopping-list/*": ["src/shopping-list/*"]
     },
 
     /* Linting */

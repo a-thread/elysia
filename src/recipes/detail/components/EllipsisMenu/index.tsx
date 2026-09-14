@@ -4,6 +4,7 @@ import {
   FaLayerGroup,
   FaPen,
   FaShareAlt,
+  FaShoppingBasket,
   FaTags,
   FaTrash,
 } from "react-icons/fa";
@@ -17,6 +18,7 @@ import DropdownButton, {
 interface EllipsisMenuProps {
   canEdit: boolean;
   isOwner: boolean;
+  isAuthenticated: boolean;
   isPublic: boolean;
   publicPermission: Permission;
   sharedUsers: SharedUser[];
@@ -24,6 +26,7 @@ interface EllipsisMenuProps {
   onDelete: () => void;
   onAddTags: () => void;
   onAddToCollection: () => void;
+  onAddToShoppingList: () => void;
   onExport: () => void;
   onTogglePublicShare: () => void;
   onSetPublicPermission: (permission: Permission) => void;
@@ -35,6 +38,7 @@ interface EllipsisMenuProps {
 const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
   canEdit,
   isOwner,
+  isAuthenticated,
   isPublic,
   publicPermission,
   sharedUsers,
@@ -42,6 +46,7 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
   onDelete,
   onAddTags,
   onAddToCollection,
+  onAddToShoppingList,
   onExport,
   onTogglePublicShare,
   onSetPublicPermission,
@@ -99,11 +104,21 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
           },
         ]
       : []),
+    ...(isAuthenticated
+      ? [
+          {
+            label: "Add to Shopping List",
+            icon: <FaShoppingBasket aria-hidden="true" />,
+            onClick: onAddToShoppingList,
+            dividerBefore: canEdit || isOwner,
+          },
+        ]
+      : []),
     {
       label: "Export",
       icon: <FaDownload aria-hidden="true" />,
       onClick: onExport,
-      dividerBefore: canEdit || isOwner,
+      dividerBefore: !isAuthenticated && (canEdit || isOwner),
     },
   ];
 

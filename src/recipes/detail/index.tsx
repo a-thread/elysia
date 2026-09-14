@@ -17,11 +17,13 @@ const Recipe: React.FC = () => {
     loading,
     canEdit,
     isOwner,
+    isAuthenticated,
     editRecipe,
     confirmDelete,
     addTags,
     addToCollection,
     exportRecipe,
+    addToShoppingList,
     isPublic,
     publicPermission,
     sharedUsers,
@@ -42,6 +44,7 @@ const Recipe: React.FC = () => {
         <EllipsisMenu
           canEdit={canEdit}
           isOwner={isOwner}
+          isAuthenticated={isAuthenticated}
           isPublic={isPublic}
           publicPermission={publicPermission}
           sharedUsers={sharedUsers}
@@ -49,6 +52,7 @@ const Recipe: React.FC = () => {
           onDelete={confirmDelete}
           onAddTags={addTags}
           onAddToCollection={addToCollection}
+          onAddToShoppingList={addToShoppingList}
           onExport={exportRecipe}
           onTogglePublicShare={toggleIsPublic}
           onSetPublicPermission={setPublicPermission}

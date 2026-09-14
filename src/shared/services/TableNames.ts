@@ -1,4 +1,3 @@
-// Enum for table names
 export enum TableNames {
   COLLECTIONS = "collections",
   COLLECTION_TO_RECIPES = "collection_to_recipes",
@@ -11,4 +10,5 @@ export enum TableNames {
   STEPS = "steps",
   TAGS = "tags",
   USERS = "users",
+  SHOPPING_LIST_ITEMS = "shopping_list_items",
 }

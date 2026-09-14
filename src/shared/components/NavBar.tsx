@@ -25,6 +25,9 @@ function Navbar() {
     { path: "/", label: "Home" },
     { path: "/recipes", label: "Recipes" },
     { path: "/collections", label: "Collections" },
+    ...(isAuthenticated
+      ? [{ path: "/shopping-list", label: "Shopping List" }]
+      : []),
     { path: "/about", label: "About" },
   ];
 

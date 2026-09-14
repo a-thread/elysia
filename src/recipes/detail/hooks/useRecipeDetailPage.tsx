@@ -4,6 +4,7 @@ import { useToast } from "@shared/components/Toast";
 import { useModalManager, DeleteConfirmationModal } from "@shared/components/Modals";
 import RecipeService from "@recipes/services/RecipeService";
 import generateRecipePDF from "@recipes/utils/PdfGenerator";
+import ShoppingListService from "@shopping-list/services/ShoppingListService";
 import { useShareableEntity } from "@shared/hooks/useShareableEntity";
 import { useRecipeDetails } from "./useRecipeDetails";
 import AddTagsToRecipeModal from "../components/AddTagsToRecipeModal";
@@ -86,16 +87,42 @@ export const useRecipeDetailPage = () => {
     }
   };
 
+  const addToShoppingList = async () => {
+    if (!recipe) return;
+    if (!user?.id) {
+      toast.error("Sign in to add items to your shopping list.");
+      return;
+    }
+    try {
+      await ShoppingListService.addItems(
+        user.id,
+        recipe.ingredients.map((ingredient) => ({
+          value: ingredient.value,
+          source_recipe_id: recipe.id,
+          source_recipe_title: recipe.title,
+        }))
+      );
+      toast.success(
+        `Added ${recipe.ingredients.length} item(s) to your shopping list!`
+      );
+    } catch (error) {
+      console.error("Error adding ingredients to shopping list:", error);
+      toast.error("Failed to add ingredients to shopping list. Please try again.");
+    }
+  };
+
   return {
     recipe,
     loading,
     canEdit: recipe?.can_edit ?? false,
     isOwner: recipe?.is_owner ?? false,
+    isAuthenticated: !!user,
     editRecipe,
     confirmDelete,
     addTags,
     addToCollection,
     exportRecipe,
+    addToShoppingList,
     ...share,
   };
 };

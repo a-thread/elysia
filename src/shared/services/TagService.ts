@@ -7,7 +7,7 @@ const getList = async (
   currentPageSize: number,
   searchTerm: string
 ) => {
-  return await supabaseWithAbort.request("getList", async (client) => {
+  return await supabaseWithAbort.request("tags-getList", async (client) => {
     let query = client
       .from(TableNames.TAGS)
       .select("*", { count: "exact" })
@@ -23,63 +23,25 @@ const getList = async (
   });
 };
 
-const upsert = async (tagId: string, updatedTag: IdTitle) => {
-  return await supabaseWithAbort.request(
-    `upsert-${tagId || "new"}`,
-    async (client) => {
-      let newTagId = tagId;
-      if (!tagId) {
-        const { data, error: insertError } = await client
-          .from(TableNames.TAGS)
-          .insert([{ title: updatedTag.title }])
-          .select()
-          .single();
-
-        if (insertError)
-          throw new Error(`Failed to insert new tag: ${insertError.message}`);
-        newTagId = data.id;
-      } else {
-        if (Object.keys(updatedTag.title).length > 0) {
-          const { error: updateError } = await client
-            .from(TableNames.TAGS)
-            .update(updatedTag)
-            .eq("id", tagId);
-
-          if (updateError)
-            throw new Error(`Failed to update tag: ${updateError.message}`);
-        }
-      }
-      return { success: true, tagId: newTagId };
-    }
-  );
-};
-
 const create = async (title: string): Promise<IdTitle | null> => {
   const trimmedTitle = title.trim();
   if (!trimmedTitle) return null;
 
-  const response = await upsert("", { title: trimmedTitle });
-  if (!response?.success || !response.tagId) return null;
+  return await supabaseWithAbort.request("tags-create", async (client) => {
+    const { data, error } = await client
+      .from(TableNames.TAGS)
+      .insert([{ title: trimmedTitle }])
+      .select()
+      .single();
 
-  return { id: response.tagId, title: trimmedTitle };
-};
-
-const deleteById = async (tagId: string) => {
-  return await supabaseWithAbort.request(
-    `deleteById-${tagId}`,
-    async (client) => {
-      const { error } = await client
-        .from(TableNames.TAGS)
-        .delete()
-        .eq("id", tagId);
-      if (error) throw new Error("Failed to delete tag.");
-    }
-  );
+    if (error) throw new Error(`Failed to insert new tag: ${error.message}`);
+    return { id: data.id, title: trimmedTitle };
+  });
 };
 
 const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
   return await supabaseWithAbort.request(
-    `addToRecipe-${recipeId}`,
+    `addTagsToRecipe-${recipeId}`,
     async (client) => {
       const tagsToAdd = tags.map((tag) => ({
         recipe_id: recipeId,
@@ -88,7 +50,7 @@ const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
       const { error } = await client
         .from(TableNames.RECIPE_TO_TAGS)
         .insert(tagsToAdd);
-      if (error) throw new Error("Failed to add tag to recipe.");
+      if (error) throw new Error("Failed to add tags to recipe.");
       return { success: true };
     }
   );
@@ -97,7 +59,7 @@ const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
 const removeFromRecipe = async (recipe_id: string, tags: IdTitle[]) => {
   const tagIds = tags.map((tag) => tag.id);
   return await supabaseWithAbort.request(
-    `removeManyFromCollection-${recipe_id}`,
+    `removeTagsFromRecipe-${recipe_id}`,
     async (client) => {
       const { error } = await client
         .from(TableNames.RECIPE_TO_TAGS)
@@ -105,14 +67,14 @@ const removeFromRecipe = async (recipe_id: string, tags: IdTitle[]) => {
         .eq("recipe_id", recipe_id)
         .in("tag_id", tagIds);
 
-      if (error) throw new Error("Failed to remove tags from collection.");
+      if (error) throw new Error("Failed to remove tags from recipe.");
     }
   );
 };
 
 const addToCollection = async (collectionId: string, tags: IdTitle[]) => {
   return await supabaseWithAbort.request(
-    `addToCollection-${collectionId}`,
+    `addTagsToCollection-${collectionId}`,
     async (client) => {
       const tagsToAdd = tags.map((tag) => ({
         collection_id: collectionId,
@@ -121,7 +83,7 @@ const addToCollection = async (collectionId: string, tags: IdTitle[]) => {
       const { error } = await client
         .from(TableNames.COLLECTION_TO_TAGS)
         .insert(tagsToAdd);
-      if (error) throw new Error("Failed to add tag to recipe.");
+      if (error) throw new Error("Failed to add tags to collection.");
       return { success: true };
     }
   );
@@ -131,10 +93,10 @@ const removeFromCollection = async (collection_id: string, tags: IdTitle[]) => {
   const tagIds = tags.map((tag) => tag.id);
 
   return await supabaseWithAbort.request(
-    `removeManyFromCollection-${collection_id}`,
+    `removeTagsFromCollection-${collection_id}`,
     async (client) => {
       const { error } = await client
-        .from(TableNames.COLLECTION_TO_RECIPES)
+        .from(TableNames.COLLECTION_TO_TAGS)
         .delete()
         .eq("collection_id", collection_id)
         .in("tag_id", tagIds);
@@ -144,45 +106,13 @@ const removeFromCollection = async (collection_id: string, tags: IdTitle[]) => {
   );
 };
 
-const removeAllFromRecipe = async (recipe_id: string) => {
-  return await supabaseWithAbort.request(
-    `removeAllFromRecipe-${recipe_id}`,
-    async (client) => {
-      const { error } = await client
-        .from(TableNames.RECIPE_TO_TAGS)
-        .delete()
-        .eq("recipe_id", recipe_id)
-
-      if (error) throw new Error("Failed to remove tags from recipe.");
-    }
-  );
-};
-
-const removeAllFromCollection = async (recipe_id: string) => {
-  return await supabaseWithAbort.request(
-    `removeAllFromCollection-${recipe_id}`,
-    async (client) => {
-      const { error } = await client
-        .from(TableNames.COLLECTION_TO_TAGS)
-        .delete()
-        .eq("collection_id", recipe_id)
-
-      if (error) throw new Error("Failed to remove tags from recipe.");
-    }
-  );
-};
-
 const TagService = {
   addToRecipe,
   addToCollection,
   removeFromCollection,
   removeFromRecipe,
-  removeAllFromCollection,
-  removeAllFromRecipe,
   getList,
-  upsert,
   create,
-  deleteById,
 };
 
 export default TagService;

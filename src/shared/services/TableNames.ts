@@ -6,8 +6,6 @@ export enum TableNames {
   RECIPES = "recipes",
   RECIPE_TO_TAGS = "recipe_to_tags",
   RECIPE_TO_USERS = "recipe_to_users",
-  INGREDIENTS = "ingredients",
-  STEPS = "steps",
   TAGS = "tags",
   USERS = "users",
   SHOPPING_LIST_ITEMS = "shopping_list_items",

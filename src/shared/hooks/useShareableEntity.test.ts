@@ -57,7 +57,6 @@ describe("useShareableEntity", () => {
     vi.mocked(UserService.findByEmail).mockResolvedValue({
       id: "u2",
       display_name: "Bea",
-      profile_image: null,
     });
 
     const { result } = renderHook(() => useShareableEntity(args));

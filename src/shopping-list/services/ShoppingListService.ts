@@ -51,17 +51,6 @@ const setChecked = async (itemId: string, checked: boolean) => {
   });
 };
 
-const updateValue = async (itemId: string, value: string) => {
-  return await supabaseWithAbort.request(`shoppingList-updateValue-${itemId}`, async (client) => {
-    const { error } = await client
-      .from(TableNames.SHOPPING_LIST_ITEMS)
-      .update({ value })
-      .eq("id", itemId);
-
-    if (error) throw new Error("Failed to update item.");
-  });
-};
-
 const deleteById = async (itemId: string) => {
   return await supabaseWithAbort.request(`shoppingList-deleteById-${itemId}`, async (client) => {
     const { error } = await client
@@ -101,7 +90,6 @@ const ShoppingListService = {
   addItem,
   addItems,
   setChecked,
-  updateValue,
   deleteById,
   clearChecked,
   clearAll,

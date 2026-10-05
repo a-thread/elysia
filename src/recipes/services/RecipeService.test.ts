@@ -59,7 +59,7 @@ describe("RecipeService.getDetail", () => {
         ...baseRecipeRow,
         is_public: false,
         public_permission: "read",
-        recipe_to_users: [{ permission: "edit" }],
+        recipe_to_users: [{ user_id: "visitor-1", permission: "edit" }],
       },
       error: null,
     });
@@ -68,6 +68,22 @@ describe("RecipeService.getDetail", () => {
 
     expect(result?.can_edit).toBe(true);
     expect(result?.is_owner).toBe(false);
+  });
+
+  it("does not grant can_edit from someone else's edit share", async () => {
+    maybeSingle.mockResolvedValue({
+      data: {
+        ...baseRecipeRow,
+        is_public: false,
+        public_permission: "read",
+        recipe_to_users: [{ user_id: "other-user", permission: "edit" }],
+      },
+      error: null,
+    });
+
+    const result = await RecipeService.getDetail("r1", "visitor-1");
+
+    expect(result?.can_edit).toBe(false);
   });
 
   it("grants can_edit to a signed-in non-owner when public_permission is edit", async () => {

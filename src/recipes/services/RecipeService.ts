@@ -5,6 +5,12 @@ import { IdTitle } from "@shared/models/Tag";
 import { RecipeSort, recipeSortToOrder } from "@recipes/models/RecipeSort";
 import { Permission } from "@shared/models/Permission";
 
+/**
+ * PostgREST parses `or=(...)` as a comma-separated list, so an unescaped `,`
+ * or `)` in a user-supplied term corrupts the filter and 400s the request.
+ */
+const escapeFilterValue = (value: string) => value.replace(/[,()\\]/g, "");
+
 const getRecipeList = async (
   currentSkip: number,
   currentPageSize: number,
@@ -14,7 +20,9 @@ const getRecipeList = async (
   sort: RecipeSort = RecipeSort.DateNewest,
 ) => {
   return await supabaseWithAbort.request("fetchRecipeList", async (client) => {
-    let query = client.from("recipes").select("*", { count: "exact" });
+    let query = client
+      .from(TableNames.RECIPES)
+      .select("*", { count: "exact" });
 
     // 🔐 Visibility filtering
     if (userId) {
@@ -25,15 +33,16 @@ const getRecipeList = async (
 
     // 🔍 Full-text search
     if (searchTerm) {
+      const term = escapeFilterValue(searchTerm);
       query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,ingredients_text.ilike.%${searchTerm}%,tags_text.ilike.%${searchTerm}%`,
+        `title.ilike.%${term}%,description.ilike.%${term}%,ingredients_text.ilike.%${term}%,tags_text.ilike.%${term}%`,
       );
     }
 
     // 🏷️ Tag filtering (broad match via tags_text)
     if (selectedTags.length) {
       selectedTags.forEach((tag) => {
-        query = query.or(`tags_text.ilike.%${tag.title}%`);
+        query = query.or(`tags_text.ilike.%${escapeFilterValue(tag.title)}%`);
       });
     }
 
@@ -61,7 +70,7 @@ const getDetail = async (
       id, title, description, img_url, user_id, is_public, public_permission, servings, prep_time, cook_time, original_recipe_url,
       ingredients,
       steps,
-      recipe_to_users!left(permission),
+      recipe_to_users!left(user_id, permission),
       collection_to_recipes!left(collections!inner(id, title)),
       recipe_to_tags!left(tags!inner(id, title))
     `,
@@ -86,7 +95,8 @@ const getDetail = async (
         can_edit:
           isOwner ||
           (data.recipe_to_users?.some(
-            (share: { permission: string }) => share.permission === "edit",
+            (share: { user_id: string; permission: string }) =>
+              share.user_id === userId && share.permission === "edit",
           ) ??
             false) ||
           (data.is_public && data.public_permission === "edit" && !!userId),
@@ -201,20 +211,6 @@ const addManyToOneCollection = async (
   );
 };
 
-const removeFromAllCollections = async (recipeId: string) => {
-  return await supabaseWithAbort.request(
-    `removeFromAllCollections`,
-    async (client) => {
-      const { error } = await client
-        .from(TableNames.COLLECTION_TO_RECIPES)
-        .delete()
-        .eq("recipe_id", recipeId);
-
-      if (error) throw new Error("Failed to remove collection(s) from recipe.");
-    },
-  );
-};
-
 const removeManyFromManyCollections = async (
   collectionIds: string[],
   recipeIds: string[],
@@ -248,25 +244,6 @@ const getSharedUsers = async (recipeId: string | undefined) => {
         return [];
       }
       return data || [];
-    },
-  );
-};
-
-const getIsPublic = async (recipeId: string | undefined) => {
-  return await supabaseWithAbort.request(
-    `fetchRecipeVisibility-${recipeId}`,
-    async (client) => {
-      const { data, error } = await client
-        .from(TableNames.RECIPES)
-        .select("is_public")
-        .eq("id", recipeId)
-        .single();
-
-      if (error) {
-        console.error("Error fetching recipe visibility:", error);
-        return false;
-      }
-      return data.is_public;
     },
   );
 };
@@ -335,9 +312,7 @@ const RecipeService = {
   addOneToManyCollections,
   addManyToOneCollection,
   removeManyFromManyCollections,
-  removeFromAllCollections,
   getSharedUsers,
-  getIsPublic,
   setIsPublic,
   shareWithUser,
   revokeAccess,

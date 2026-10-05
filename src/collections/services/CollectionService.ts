@@ -3,13 +3,19 @@ import { Collection } from "@collections/models/Collection";
 import { TableNames } from "@shared/services/TableNames";
 import { Permission } from "@shared/models/Permission";
 
+/**
+ * PostgREST parses `or=(...)` as a comma-separated list, so an unescaped `,`
+ * or `)` in a user-supplied term corrupts the filter and 400s the request.
+ */
+const escapeFilterValue = (value: string) => value.replace(/[,()\\]/g, "");
+
 const getList = async (
   currentSkip: number,
   currentPageSize: number,
   searchTerm: string,
   userId?: string,
 ) => {
-  return await supabaseWithAbort.request("getList", async (client) => {
+  return await supabaseWithAbort.request("collections-getList", async (client) => {
     let query = client
       .from(TableNames.COLLECTIONS)
       .select("*", { count: "exact" });
@@ -22,9 +28,8 @@ const getList = async (
     }
 
     if (searchTerm) {
-      query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`,
-      );
+      const term = escapeFilterValue(searchTerm);
+      query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%`);
     }
     const { data, count, error } = await query.range(
       currentSkip,
@@ -85,8 +90,8 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
               recipe_to_tags!left(tags!inner(id, title))
             )
           ),
-          collection_to_tags!left(tags!inner(id, title, recipe_to_tags!left(recipes!inner(id, title, description, img_url, user_id, is_public)))) ,
-          collection_to_users!left(permission)
+          collection_to_tags!left(tags!inner(id, title, recipe_to_tags!left(recipes!inner(id, title, description, img_url, user_id, is_public)))),
+          collection_to_users!left(user_id, permission)
           `,
         )
         .eq("id", collectionId);
@@ -114,7 +119,7 @@ const getDetail = async (collectionId: string, userId: string | undefined) => {
         can_edit:
           isOwner ||
           (data.collection_to_users?.some(
-            (share) => share.permission === "edit",
+            (share) => share.user_id === userId && share.permission === "edit",
           ) ??
             false) ||
           (data.is_public && data.public_permission === "edit" && !!userId),
@@ -129,7 +134,7 @@ const upsert = async (
   userId?: string,
 ) => {
   return await supabaseWithAbort.request(
-    `upsert-${collectionId || "new"}`,
+    `collections-upsert-${collectionId || "new"}`,
     async (client) => {
       let newCollectionId = collectionId;
       if (!collectionId) {
@@ -249,31 +254,11 @@ const revokeAccess = async (shareId: string) => {
   );
 };
 
-const getIsPublic = async (collectionId: string) => {
-  return await supabaseWithAbort.request(
-    `getIsPublic-${collectionId}`,
-    async (client) => {
-      const { data, error } = await client
-        .from(TableNames.COLLECTIONS)
-        .select("is_public")
-        .eq("id", collectionId)
-        .single();
-
-      if (error) {
-        console.error("Error fetching collection visibility:", error);
-        return false;
-      }
-      return data.is_public;
-    },
-  );
-};
-
 const CollectionService = {
   getList,
   getDetail,
   upsert,
   deleteById,
-  getIsPublic,
   setIsPublic,
   fetchSharedUsers,
   share,

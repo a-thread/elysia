@@ -15,7 +15,9 @@ if (!API_KEY) {
   throw new Error("Missing API_KEY in environment variables.");
 }
 
-export const supabase: SupabaseClient = createClient(API_URL, API_KEY);
+export const supabase: SupabaseClient = createClient(API_URL, API_KEY, {
+  db: { schema: "elysia" },
+});
 
 class SupabaseClientWithAbort {
   private client: SupabaseClient;

@@ -7,7 +7,7 @@ const findByEmail = async (email: string) => {
     async (client) => {
       const { data, error } = await client
         .from(TableNames.USERS)
-        .select("id, display_name, profile_image")
+        .select("id, display_name")
         .eq("email", email)
         .single();
 

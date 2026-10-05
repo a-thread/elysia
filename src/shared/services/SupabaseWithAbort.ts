@@ -15,9 +15,14 @@ if (!API_KEY) {
   throw new Error("Missing API_KEY in environment variables.");
 }
 
-export const supabase: SupabaseClient = createClient(API_URL, API_KEY, {
-  db: { schema: "elysia" },
-});
+// Typed with `any` schema params: the client targets the "elysia" schema, but we
+// have no generated Database types, so the default "public" typing would not match.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const supabase: SupabaseClient<any, any, any> = createClient(
+  API_URL,
+  API_KEY,
+  { db: { schema: "elysia" } },
+);
 
 class SupabaseClientWithAbort {
   private client: SupabaseClient;

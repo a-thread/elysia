@@ -49,7 +49,10 @@ const addToRecipe = async (recipeId: string, tags: IdTitle[]) => {
       }));
       const { error } = await client
         .from(TableNames.RECIPE_TO_TAGS)
-        .insert(tagsToAdd);
+        .upsert(tagsToAdd, {
+          onConflict: "recipe_id,tag_id",
+          ignoreDuplicates: true,
+        });
       if (error) throw new Error("Failed to add tags to recipe.");
       return { success: true };
     }
@@ -82,7 +85,10 @@ const addToCollection = async (collectionId: string, tags: IdTitle[]) => {
       }));
       const { error } = await client
         .from(TableNames.COLLECTION_TO_TAGS)
-        .insert(tagsToAdd);
+        .upsert(tagsToAdd, {
+          onConflict: "collection_id,tag_id",
+          ignoreDuplicates: true,
+        });
       if (error) throw new Error("Failed to add tags to collection.");
       return { success: true };
     }

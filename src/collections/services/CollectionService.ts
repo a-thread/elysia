@@ -229,7 +229,9 @@ const share = async (
     async (client) => {
       const { error } = await client
         .from(TableNames.COLLECTION_TO_USERS)
-        .insert([{ collection_id: collectionId, user_id: userId, permission }]);
+        .upsert([{ collection_id: collectionId, user_id: userId, permission }], {
+          onConflict: "collection_id,user_id",
+        });
 
       if (error) {
         throw new Error("Failed to share collection.");

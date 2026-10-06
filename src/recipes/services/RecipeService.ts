@@ -186,7 +186,10 @@ const addOneToManyCollections = async (
     async (client) => {
       const { error } = await client
         .from(TableNames.COLLECTION_TO_RECIPES)
-        .insert(upsertItems);
+        .upsert(upsertItems, {
+          onConflict: "collection_id,recipe_id",
+          ignoreDuplicates: true,
+        });
       if (error) throw new Error("Failed to delete collection.");
     },
   );
@@ -205,7 +208,10 @@ const addManyToOneCollection = async (
     async (client) => {
       const { error } = await client
         .from(TableNames.COLLECTION_TO_RECIPES)
-        .insert(upsertItems);
+        .upsert(upsertItems, {
+          onConflict: "collection_id,recipe_id",
+          ignoreDuplicates: true,
+        });
       if (error) throw new Error("Failed to delete collection.");
     },
   );
@@ -279,7 +285,9 @@ const shareWithUser = async (
     async (client) => {
       const { error } = await client
         .from(TableNames.RECIPE_TO_USERS)
-        .insert([{ recipe_id: recipeId, user_id: userId, permission }]);
+        .upsert([{ recipe_id: recipeId, user_id: userId, permission }], {
+          onConflict: "recipe_id,user_id",
+        });
 
       if (error) {
         throw new Error("Failed to share recipe.");

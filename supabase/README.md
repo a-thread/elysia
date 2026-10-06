@@ -11,6 +11,10 @@ the live database was created by hand from these statements, not via `supabase d
 | `20261005000004_indexes.sql` | indexes |
 | `20261005000005_rls_policies.sql` | RLS + policies |
 | `20261005000006_storage_bucket.sql` | `elysia_recipe_photo` bucket |
+| `20261005000007_integrity.sql` | merge duplicate tags/links, cascading NOT NULL foreign keys, unique constraints, `timestamptz` |
+| `20261005000008_access_control.sql` | RLS rewrite (helpers in `elysia_private`), `find_user_by_email` RPC, owner/visibility guard triggers, tighter grants |
+| `20261005000009_search_and_indexes.sql` | `ingredients_text` trigger + backfill, trigram and foreign-key indexes |
+| `20261005000010_storage_policies.sql` | policies for the photo bucket |
 
 Setup notes
 - The schema is shared with other apps in the same Supabase project. Add `elysia` under
@@ -19,3 +23,11 @@ Setup notes
 - Load data before applying files 2-5 (triggers would rewrite rows; `enforce_collection_ownership` needs `auth.uid()`).
 - Auth redirect URLs for this app must be on the project's allow list (Auth -> URL Configuration).
 - Storage policies are not captured in these files.
+
+Applying 07-10 to an existing database
+- Run `preflight_checks.sql` first (read-only) and resolve anything it returns. 07 deletes empty/duplicate join rows and merges case-variant tags.
+- Apply 07, 08, 09, 10 in order. They are written as one transaction each; do not apply 08 without 07.
+- Deploy the client change in the same release as 08: `UserService.findByEmail` now calls the `find_user_by_email` RPC, because 08 stops `elysia.users` being publicly readable. The old client cannot add shares after 08.
+- After 08, sharing a recipe/collection with someone who already has access updates their permission instead of failing, and tags/collection links are idempotent (`upsert`).
+- Tags can no longer be renamed or deleted from the client (insert/select only); do that in the SQL editor.
+- `elysia_private` is deliberately not in Exposed schemas.

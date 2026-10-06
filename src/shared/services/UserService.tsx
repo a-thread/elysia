@@ -1,15 +1,14 @@
 import { supabaseWithAbort } from "@shared/services/SupabaseWithAbort";
-import { TableNames } from "@shared/services/TableNames";
 
 const findByEmail = async (email: string) => {
   return await supabaseWithAbort.request(
     `findByEmail-${email}`,
     async (client) => {
+      // elysia.users is not readable by arbitrary users; this RPC does an exact,
+      // signed-in-only lookup and returns just the id and display name.
       const { data, error } = await client
-        .from(TableNames.USERS)
-        .select("id, display_name")
-        .eq("email", email)
-        .single();
+        .rpc("find_user_by_email", { p_email: email })
+        .maybeSingle<{ id: string; display_name: string | null }>();
 
       if (error || !data?.id) {
         throw new Error("User not found.");

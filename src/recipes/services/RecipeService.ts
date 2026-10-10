@@ -68,6 +68,7 @@ const getDetail = async (
         .select(
           `
       id, title, description, img_url, user_id, is_public, public_permission, servings, prep_time, cook_time, original_recipe_url,
+      nutrition,
       ingredients,
       steps,
       recipe_to_users!left(user_id, permission),
@@ -129,6 +130,8 @@ const upsert = async (
               description: updatedRecipe.description,
               img_url: updatedRecipe.img_url,
               user_id: userId,
+              // Only sent when present, so a save never clears nutrition set elsewhere.
+              ...(updatedRecipe.nutrition ? { nutrition: updatedRecipe.nutrition } : {}),
             },
           ])
           .select()
@@ -151,6 +154,7 @@ const upsert = async (
             description: updatedRecipe.description,
             img_url: updatedRecipe.img_url,
             user_id: userId,
+            ...(updatedRecipe.nutrition ? { nutrition: updatedRecipe.nutrition } : {}),
           })
           .eq("id", recipeId);
         if (error) throw new Error(`Failed to update recipe: ${error.message}`);

@@ -2,6 +2,7 @@ import { Recipe } from "@recipes/models/Recipe";
 import { StepIngredient } from "@recipes/models/StepIngredient";
 import { CheerioAPI, load } from "cheerio";
 import { v4 as uuidv4 } from "uuid";
+import { parseJsonLdNutrition } from "./jsonLdNutrition";
 
 export async function parseRecipeFromHtml(html: string, url = ""): Promise<Recipe> {
     const $ = load(html);
@@ -57,6 +58,7 @@ export async function parseRecipeFromHtml(html: string, url = ""): Promise<Recip
             "div[class*='steps'] ol li",
         ], stripHtml),
         original_recipe_url: sourceUrl,
+        nutrition: parseJsonLdNutrition($),
     };
 }
 

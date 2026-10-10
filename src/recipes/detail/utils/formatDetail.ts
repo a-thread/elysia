@@ -18,9 +18,10 @@ export const formatDetail = (data: any) => {
     steps: data?.steps || [],
     ingredients: data?.ingredients || [],
     collections: (data?.collection_to_recipes || []).flatMap(
-      (item: any) => item.collections
+      (item: any) => item.collections,
     ),
     tags: (data?.recipe_to_tags || []).flatMap((item: any) => item.tags),
+    nutrition: data?.nutrition ?? null,
   };
   return formattedData;
 };

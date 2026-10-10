@@ -31,6 +31,7 @@ describe("useRecipeDetails", () => {
     vi.mocked(RecipeService.getDetail).mockResolvedValue({
       id: "r1",
       title: "Soup",
+      nutrition: null,
       description: null,
       img_url: null,
       user_id: "u1",

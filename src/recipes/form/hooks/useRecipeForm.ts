@@ -5,6 +5,7 @@ import TagService from "@shared/services/TagService";
 import CollectionService from "@collections/services/CollectionService";
 import { IdTitle } from "@shared/models/Tag";
 import { useEntitySearch } from "@shared/hooks/useEntitySearch";
+import { normalizeNutrition } from "@recipes/utils/normalizeNutrition";
 
 export const useRecipeForm = () => {
   const location = useLocation();
@@ -60,6 +61,7 @@ export const useRecipeForm = () => {
         original_recipe_url: existingRecipe.original_recipe_url || "",
         ingredients: existingRecipe.ingredients || [],
         steps: existingRecipe.steps || [],
+        nutrition: normalizeNutrition(existingRecipe.nutrition),
         tags: existingRecipe.tags ? [...existingRecipe.tags] : [],
         collections: existingRecipe.collections ? [...existingRecipe.collections] : [],
       };

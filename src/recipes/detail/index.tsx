@@ -2,6 +2,7 @@ import React from "react";
 import IngredientsSection from "./components/IngredientsSection";
 import StepsSection from "./components/StepsSection";
 import RecipeTimeSection from "./components/RecipeTimeSection";
+import NutritionSection from "./components/NutritionSection";
 import EllipsisMenu from "./components/EllipsisMenu";
 import { useRecipeDetailPage } from "./hooks/useRecipeDetailPage";
 import Loading from "@shared/components/Loading";
@@ -24,6 +25,8 @@ const Recipe: React.FC = () => {
     addToCollection,
     exportRecipe,
     addToShoppingList,
+    canSendToTern,
+    sendToTern,
     isPublic,
     publicPermission,
     sharedUsers,
@@ -45,6 +48,7 @@ const Recipe: React.FC = () => {
           canEdit={canEdit}
           isOwner={isOwner}
           isAuthenticated={isAuthenticated}
+          canSendToTern={canSendToTern}
           isPublic={isPublic}
           publicPermission={publicPermission}
           sharedUsers={sharedUsers}
@@ -53,6 +57,7 @@ const Recipe: React.FC = () => {
           onAddTags={addTags}
           onAddToCollection={addToCollection}
           onAddToShoppingList={addToShoppingList}
+          onSendToTern={sendToTern}
           onExport={exportRecipe}
           onTogglePublicShare={toggleIsPublic}
           onSetPublicPermission={setPublicPermission}
@@ -85,6 +90,7 @@ const Content: React.FC<{ recipe: RecipeModel }> = ({ recipe }) => (
         />
         <IngredientsSection ingredients={recipe.ingredients} />
         <StepsSection steps={recipe.steps} />
+        <NutritionSection nutrition={recipe.nutrition} />
         {recipe.original_recipe_url && (
           <SourceLink url={recipe.original_recipe_url} />
         )}

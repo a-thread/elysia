@@ -1,9 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useToast } from "@shared/components/Toast";
-import { useModalManager, DeleteConfirmationModal } from "@shared/components/Modals";
+import {
+  useModalManager,
+  DeleteConfirmationModal,
+} from "@shared/components/Modals";
 import RecipeService from "@recipes/services/RecipeService";
 import generateRecipePDF from "@recipes/utils/PdfGenerator";
+import TernService, { TernSendError } from "@recipes/services/TernService";
 import ShoppingListService from "@shopping-list/services/ShoppingListService";
 import { useShareableEntity } from "@shared/hooks/useShareableEntity";
 import { useRecipeDetails } from "./useRecipeDetails";
@@ -57,13 +61,13 @@ export const useRecipeDetailPage = () => {
         label="recipe"
         onCancelDelete={closeModal}
         onDelete={deleteRecipe}
-      />
+      />,
     );
 
   const addTags = () => {
     if (!recipe) return;
     openModal(
-      <AddTagsToRecipeModal recipeId={recipe.id} tagAdded={fetchRecipe} />
+      <AddTagsToRecipeModal recipeId={recipe.id} tagAdded={fetchRecipe} />,
     );
   };
 
@@ -73,7 +77,7 @@ export const useRecipeDetailPage = () => {
       <AddRecipeToCollectionsModal
         recipeId={recipe.id}
         collectionAdded={fetchRecipe}
-      />
+      />,
     );
   };
 
@@ -100,14 +104,39 @@ export const useRecipeDetailPage = () => {
           value: ingredient.value,
           source_recipe_id: recipe.id,
           source_recipe_title: recipe.title,
-        }))
+        })),
       );
       toast.success(
-        `Added ${recipe.ingredients.length} item(s) to your shopping list!`
+        `Added ${recipe.ingredients.length} item(s) to your shopping list!`,
       );
     } catch (error) {
       console.error("Error adding ingredients to shopping list:", error);
-      toast.error("Failed to add ingredients to shopping list. Please try again.");
+      toast.error(
+        "Failed to add ingredients to shopping list. Please try again.",
+      );
+    }
+  };
+
+  const sendToTern = async () => {
+    if (!recipe) return;
+    console.log(recipe);
+    try {
+      await TernService.sendRecipe(recipe);
+      toast.success("Sent to Tern. Find it under your saved meals.");
+    } catch (error) {
+      const reason = error instanceof TernSendError ? error.reason : "failed";
+      if (reason === "name-taken") {
+        toast.error(
+          "You already have a different meal with this name in Tern.",
+        );
+      } else if (reason === "unavailable") {
+        toast.error("Tern isn't available for your account.");
+      } else if (reason === "no-nutrition") {
+        toast.error("This recipe has no nutrition yet.");
+      } else {
+        console.error("Error sending recipe to Tern:", error);
+        toast.error("Failed to send to Tern. Please try again.");
+      }
     }
   };
 
@@ -123,6 +152,8 @@ export const useRecipeDetailPage = () => {
     addToCollection,
     exportRecipe,
     addToShoppingList,
+    canSendToTern: !!user && recipe?.nutrition !== null,
+    sendToTern,
     ...share,
   };
 };

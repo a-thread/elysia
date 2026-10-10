@@ -2,6 +2,7 @@ import {
   FaDownload,
   FaEllipsisV,
   FaLayerGroup,
+  FaPaperPlane,
   FaPen,
   FaShareAlt,
   FaShoppingBasket,
@@ -19,6 +20,7 @@ interface EllipsisMenuProps {
   canEdit: boolean;
   isOwner: boolean;
   isAuthenticated: boolean;
+  canSendToTern: boolean;
   isPublic: boolean;
   publicPermission: Permission;
   sharedUsers: SharedUser[];
@@ -27,6 +29,7 @@ interface EllipsisMenuProps {
   onAddTags: () => void;
   onAddToCollection: () => void;
   onAddToShoppingList: () => void;
+  onSendToTern: () => void;
   onExport: () => void;
   onTogglePublicShare: () => void;
   onSetPublicPermission: (permission: Permission) => void;
@@ -39,6 +42,7 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
   canEdit,
   isOwner,
   isAuthenticated,
+  canSendToTern,
   isPublic,
   publicPermission,
   sharedUsers,
@@ -47,6 +51,7 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
   onAddTags,
   onAddToCollection,
   onAddToShoppingList,
+  onSendToTern,
   onExport,
   onTogglePublicShare,
   onSetPublicPermission,
@@ -69,13 +74,17 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
         onRevokeAccess={onRevokeAccess}
         onCopyLink={onCopyLink}
         onClose={closeModal}
-      />
+      />,
     );
 
   const options: DropdownOption[] = [
     ...(canEdit
       ? [
-          { label: "Edit", icon: <FaPen aria-hidden="true" />, onClick: onEdit },
+          {
+            label: "Edit",
+            icon: <FaPen aria-hidden="true" />,
+            onClick: onEdit,
+          },
           {
             label: "Delete",
             icon: <FaTrash aria-hidden="true" />,
@@ -111,6 +120,15 @@ const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
             icon: <FaShoppingBasket aria-hidden="true" />,
             onClick: onAddToShoppingList,
             dividerBefore: canEdit || isOwner,
+          },
+        ]
+      : []),
+    ...(canSendToTern
+      ? [
+          {
+            label: "Send to Tern",
+            icon: <FaPaperPlane aria-hidden="true" />,
+            onClick: onSendToTern,
           },
         ]
       : []),

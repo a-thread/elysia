@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "@shared/components/Card";
 
-interface ConnectionCardProps {
+interface SettingCardProps {
   title: string;
   description: React.ReactNode;
   details: string[];
@@ -10,8 +10,8 @@ interface ConnectionCardProps {
   onToggle: () => void;
 }
 
-/** A titled opt-in card with a switch, for connecting Elysia to another app. */
-const ConnectionCard: React.FC<ConnectionCardProps> = ({
+/** A titled card with an on/off switch, for one setting. */
+const SettingCard: React.FC<SettingCardProps> = ({
   title,
   description,
   details,
@@ -55,4 +55,4 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
   </Card>
 );
 
-export default ConnectionCard;
+export default SettingCard;

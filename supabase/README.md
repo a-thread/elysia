@@ -17,10 +17,9 @@ the live database was created by hand from these statements, not via `supabase d
 | `20261005000010_storage_policies.sql` | policies for the photo bucket |
 | `20261005000011_recipe_nutrition.sql` | `recipes.nutrition` (per-serving jsonb); nutrition-only updates keep `last_updated` |
 | `20261005000012_user_settings.sql` | `user_settings` (per-user preferences, own-row RLS); first setting is `tern_enabled` |
-
 | `20261005000013_user_settings_lichen.sql` | `user_settings.lichen_enabled` (opt-in to keeping the shopping list in a Lichen note) |
-
 | `20261005000014_shopping_list_source_group.sql` | `shopping_list_items.source_group` (the recipe ingredient group an item came from); apply before deploying the app version that sends it |
+| `20261005000015_user_settings_show_nutrition.sql` | `user_settings.show_nutrition` (default on): hide nutrition facts, and with them the Tern connection |
 
 `data/recipe_nutrition.sql` is a one-off (not a migration): estimated nutrition for the recipes that
 existed in October 2026. `export_recipes_for_nutrition.sql` produces the JSON used to make it.

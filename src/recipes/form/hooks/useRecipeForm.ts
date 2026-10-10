@@ -61,7 +61,8 @@ export const useRecipeForm = () => {
         original_recipe_url: existingRecipe.original_recipe_url || "",
         ingredients: existingRecipe.ingredients || [],
         steps: existingRecipe.steps || [],
-        nutrition: normalizeNutrition(existingRecipe.nutrition),
+        // undefined (not null) when there is none: null would mean "remove it" on save.
+        nutrition: normalizeNutrition(existingRecipe.nutrition) ?? undefined,
         tags: existingRecipe.tags ? [...existingRecipe.tags] : [],
         collections: existingRecipe.collections ? [...existingRecipe.collections] : [],
       };

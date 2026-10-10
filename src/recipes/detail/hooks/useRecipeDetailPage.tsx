@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useUserSettings } from "@shared/contexts/UserSettingsContext";
+import { useShowNutrition } from "@shared/hooks/useShowNutrition";
 import { useToast } from "@shared/components/Toast";
 import {
   useModalManager,
@@ -25,6 +26,7 @@ export const useRecipeDetailPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { settings } = useUserSettings();
+  const showNutrition = useShowNutrition();
   const syncToLichen = useLichenSync();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
@@ -158,7 +160,9 @@ export const useRecipeDetailPage = () => {
     addToCollection,
     exportRecipe,
     addToShoppingList,
-    canSendToTern: !!user && settings.tern_enabled && !!recipe?.nutrition,
+    showNutrition,
+    canSendToTern:
+      !!user && showNutrition && settings.tern_enabled && !!recipe?.nutrition,
     sendToTern,
     ...share,
   };

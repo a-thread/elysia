@@ -2,13 +2,16 @@ import { supabaseWithAbort } from "./SupabaseWithAbort";
 import { TableNames } from "./TableNames";
 
 export interface UserSettings {
-  /** Show "Send to Tern" on recipes with nutrition. */
+  /** Show nutrition facts on recipes and the nutrition fields in the recipe form. */
+  show_nutrition: boolean;
+  /** Show "Send to Tern" on recipes with nutrition. Needs show_nutrition. */
   tern_enabled: boolean;
   /** Keep the shopping list in a "Shopping List" note in Lichen. */
   lichen_enabled: boolean;
 }
 
 export const DEFAULT_USER_SETTINGS: UserSettings = {
+  show_nutrition: true,
   tern_enabled: false,
   lichen_enabled: false,
 };
@@ -20,7 +23,7 @@ const get = async (userId: string): Promise<UserSettings> => {
     async (client) => {
       const { data, error } = await client
         .from(TableNames.USER_SETTINGS)
-        .select("tern_enabled, lichen_enabled")
+        .select("show_nutrition, tern_enabled, lichen_enabled")
         .eq("user_id", userId)
         .maybeSingle();
 

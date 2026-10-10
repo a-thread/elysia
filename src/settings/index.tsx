@@ -1,14 +1,16 @@
 import React from "react";
 import Loading from "@shared/components/Loading";
-import ConnectionCard from "./components/ConnectionCard";
+import SettingCard from "./components/SettingCard";
 import { useSettingsPage } from "./hooks/useSettingsPage";
 
 const Settings: React.FC = () => {
   const {
+    showNutrition,
     ternEnabled,
     lichenEnabled,
     loading,
     saving,
+    toggleNutrition,
     toggleTern,
     toggleLichen,
   } = useSettingsPage();
@@ -21,25 +23,38 @@ const Settings: React.FC = () => {
         Settings
       </h1>
       <div className="flex flex-col gap-4">
-        <ConnectionCard
-          title="Connect to Tern"
-          description={
-            <>
-              Tern is a health tracker for food, steps and more. When connected,
-              recipes that have nutrition facts get a &ldquo;Send to Tern&rdquo;
-              option that saves the recipe as a meal in your Tern account.
-            </>
-          }
+        <SettingCard
+          title="Show nutrition facts"
+          description="Show per-serving calories and macros on recipes, and the nutrition fields when you add or edit a recipe."
           details={[
-            "Nothing is sent automatically. You choose each recipe.",
-            "It uses the same login, so there is nothing else to set up.",
-            "Disconnecting hides the option. Meals you already sent stay in Tern, where you can delete them.",
+            "Turning this off only hides nutrition. Nothing is deleted, and it comes back when you turn it on.",
+            "Hiding nutrition also hides the Tern connection, which needs it.",
           ]}
-          enabled={ternEnabled}
+          enabled={showNutrition}
           disabled={saving !== null}
-          onToggle={toggleTern}
+          onToggle={toggleNutrition}
         />
-        <ConnectionCard
+        {showNutrition && (
+          <SettingCard
+            title="Connect to Tern"
+            description={
+              <>
+                Tern is a health tracker for food, steps and more. When connected,
+                recipes that have nutrition facts get a &ldquo;Send to Tern&rdquo;
+                option that saves the recipe as a meal in your Tern account.
+              </>
+            }
+            details={[
+              "Nothing is sent automatically. You choose each recipe.",
+              "It uses the same login, so there is nothing else to set up.",
+              "Disconnecting hides the option. Meals you already sent stay in Tern, where you can delete them.",
+            ]}
+            enabled={ternEnabled}
+            disabled={saving !== null}
+            onToggle={toggleTern}
+          />
+        )}
+        <SettingCard
           title="Connect to Lichen"
           description={
             <>

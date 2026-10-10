@@ -4,6 +4,8 @@ import PhotoUpload from "@shared/components/PhotoUpload";
 import EditableSectionForm from "./components/EditableSectionForm";
 import TitleDescriptionForm from "@shared/components/TitleDescriptionForm";
 import RecipeDetailsForm from "@recipes/components/RecipeDetailsForm";
+import NutritionForm from "@recipes/components/NutritionForm";
+import { useShowNutrition } from "@shared/hooks/useShowNutrition";
 import { useRecipeForm } from "./hooks/useRecipeForm";
 import { useRecipeActions } from "./hooks/useRecipeActions";
 import MultiSelect from "@shared/components/MultiSelect";
@@ -13,6 +15,7 @@ import FormActionBar from "@shared/components/FormActionBar";
 
 const RecipeForm: React.FC = () => {
   const navigate = useNavigate();
+  const showNutrition = useShowNutrition();
   const {
     formData,
     originalData,
@@ -65,6 +68,13 @@ const RecipeForm: React.FC = () => {
           setOriginalFormState={(e) => onFormChange("steps", e)}
           sectionName="Step"
         />
+
+        {showNutrition && (
+          <NutritionForm
+            nutrition={formData.nutrition}
+            onChange={(nutrition) => onFormChange("nutrition", nutrition)}
+          />
+        )}
 
         <div className="mb-4">
           <FieldLabel htmlFor="Tags">Tags</FieldLabel>

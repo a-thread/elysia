@@ -25,6 +25,7 @@ const Recipe: React.FC = () => {
     addToCollection,
     exportRecipe,
     addToShoppingList,
+    showNutrition,
     canSendToTern,
     sendToTern,
     isPublic,
@@ -66,12 +67,15 @@ const Recipe: React.FC = () => {
           onCopyLink={copyLink}
         />
       </div>
-      <Content recipe={recipe} />
+      <Content recipe={recipe} showNutrition={showNutrition} />
     </div>
   );
 };
 
-const Content: React.FC<{ recipe: RecipeModel }> = ({ recipe }) => (
+const Content: React.FC<{ recipe: RecipeModel; showNutrition: boolean }> = ({
+  recipe,
+  showNutrition,
+}) => (
   <div className="flex flex-col-reverse md:flex-row gap-4 md:gap-6">
     <div className="w-full md:w-3/4">
       {recipe.img_url && (
@@ -90,7 +94,7 @@ const Content: React.FC<{ recipe: RecipeModel }> = ({ recipe }) => (
         />
         <IngredientsSection ingredients={recipe.ingredients} />
         <StepsSection steps={recipe.steps} />
-        <NutritionSection nutrition={recipe.nutrition} />
+        {showNutrition && <NutritionSection nutrition={recipe.nutrition} />}
         {recipe.original_recipe_url && (
           <SourceLink url={recipe.original_recipe_url} />
         )}

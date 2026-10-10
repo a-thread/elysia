@@ -130,8 +130,8 @@ const upsert = async (
               description: updatedRecipe.description,
               img_url: updatedRecipe.img_url,
               user_id: userId,
-              // Only sent when present, so a save never clears nutrition set elsewhere.
-              ...(updatedRecipe.nutrition ? { nutrition: updatedRecipe.nutrition } : {}),
+              // undefined leaves it alone; null (the form's fields all cleared) removes it.
+              ...(updatedRecipe.nutrition !== undefined ? { nutrition: updatedRecipe.nutrition } : {}),
             },
           ])
           .select()
@@ -154,7 +154,7 @@ const upsert = async (
             description: updatedRecipe.description,
             img_url: updatedRecipe.img_url,
             user_id: userId,
-            ...(updatedRecipe.nutrition ? { nutrition: updatedRecipe.nutrition } : {}),
+            ...(updatedRecipe.nutrition !== undefined ? { nutrition: updatedRecipe.nutrition } : {}),
           })
           .eq("id", recipeId);
         if (error) throw new Error(`Failed to update recipe: ${error.message}`);

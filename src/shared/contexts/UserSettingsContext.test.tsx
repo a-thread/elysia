@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 const useAuth = vi.fn();
 vi.mock("@shared/contexts/AuthContext", () => ({ useAuth: () => useAuth() }));
 vi.mock("@shared/services/UserSettingsService", () => ({
-  DEFAULT_USER_SETTINGS: { tern_enabled: false, lichen_enabled: false },
+  DEFAULT_USER_SETTINGS: { show_nutrition: true, tern_enabled: false, lichen_enabled: false },
   default: { get: vi.fn(), update: vi.fn() },
 }));
 
@@ -28,7 +28,11 @@ describe("UserSettingsContext", () => {
 
     const { result } = renderHook(() => useUserSettings(), { wrapper });
 
-    expect(result.current.settings).toEqual({ tern_enabled: false, lichen_enabled: false });
+    expect(result.current.settings).toEqual({
+      show_nutrition: true,
+      tern_enabled: false,
+      lichen_enabled: false,
+    });
     expect(result.current.loading).toBe(false);
     expect(UserSettingsService.get).not.toHaveBeenCalled();
   });
@@ -36,6 +40,7 @@ describe("UserSettingsContext", () => {
   it("loads the signed-in user's settings", async () => {
     useAuth.mockReturnValue({ user: { id: "u1" } });
     vi.mocked(UserSettingsService.get).mockResolvedValue({
+      show_nutrition: true,
       tern_enabled: true,
       lichen_enabled: false,
     });
@@ -62,6 +67,7 @@ describe("UserSettingsContext", () => {
   it("saves a change, updating only that setting; a failed save leaves settings alone", async () => {
     useAuth.mockReturnValue({ user: { id: "u1" } });
     vi.mocked(UserSettingsService.get).mockResolvedValue({
+      show_nutrition: true,
       tern_enabled: true,
       lichen_enabled: false,
     });
@@ -72,7 +78,11 @@ describe("UserSettingsContext", () => {
 
     await act(() => result.current.updateSettings({ lichen_enabled: true }));
     expect(UserSettingsService.update).toHaveBeenCalledWith("u1", { lichen_enabled: true });
-    expect(result.current.settings).toEqual({ tern_enabled: true, lichen_enabled: true });
+    expect(result.current.settings).toEqual({
+      show_nutrition: true,
+      tern_enabled: true,
+      lichen_enabled: true,
+    });
 
     vi.mocked(UserSettingsService.update).mockRejectedValueOnce(new Error("boom"));
     await expect(act(() => result.current.updateSettings({ tern_enabled: false }))).rejects.toThrow(

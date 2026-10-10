@@ -28,11 +28,12 @@ describe("UserSettingsService", () => {
 
   it("loads the signed-in user's settings row", async () => {
     maybeSingle.mockResolvedValue({
-      data: { tern_enabled: true, lichen_enabled: true },
+      data: { show_nutrition: false, tern_enabled: true, lichen_enabled: true },
       error: null,
     });
 
     await expect(UserSettingsService.get("u1")).resolves.toEqual({
+      show_nutrition: false,
       tern_enabled: true,
       lichen_enabled: true,
     });
@@ -50,6 +51,7 @@ describe("UserSettingsService", () => {
     maybeSingle.mockResolvedValue({ data: { tern_enabled: true }, error: null });
 
     await expect(UserSettingsService.get("u1")).resolves.toEqual({
+      show_nutrition: true,
       tern_enabled: true,
       lichen_enabled: false,
     });

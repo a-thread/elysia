@@ -1,0 +1,446 @@
+[
+  {
+    "id": "5962410b-e068-4af6-aaa1-298184105c0d",
+    "title": "Grilled Chicken Satay (with Peanut Sauce)",
+    "ingredients": [
+      {
+        "id": "b79acab6-56ac-4388-9c38-6c4e34ffcab1",
+        "group": "For The Chicken:",
+        "value": "1 pound chicken tenders"
+      },
+      {
+        "id": "3f263122-d0b9-4d7d-9fae-24f93e9d1264",
+        "group": "For The Chicken:",
+        "value": "1 tablespoon olive oil"
+      },
+      {
+        "id": "aaa0ac12-51fb-4357-ab0b-99e01747c782",
+        "group": "For The Chicken:",
+        "value": "1 tablespoon honey"
+      },
+      {
+        "id": "55373eab-a0cb-4f9a-80ba-2aa0ae20f9ce",
+        "group": "For The Chicken:",
+        "value": "1 tablespoon soy sauce"
+      },
+      {
+        "id": "abdda580-4ecc-4d10-8e16-8b818b3d2b87",
+        "group": "For The Chicken:",
+        "value": "1 tablespoon ground ginger"
+      },
+      {
+        "id": "0fec38f0-f557-4889-b957-31940076fc4a",
+        "group": "For The Chicken:",
+        "value": "1 tablespoon curry powder"
+      },
+      {
+        "id": "a85b413b-a08a-413e-8c38-967009d20576",
+        "group": "For The Chicken:",
+        "value": "1 tablespoon garlic minced"
+      },
+      {
+        "id": "df3ac7a9-1051-4c6d-8775-a5854bb568e1",
+        "group": "For the Peanut dipping sauce:",
+        "value": "1 cup peanut butter"
+      },
+      {
+        "id": "b9ddc470-8a72-49c3-9564-4ce4a25d3b43",
+        "group": "For the Peanut dipping sauce:",
+        "value": "14.5 ounces chicken stock"
+      },
+      {
+        "id": "e08a23ff-0184-4582-914e-776111881f9c",
+        "group": "For the Peanut dipping sauce:",
+        "value": "1/4 cup lime juice fresh fresh"
+      },
+      {
+        "id": "74eb4ce1-0265-4b55-b341-305a551dad02",
+        "group": "For the Peanut dipping sauce:",
+        "value": "3 tablespoons dark brown sugar"
+      },
+      {
+        "id": "defbb248-f7d9-4ae3-aa01-4ef770625978",
+        "group": "For the Peanut dipping sauce:",
+        "value": "1/2 teaspoon curry powder"
+      },
+      {
+        "id": "f561a4ea-ee42-4c21-8427-d5958e6010b8",
+        "group": "For the Peanut dipping sauce:",
+        "value": "2 1/2 tablespoons soy sauce"
+      },
+      {
+        "id": "f3e7e3d6-777d-4951-ba78-e15c5d7c71f1",
+        "group": "For the Peanut dipping sauce:",
+        "value": "2 tablespoons fresh ginger peeled, grated"
+      },
+      {
+        "id": "3e795d03-759a-4c4f-a6b2-005d9ee522e7",
+        "group": "For the Peanut dipping sauce:",
+        "value": "1 teaspoon crushed red pepper flakes"
+      }
+    ]
+  },
+  {
+    "id": "17616588-685d-483d-bc9b-1a60f758d2b1",
+    "title": "Tofu Satay Salad",
+    "ingredients": [
+      {
+        "id": "ef5ea995-b352-4d59-9fc5-8c75106f8a44",
+        "group": "Tofu:",
+        "value": "4 blocks tofu"
+      },
+      {
+        "id": "85adecb2-cac4-4765-af3e-ca03cc523b25",
+        "group": "Tofu:",
+        "value": "any spice mix (I used a mix of smoked paprika, chili, onion powder, salt & pepper)"
+      },
+      {
+        "id": "f9f7f467-a2db-4cd3-b428-9c1670463f08",
+        "group": "Tofu:",
+        "value": "any oil (I used sesame)"
+      },
+      {
+        "id": "73b30940-2839-41f8-9d7f-76d00b989982",
+        "group": "Tofu:",
+        "value": "1 med-large tupperware"
+      },
+      {
+        "id": "95e84a6a-60d4-4777-b483-48e003c1367f",
+        "group": "Salad:",
+        "value": "1 bunch of kale (I just got a bag of pre-washed kale)"
+      },
+      {
+        "id": "c8710a36-1793-4e1d-8f3a-8cbc79360bd0",
+        "group": "Salad:",
+        "value": "1 small head of cabbage"
+      },
+      {
+        "id": "2ef29261-d357-416f-ae95-12ef426e6016",
+        "group": "Salad:",
+        "value": "2-3 large carrots"
+      },
+      {
+        "id": "a382349f-5edf-45f5-b1c7-f35e8ff21342",
+        "group": "Salad:",
+        "value": "1 large tupperware"
+      },
+      {
+        "id": "ea1f2c05-5c3a-462a-b144-94342297a7ed",
+        "group": "Sauce:",
+        "value": "1 cup peanut butter"
+      },
+      {
+        "id": "4b2da0ea-4807-4efb-86d4-83e73f707e1f",
+        "group": "Sauce:",
+        "value": "1 spoonful of some kind of stock"
+      },
+      {
+        "id": "ee9e54d7-b7be-4895-b219-d77fe56b4709",
+        "group": "Sauce:",
+        "value": "1/4 cup lime juice fresh fresh"
+      },
+      {
+        "id": "ae0ff717-2b67-46a0-8262-16d9e173e0ff",
+        "group": "Sauce:",
+        "value": "3 tablespoons dark brown sugar (or 3 tablespoons + dollop molasses)"
+      },
+      {
+        "id": "9e94bf85-5424-46c0-8a68-c4688ce1c809",
+        "group": "Sauce:",
+        "value": "1/2 teaspoon curry powder"
+      },
+      {
+        "id": "73784f4a-78ef-407d-b85b-03f94b3d3bec",
+        "group": "Sauce:",
+        "value": "2 1/2 tablespoons soy sauce"
+      },
+      {
+        "id": "32e2ec8e-72a3-453b-9b45-d71065afa383",
+        "group": "Sauce:",
+        "value": "2 tablespoons fresh ginger peeled, grated"
+      },
+      {
+        "id": "f5100fdc-93a2-455d-a87f-239cb907297b",
+        "group": "Sauce:",
+        "value": "1 teaspoon crushed red pepper flakes"
+      },
+      {
+        "id": "147b0079-f424-4009-869a-f29b792d38ac",
+        "group": "Sauce:",
+        "value": "enough water to reach a consistency that you like (I like to leave it pretty thick bc you can always add more water later)"
+      },
+      {
+        "id": "fa621a92-86bb-41f3-bc9a-3e448d9c4126",
+        "group": "Sauce:",
+        "value": "1 jar"
+      },
+      {
+        "id": "0d4da7de-61ba-4bf6-8735-1362b69077b1",
+        "group": "Toppings:",
+        "value": "2 steamable bags of edamame (or 2 cups of edamame)"
+      },
+      {
+        "id": "e08ec1c5-4a16-4609-afd4-c2be3e13f6ae",
+        "group": "Toppings:",
+        "value": "2 avocados (optional)"
+      },
+      {
+        "id": "2fc93f81-f8ad-44f8-85b7-dce7dfa1303f",
+        "group": "Toppings:",
+        "value": "1 jar"
+      }
+    ]
+  },
+  {
+    "id": "d31055dc-fc6c-4f1a-a172-a03220f670c7",
+    "title": "Maple Balsamic Tofu Acorn Squash Sandwich",
+    "ingredients": [
+      {
+        "id": "b43616ed-37b3-4ec7-b6f7-d21999091ee7",
+        "group": "Yogurt Sauce:",
+        "value": "1/2 cup unsweetened plant-based yogurt"
+      },
+      {
+        "id": "d8217b6f-ba69-4bb6-9b57-dfe2fc1c1a46",
+        "group": "Yogurt Sauce:",
+        "value": "1 clove garlic, grated"
+      },
+      {
+        "id": "eb630a18-ade4-4608-81ec-abeb554c0ea5",
+        "group": "Yogurt Sauce:",
+        "value": "1 lemon"
+      },
+      {
+        "id": "d10b89f4-5990-4a1c-8f16-2e1021a584e4",
+        "group": "Yogurt Sauce:",
+        "value": "2 tsp maple syrup"
+      },
+      {
+        "id": "75b491a2-d984-4f42-9a97-b933e39be3a1",
+        "group": "Yogurt Sauce:",
+        "value": "Kosher salt to taste"
+      },
+      {
+        "id": "d4953448-e559-4019-93a4-2fbbe4874f35",
+        "group": "Acorn Squash Slices:",
+        "value": "1 lb acorn squash, seeds removed & thinly sliced"
+      },
+      {
+        "id": "5422dd6b-1f87-4a89-8607-793ff5bd971c",
+        "group": "Acorn Squash Slices:",
+        "value": "1 tbsp nutritional yeast"
+      },
+      {
+        "id": "cbbc2d22-903a-48fe-9c49-98936164f24f",
+        "group": "Acorn Squash Slices:",
+        "value": "1 tsp garlic powder"
+      },
+      {
+        "id": "c1b5b9fe-a744-489a-b274-7cd53817bb62",
+        "group": "Acorn Squash Slices:",
+        "value": "1/2 tsp dry thyme"
+      },
+      {
+        "id": "4472faae-2d9a-473f-8746-369e1f4885c3",
+        "group": "Acorn Squash Slices:",
+        "value": "1 tbsp or more avocado oil"
+      },
+      {
+        "id": "212f1287-743d-4eb3-a424-6fc45772971a",
+        "group": "Balsamic Tofu Slices:",
+        "value": "16 oz block of super firm tofu"
+      },
+      {
+        "id": "117cdb71-4de7-4454-a4d1-d801b74d4cc9",
+        "group": "Balsamic Tofu Slices:",
+        "value": "3 tbsp balsamic vinegar"
+      },
+      {
+        "id": "3013abb7-7711-49e7-8d20-4a2e51c526d3",
+        "group": "Balsamic Tofu Slices:",
+        "value": "2 tbsp maple syrup"
+      },
+      {
+        "id": "df8c1162-0057-46ae-9829-3a9aceb3a498",
+        "group": "Balsamic Tofu Slices:",
+        "value": "2 tbsp tamari"
+      },
+      {
+        "id": "10e419b4-631c-4dad-bbb6-99c14c9b5bb9",
+        "group": "Balsamic Tofu Slices:",
+        "value": "1 tbsp avocado oil"
+      },
+      {
+        "id": "8d1a8cf1-d12f-4f34-802c-ed9210930d0c",
+        "group": "Balsamic Tofu Slices:",
+        "value": "1 tbsp nutritional yeast"
+      },
+      {
+        "id": "00624c0c-2ba5-4b50-9fb0-b019751ba428",
+        "group": "Balsamic Tofu Slices:",
+        "value": "1/2 tsp dry thyme"
+      },
+      {
+        "id": "520e4db0-b8d8-4366-a36c-3f89be513e1b",
+        "group": "Balsamic Tofu Slices:",
+        "value": "1/2 tsp dry oregano"
+      },
+      {
+        "id": "f53c410b-8100-429d-b7bc-526b0059e25b",
+        "group": "Balsamic Tofu Slices:",
+        "value": "1/2 tsp coriander"
+      }
+    ]
+  },
+  {
+    "id": "2933e70d-3895-46d3-adc8-3876a73bec83",
+    "title": "The Best Healthy Turkey Lasagna You’ll Ever Eat",
+    "ingredients": [
+      {
+        "id": "75df2d20-58f9-491d-ab06-5a97270ae6f7",
+        "group": "For the sauce:",
+        "value": "1 tablespoon extravirgin olive oil"
+      },
+      {
+        "id": "90fa7a11-f81b-4f25-b0ee-6091c055822f",
+        "group": "For the sauce:",
+        "value": "6 cloves garlic minced"
+      },
+      {
+        "id": "d9b05e94-425a-49e0-988d-019006b88984",
+        "group": "For the sauce:",
+        "value": "1 pound 93 lean ground turkey or use ground turkey sausage for even more flavor"
+      },
+      {
+        "id": "c8f697e4-58f0-41b6-9a6c-4885428e4d4c",
+        "group": "For the sauce:",
+        "value": "1 white onion finely diced"
+      },
+      {
+        "id": "0021c1f8-28f4-44a3-9d45-dc6b9eb5c2c8",
+        "group": "For the sauce:",
+        "value": "1 teaspoon kosher salt"
+      },
+      {
+        "id": "6fd49914-7958-438e-ac03-0d91f7be2a07",
+        "group": "For the sauce:",
+        "value": "1 28 ounce can crushed tomatoes"
+      },
+      {
+        "id": "ac722f84-6b60-4849-8530-470c4367c7b7",
+        "group": "For the sauce:",
+        "value": "1 6 ounce can tomato paste"
+      },
+      {
+        "id": "de7f8e9d-3a32-4318-9e2c-098d08c36583",
+        "group": "For the sauce:",
+        "value": "1 15 ounce can tomato sauce"
+      },
+      {
+        "id": "ffd069c9-2cf5-4170-8ca4-60da3397d26e",
+        "group": "For the sauce:",
+        "value": "1 tablespoon pure maple syrup"
+      },
+      {
+        "id": "2bde4c8b-25b8-4329-8fda-39cff8744c0e",
+        "group": "For the sauce:",
+        "value": "0.5 cup water"
+      },
+      {
+        "id": "d4a29447-52d7-406f-9b1b-71ec4fe317ed",
+        "group": "For the sauce:",
+        "value": "0.25 cup julienned fresh basil"
+      },
+      {
+        "id": "896e0a4d-a0a9-471e-8133-ba70352b647e",
+        "group": "For the sauce:",
+        "value": "2 teaspoons italian seasoning"
+      },
+      {
+        "id": "4cd4c940-691b-4b81-be66-216038d0bd44",
+        "group": "For the sauce:",
+        "value": "2 teaspoons dried oregano"
+      },
+      {
+        "id": "fff64c1b-68c6-4fc0-aba1-a97ff883c19e",
+        "group": "For the sauce:",
+        "value": "1 teaspoon whole fennel seeds"
+      },
+      {
+        "id": "02dfc702-80d8-496d-be8f-76f1352abc0e",
+        "group": "For the sauce:",
+        "value": "0.5 teaspoon red pepper flakes"
+      },
+      {
+        "id": "1a8530cb-3229-4e1a-ae7d-81f4a3192ac1",
+        "group": "For the sauce:",
+        "value": "0.25 teaspoon nutmeg"
+      },
+      {
+        "id": "e6e99264-65a9-4dff-bd5b-7089e3f1c6ca",
+        "group": "For the sauce:",
+        "value": "1 teaspoon salt plus more to taste"
+      },
+      {
+        "id": "e732da18-96d4-423f-a294-45a968364d48",
+        "group": "For the sauce:",
+        "value": "Freshly ground black pepper"
+      },
+      {
+        "id": "8d93ad97-e566-4562-8c23-6ad4e3e31b76",
+        "group": "For the lasagna noodles:",
+        "value": "10 regular whole wheat or gluten free lasagna noodles"
+      },
+      {
+        "id": "489f1a0f-8c87-4ac4-961c-d5f0cb45c7e2",
+        "group": "For the ricotta mixture:",
+        "value": "1 15 ounce container part skim ricotta"
+      },
+      {
+        "id": "b3ac5414-ef33-4816-bbfb-4be1b3dbb34b",
+        "group": "For the ricotta mixture:",
+        "value": "1 egg"
+      },
+      {
+        "id": "0a4a2817-8e30-46ef-a993-50fd0b99dd53",
+        "group": "For the ricotta mixture:",
+        "value": "0.25 cup fresh basil leaves finely chopped"
+      },
+      {
+        "id": "49fe3eaf-9733-45d9-b4b1-41bc150632a8",
+        "group": "For the ricotta mixture:",
+        "value": "0.5 teaspoon salt"
+      },
+      {
+        "id": "1f1d968a-a85b-46a9-86c5-ebbdf3ff7e75",
+        "group": "For the ricotta mixture:",
+        "value": "Freshly ground black pepper"
+      },
+      {
+        "id": "49da3d86-9473-483d-871b-5bdaba5352a7",
+        "group": "For the layers:",
+        "value": "0.25 cup packed fresh basil finely chopped"
+      },
+      {
+        "id": "84f88b7a-0d0a-48fa-a438-340008b1e64c",
+        "group": "For the layers:",
+        "value": "16 ounce fresh whole milk mozzarella shredded"
+      },
+      {
+        "id": "c1b619e8-1ffa-4e74-a9a5-0696cdee2380",
+        "group": "For the layers:",
+        "value": "0.5 cup grated parmesan cheese"
+      },
+      {
+        "id": "edeb46cc-3393-43a9-8395-5bf686d32467",
+        "group": "To garnish:",
+        "value": "0.25 cup grated parmesan"
+      },
+      {
+        "id": "20c41d33-637e-483e-85c5-bb4d65317069",
+        "group": "To garnish:",
+        "value": "Fresh basil"
+      }
+    ]
+  }
+]

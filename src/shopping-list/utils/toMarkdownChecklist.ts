@@ -1,4 +1,5 @@
 import { ShoppingListItem } from "../models/ShoppingListItem";
+import { toChecklistLines } from "./toChecklistLines";
 
 /**
  * Formats items as standard markdown task-list lines (`- [ ] `/`- [x] `)
@@ -7,7 +8,4 @@ import { ShoppingListItem } from "../models/ShoppingListItem";
 export const toMarkdownChecklist = (
   items: ShoppingListItem[],
   title = "Shopping List",
-): string => {
-  const lines = items.map((item) => `- [${item.checked ? "x" : " "}] ${item.value}`);
-  return [`# ${title}`, ...lines].join("\n");
-};
+): string => [`# ${title}`, ...toChecklistLines(items)].join("\n");

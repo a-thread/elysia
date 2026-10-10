@@ -19,6 +19,7 @@ const CollectionList = lazy(() => import("./collections/list"));
 const CollectionDetail = lazy(() => import("./collections/detail"));
 const CollectionForm = lazy(() => import("./collections/form"));
 const ShoppingList = lazy(() => import("./shopping-list"));
+const Settings = lazy(() => import("./settings"));
 
 const App = () => {
   return (
@@ -87,6 +88,14 @@ const App = () => {
                   element={
                     <ProtectedRoute>
                       <ShoppingList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
                     </ProtectedRoute>
                   }
                 />

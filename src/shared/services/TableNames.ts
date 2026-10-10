@@ -9,4 +9,5 @@ export enum TableNames {
   TAGS = "tags",
   USERS = "users",
   SHOPPING_LIST_ITEMS = "shopping_list_items",
+  USER_SETTINGS = "user_settings",
 }

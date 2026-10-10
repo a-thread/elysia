@@ -7,12 +7,15 @@ interface ShoppingListItemRowProps {
   item: ShoppingListItem;
   onToggle: (item: ShoppingListItem) => void;
   onRemove: (itemId: string) => void;
+  /** Show "from <recipe>" under the item. Off where the item already sits under its recipe's heading. */
+  showSource?: boolean;
 }
 
 const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
   item,
   onToggle,
   onRemove,
+  showSource = true,
 }) => {
   const isChecked = item.checked;
 
@@ -51,7 +54,7 @@ const ShoppingListItemRow: React.FC<ShoppingListItemRowProps> = ({
           >
             {item.value}
           </span>
-          {item.source_recipe_title && (
+          {showSource && item.source_recipe_title && (
             <div className="text-xs text-leaf-green-700 dark:text-leaf-green-300">
               from {item.source_recipe_title}
             </div>

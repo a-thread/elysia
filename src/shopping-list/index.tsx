@@ -6,6 +6,7 @@ import { Button } from "@shared/components/Buttons";
 import DropdownButton, { DropdownOption } from "@shared/components/Buttons/DropdownButton";
 import { useShoppingListPage } from "./hooks/useShoppingListPage";
 import ShoppingListItemRow from "./components/ShoppingListItemRow";
+import { groupShoppingItems, hasRecipeSections } from "./utils/groupShoppingItems";
 
 const ShoppingList: React.FC = () => {
   const {
@@ -23,6 +24,10 @@ const ShoppingList: React.FC = () => {
 
   const uncheckedItems = items.filter((item) => !item.checked);
   const checkedItems = items.filter((item) => item.checked);
+  // Checked items stay in their own list below (with their source shown, since they have left
+  // their recipe's section); unchecked ones are grouped by recipe.
+  const sections = groupShoppingItems(uncheckedItems);
+  const showHeadings = hasRecipeSections(sections);
 
   const menuOptions: DropdownOption[] = [
     {
@@ -89,28 +94,51 @@ const ShoppingList: React.FC = () => {
       )}
 
       {!loading && items.length > 0 && (
-        <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
-          {uncheckedItems.map((item) => (
-            <ShoppingListItemRow
-              key={item.id}
-              item={item}
-              onToggle={toggleChecked}
-              onRemove={removeItem}
-            />
+        <div className="flex flex-col gap-6">
+          {sections.map((section) => (
+            <section key={section.key}>
+              {showHeadings && (
+                <h2 className="text-lg font-semibold text-leaf-green-900 dark:text-leaf-green-100 mb-1">
+                  {section.title}
+                </h2>
+              )}
+              {section.groups.map((group) => (
+                <div key={group.title ?? ""}>
+                  {group.title && (
+                    <div className="text-xs font-bold uppercase tracking-wide text-leaf-green-700 dark:text-leaf-green-300 mt-2 mb-1">
+                      {group.title}
+                    </div>
+                  )}
+                  <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
+                    {group.items.map((item) => (
+                      <ShoppingListItemRow
+                        key={item.id}
+                        item={item}
+                        onToggle={toggleChecked}
+                        onRemove={removeItem}
+                        showSource={false}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </section>
           ))}
           {checkedItems.length > 0 && (
-            <div className="pt-4">
+            <div>
               <div className="text-xs font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">
                 Checked
               </div>
-              {checkedItems.map((item) => (
-                <ShoppingListItemRow
-                  key={item.id}
-                  item={item}
-                  onToggle={toggleChecked}
-                  onRemove={removeItem}
-                />
-              ))}
+              <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
+                {checkedItems.map((item) => (
+                  <ShoppingListItemRow
+                    key={item.id}
+                    item={item}
+                    onToggle={toggleChecked}
+                    onRemove={removeItem}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>

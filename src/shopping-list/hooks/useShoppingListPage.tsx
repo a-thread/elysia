@@ -4,6 +4,7 @@ import { useToast } from "@shared/components/Toast";
 import { useModalManager, DeleteConfirmationModal } from "@shared/components/Modals";
 import ShoppingListService from "../services/ShoppingListService";
 import { useShoppingListItems } from "./useShoppingListItems";
+import { useLichenSync } from "./useLichenSync";
 import { toMarkdownChecklist } from "../utils/toMarkdownChecklist";
 import { ShoppingListItem } from "../models/ShoppingListItem";
 
@@ -16,6 +17,7 @@ export const useShoppingListPage = () => {
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
   const { items, loading, fetchItems, setItems } = useShoppingListItems(user?.id);
+  const syncToLichen = useLichenSync();
   const [newItemValue, setNewItemValue] = useState("");
 
   const addItem = async () => {
@@ -25,6 +27,7 @@ export const useShoppingListPage = () => {
     try {
       const created = await ShoppingListService.addItem(user.id, value);
       if (created) setItems((prev) => [...prev, created]);
+      void syncToLichen();
     } catch (error) {
       console.error("Failed to add item", error);
       toast.error("Failed to add item. Please try again.");
@@ -38,6 +41,7 @@ export const useShoppingListPage = () => {
     );
     try {
       await ShoppingListService.setChecked(item.id, nextChecked);
+      void syncToLichen();
     } catch (error) {
       console.error("Failed to update item", error);
       setItems((prev) =>
@@ -52,6 +56,7 @@ export const useShoppingListPage = () => {
     setItems((prev) => prev.filter((i) => i.id !== itemId));
     try {
       await ShoppingListService.deleteById(itemId);
+      void syncToLichen();
     } catch (error) {
       console.error("Failed to remove item", error);
       if (removed) setItems((prev) => [...prev, removed]);
@@ -66,6 +71,7 @@ export const useShoppingListPage = () => {
       toast.success("Checked items cleared.");
       closeModal();
       await fetchItems();
+      void syncToLichen();
     } catch (error) {
       console.error("Failed to clear checked items", error);
       toast.error("Failed to clear checked items. Please try again.");
@@ -79,6 +85,7 @@ export const useShoppingListPage = () => {
       toast.success("Shopping list cleared.");
       closeModal();
       await fetchItems();
+      void syncToLichen();
     } catch (error) {
       console.error("Failed to clear shopping list", error);
       toast.error("Failed to clear shopping list. Please try again.");

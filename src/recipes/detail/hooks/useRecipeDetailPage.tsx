@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
+import { useUserSettings } from "@shared/contexts/UserSettingsContext";
 import { useToast } from "@shared/components/Toast";
 import {
   useModalManager,
@@ -9,6 +10,7 @@ import RecipeService from "@recipes/services/RecipeService";
 import generateRecipePDF from "@recipes/utils/PdfGenerator";
 import TernService, { TernSendError } from "@recipes/services/TernService";
 import ShoppingListService from "@shopping-list/services/ShoppingListService";
+import { useLichenSync } from "@shopping-list/hooks/useLichenSync";
 import { useShareableEntity } from "@shared/hooks/useShareableEntity";
 import { useRecipeDetails } from "./useRecipeDetails";
 import AddTagsToRecipeModal from "../components/AddTagsToRecipeModal";
@@ -22,6 +24,8 @@ export const useRecipeDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { settings } = useUserSettings();
+  const syncToLichen = useLichenSync();
   const toast = useToast();
   const { openModal, closeModal } = useModalManager();
 
@@ -104,11 +108,13 @@ export const useRecipeDetailPage = () => {
           value: ingredient.value,
           source_recipe_id: recipe.id,
           source_recipe_title: recipe.title,
+          source_group: ingredient.group || undefined,
         })),
       );
       toast.success(
         `Added ${recipe.ingredients.length} item(s) to your shopping list!`,
       );
+      void syncToLichen();
     } catch (error) {
       console.error("Error adding ingredients to shopping list:", error);
       toast.error(
@@ -152,7 +158,7 @@ export const useRecipeDetailPage = () => {
     addToCollection,
     exportRecipe,
     addToShoppingList,
-    canSendToTern: !!user && recipe?.nutrition !== null,
+    canSendToTern: !!user && settings.tern_enabled && !!recipe?.nutrition,
     sendToTern,
     ...share,
   };
